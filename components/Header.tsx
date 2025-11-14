@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import type { View } from '../App';
+import type { View } from './types';
 import type { Currency } from './currency';
 
 const CartIcon = () => (
@@ -32,137 +33,107 @@ const FacebookIcon = () => (
     </svg>
 );
 
-
-const NavLink: React.FC<{ onClick: () => void; children: React.ReactNode; }> = ({ onClick, children }) => (
-    <a
-        href="#"
-        onClick={(e) => {
-            e.preventDefault();
-            onClick();
-        }}
-        className="block py-3 px-4 text-center text-sm uppercase tracking-wider text-gray-800 hover:bg-gray-100 transition-colors"
-    >
-        {children}
-    </a>
-);
-
-
-const Header: React.FC<{
+interface HeaderProps {
     onNavigate: (view: View) => void;
     currency: Currency;
     onCurrencyChange: (currency: Currency) => void;
     cartCount: number;
     onCartClick: () => void;
-}> = ({ onNavigate, cartCount, onCartClick }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+}
 
-  const handleNavClick = (view: View) => {
-      onNavigate(view);
-      setIsMenuOpen(false);
-  }
-  
-  const navLinks = [
-      { view: 'home', label: 'Inicio' },
-      { view: 'products', label: 'Tienda' },
-      { view: 'ofertas', label: 'Ofertas' },
-      { view: 'catalog', label: 'Catálogo' },
-      { view: 'blog', label: 'Blog' },
-      { view: 'ia', label: 'Asistente IA' },
-  ];
+const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange, cartCount, onCartClick }) => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const cartButton = (
-    <button onClick={onCartClick} className="relative text-gray-800 hover:text-amber-600 p-2 group" aria-label={`Ver carrito, ${cartCount} artículos`}>
-        <CartIcon />
-        {cartCount > 0 && (
-            <span className="absolute top-0 right-0 block h-5 w-5 rounded-full bg-amber-500 text-white text-xs flex items-center justify-center transform translate-x-1/2 -translate-y-1/2 group-hover:bg-amber-600 transition-colors">
-                {cartCount}
-            </span>
-        )}
-    </button>
-  );
+    const NavLink: React.FC<{ view: View; children: React.ReactNode }> = ({ view, children }) => (
+        <a
+            href="#"
+            onClick={(e) => {
+                e.preventDefault();
+                onNavigate(view);
+                setIsMenuOpen(false); // Close menu on navigation
+            }}
+            className="text-gray-700 hover:text-fuchsia-600 transition-colors font-semibold py-2 block md:inline-block hover-underline-effect"
+        >
+            {children}
+        </a>
+    );
 
-  return (
-    <header className="bg-white sticky top-0 z-30 shadow-sm">
-        <div className="bg-[#f3d9ff]">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-1 flex justify-end items-center">
-                <div className="flex items-center gap-2">
-                    <a href="#" aria-label="Facebook" className="w-7 h-7 rounded-full bg-black flex items-center justify-center text-white hover:bg-gray-800 transition-colors">
-                        <FacebookIcon />
-                    </a>
-                    <a href="#" aria-label="Instagram" className="w-7 h-7 rounded-full bg-black flex items-center justify-center text-white hover:bg-gray-800 transition-colors">
-                        <InstagramIcon />
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col items-center">
-            <a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('home'); }} className="block">
-                <img src="https://i.imgur.com/5n7z8sM.png" alt="Vellaperfumeria Logo" className="h-20 w-auto" />
-            </a>
-            <h1 className="text-xl font-light tracking-[0.2em] text-gray-800 mt-2">VELLAPERFUMERIA</h1>
-        </div>
-      
-        <div className="border-t border-gray-100">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Desktop Navigation */}
-                <nav className="hidden md:flex justify-between items-center h-14">
-                    <div className="w-1/4"></div> {/* Spacer */}
-                    <ul className="flex justify-center gap-x-8 w-1/2">
-                        {navLinks.map(link => (
-                            <li key={link.view}>
-                                <a
-                                    href="#"
-                                    onClick={(e) => { e.preventDefault(); handleNavClick(link.view as View); }}
-                                    className="text-sm uppercase tracking-wider font-medium text-gray-700 hover:text-amber-600 transition-colors hover-underline-effect"
-                                >
-                                    {link.label}
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
-                    <div className="w-1/4 flex justify-end">
-                        {cartButton}
+    return (
+        <header className="bg-white shadow-sm sticky top-0 z-30">
+            {/* Top bar */}
+            <div className="bg-gray-900 text-white text-xs">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-1">
+                    <div className="flex items-center space-x-4">
+                        <a href="#" className="hover:text-amber-300 transition-colors" aria-label="Instagram"><InstagramIcon /></a>
+                        <a href="#" className="hover:text-amber-300 transition-colors" aria-label="Facebook"><FacebookIcon /></a>
                     </div>
-                </nav>
-
-                {/* Mobile Navigation Wrapper */}
-                <div className="md:hidden relative">
-                    <div className="flex justify-between items-center h-14">
-                        <button
-                            onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="p-2 text-gray-800"
-                            aria-controls="mobile-menu"
-                            aria-expanded={isMenuOpen}
-                            aria-label={isMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+                    <div>
+                        <select
+                            value={currency}
+                            onChange={(e) => onCurrencyChange(e.target.value as Currency)}
+                            className="bg-gray-800 border border-gray-700 rounded-md text-white py-0.5 px-1 focus:outline-none focus:ring-1 focus:ring-amber-300"
+                            aria-label="Seleccionar moneda"
                         >
-                        {isMenuOpen ? <CloseIcon /> : <HamburgerIcon />}
-                        </button>
-                        
-                        {cartButton}
-                    </div>
-
-                    {/* Mobile Menu Content with Animation */}
-                    <div
-                        id="mobile-menu"
-                        className={`
-                            absolute left-0 w-full bg-white shadow-lg z-20 transition-all duration-300 ease-in-out origin-top
-                            ${isMenuOpen ? 'transform scale-y-100 opacity-100' : 'transform scale-y-95 opacity-0 pointer-events-none'}
-                        `}
-                        aria-hidden={!isMenuOpen}
-                    >
-                        <ul className="py-2">
-                            {navLinks.map(link => (
-                                <li key={link.view}><NavLink onClick={() => handleNavClick(link.view as View)}>{link.label}</NavLink></li>
-                            ))}
-                            <li><NavLink onClick={() => handleNavClick('about')}>Sobre Nosotros</NavLink></li>
-                            <li><NavLink onClick={() => handleNavClick('contact')}>Contacto</NavLink></li>
-                        </ul>
+                            <option value="EUR">EUR €</option>
+                            <option value="USD">USD $</option>
+                            <option value="GBP">GBP £</option>
+                        </select>
                     </div>
                 </div>
             </div>
-        </div>
-    </header>
-  );
+            {/* Main Header */}
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex justify-between items-center h-20">
+                    {/* Logo */}
+                    <div className="flex-shrink-0">
+                        <a href="https://vellaperfumeria.com" target="_blank" rel="noopener noreferrer" aria-label="Vellaperfumeria - Inicio">
+                            <img src="https://storage.googleapis.com/aistudio-public/projects/33d6990c-15a5-4847-8a43-52a510525cb3/perfumeria-logo.jpeg" alt="Vellaperfumeria Logo" className="h-16 w-auto" />
+                        </a>
+                    </div>
+
+                    {/* Desktop Nav */}
+                    <nav className="hidden md:flex space-x-8 items-center">
+                        <a href="https://vellaperfumeria.com" target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-fuchsia-600 transition-colors font-semibold py-2 block md:inline-block hover-underline-effect">Inicio</a>
+                        <NavLink view="products">Tienda</NavLink>
+                        <NavLink view="ofertas">Ofertas</NavLink>
+                        <NavLink view="catalog">Catálogo</NavLink>
+                        <NavLink view="blog">Blog</NavLink>
+                        <NavLink view="ia">Asistente IA</NavLink>
+                    </nav>
+
+                    {/* Right side actions (cart, mobile menu) */}
+                    <div className="flex items-center space-x-4">
+                        <button onClick={onCartClick} className="relative text-gray-700 hover:text-fuchsia-600 p-2" aria-label={`Abrir carrito. Tienes ${cartCount} artículos.`}>
+                            <CartIcon />
+                            {cartCount > 0 && (
+                                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-fuchsia-600 rounded-full">
+                                    {cartCount}
+                                </span>
+                            )}
+                        </button>
+                        <div className="md:hidden">
+                            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2" aria-expanded={isMenuOpen} aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}>
+                                {isMenuOpen ? <CloseIcon /> : <HamburgerIcon />}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/* Mobile Menu */}
+            {isMenuOpen && (
+                <div className="md:hidden bg-white border-t">
+                    <nav className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-2">
+                        <a href="https://vellaperfumeria.com" target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-fuchsia-600 transition-colors font-semibold py-2 block md:inline-block hover-underline-effect">Inicio</a>
+                        <NavLink view="products">Tienda</NavLink>
+                        <NavLink view="ofertas">Ofertas</NavLink>
+                        <NavLink view="catalog">Catálogo</NavLink>
+                        <NavLink view="blog">Blog</NavLink>
+                        <NavLink view="ia">Asistente IA</NavLink>
+                    </nav>
+                </div>
+            )}
+        </header>
+    );
 };
 
 export default Header;

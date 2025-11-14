@@ -1,5 +1,6 @@
+
 import React from 'react';
-import type { View } from '../App';
+import type { View } from './types';
 
 const InstagramIcon = () => (
     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -18,6 +19,18 @@ const WhatsAppIcon = () => (
         <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 4.315 1.919 6.066l-1.475 5.422 5.571-1.469z" />
     </svg>
 );
+
+// Payment Method Icons
+const VisaIcon = () => (
+    <svg className="h-8 w-auto" fill="currentColor" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Visa</title><path d="M19.957 8.358h-2.135c-.347 0-.655.23-.762.564l-2.28 6.942a.554.554 0 0 0 .532.723h2.136c.347 0 .655-.23.762-.564l.872-2.66h2.492l.317 2.66c.107.334.415.564.762.564h2.135a.554.554 0 0 0 .531-.723l-2.28-6.942a.554.554 0 0 0-.532-.564zm-1.02 4.417l.6-1.834.6 1.834h-1.2zM0 8.358l2.91-6.942h2.953L3.15 16.642H.215L0 8.358zm12.923-6.942L9.58 14.864l-.532-2.31c-.13-.564-.818-1.127-1.46-1.393l.925 5.753h2.953l4.475-13.885h-2.98z"/></svg>
+);
+const MastercardIcon = () => (
+    <svg className="h-8 w-auto" fill="currentColor" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Mastercard</title><path d="M12.012 7.15a4.84 4.84 0 0 0-4.842 4.842 4.84 4.84 0 0 0 4.842 4.842 4.84 4.84 0 0 0 4.842-4.842A4.84 4.84 0 0 0 12.012 7.15zm0 8.21a3.37 3.37 0 1 1 0-6.738 3.37 3.37 0 0 1 0 6.738zm10.003-8.22a10.024 10.024 0 0 0-10.003-10.003A10.024 10.024 0 0 0 2.01 11.99a10.024 10.024 0 0 0 10.003 10.003A10.024 10.024 0 0 0 22.015 11.99m-1.47 0a8.53 8.53 0 1 1-17.062 0 8.53 8.53 0 0 1 17.062 0z"/></svg>
+);
+const PaypalIcon = () => (
+    <svg className="h-8 w-auto" fill="currentColor" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>PayPal</title><path d="M3.36 2.339a.36.36 0 0 0-.36.36v18.618a.36.36 0 0 0 .36.36h11.41a.36.36 0 0 0 .36-.36v-1.79c0-.09-.071-.163-.16-.18l-.02-.003-3.614-.49a.63.63 0 0 1-.57-.75l1.24-7.445a.63.63 0 0 0-.6-7.2H4.49zm12.637.737c-1.332 0-2.38.608-2.88 2.138-.41 1.284-.05 3.153.69 4.88 0 .01.01.01.01.02.73 1.69 1.76 2.47 3.1 2.47 1.62 0 2.52-.94 2.52-2.31 0-1.28-.59-1.99-1.85-1.99-.86 0-1.47.45-1.73.74-.24.27-.36.4-.36.4l-.12-.76c-.01-.06-.01-.13-.02-.18 0-.25.13-.5.36-.67.24-.18.8-.57 1.86-.57 2.2 0 3.86 1.48 3.86 3.96 0 3.23-2.5 4.6-5.18 4.6-2.07 0-3.66-1.06-4.2-2.92-.01-.02-.01-.04-.02-.06-.8-2.03-.48-4.14.38-5.71C9.62 3.249 10.96 2.01 12.6 2.01c1.64 0 2.85.85 3.39 2.12.16-.9-.3-1.8-1.3-1.8z"/></svg>
+);
+
 
 interface FooterProps {
     onNavigate: (view: View) => void;
@@ -42,8 +55,8 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 <div className="flex flex-col md:flex-row justify-between items-start text-center md:text-left space-y-10 md:space-y-0">
                     {/* About Section */}
                     <div className="w-full md:w-1/3">
-                         <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('home'); }} className="inline-block hover:opacity-80 transition-opacity mb-4">
-                             <img src="https://i.imgur.com/5n7z8sM.png" alt="Vellaperfumeria Logo" className="w-32 h-auto mx-auto md:mx-0" />
+                         <a href="https://vellaperfumeria.com" target="_blank" rel="noopener noreferrer" className="inline-block hover:opacity-80 transition-opacity mb-4">
+                             <img src="https://storage.googleapis.com/aistudio-public/projects/33d6990c-15a5-4847-8a43-52a510525cb3/perfumeria-logo.jpeg" alt="Vellaperfumeria Logo" className="h-20 w-auto mx-auto md:mx-0" />
                         </a>
                         <p className="text-gray-400 text-sm">
                             Descubre fragancias que definen tu esencia. Calidad y exclusividad en cada botella.
@@ -54,7 +67,16 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                     <div className="w-full md:w-1/3">
                         <h2 className="text-lg font-bold tracking-widest uppercase mb-4">Enlaces Rápidos</h2>
                         <ul className="space-y-2 text-sm">
-                            <FooterLink onClick={() => onNavigate('home')}>Inicio</FooterLink>
+                            <li>
+                                <a
+                                    href="https://vellaperfumeria.com"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-gray-400 hover:text-amber-300 transition-colors hover-underline-effect hover-underline-effect-white"
+                                >
+                                    Inicio
+                                </a>
+                            </li>
                             <FooterLink onClick={() => onNavigate('products')}>Tienda</FooterLink>
                             <FooterLink onClick={() => onNavigate('blog')}>Blog</FooterLink>
                             <FooterLink onClick={() => onNavigate('about')}>Sobre Nosotros</FooterLink>
@@ -79,8 +101,16 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                     </div>
                 </div>
 
-                <div className="mt-12 border-t border-gray-800 pt-6 text-center text-gray-500 text-sm">
-                    <p>&copy; {new Date().getFullYear()} Vellaperfumeria. Todos los derechos reservados.</p>
+                <div className="mt-12 border-t border-gray-800 pt-8">
+                     <div className="text-center mb-8">
+                        <h3 className="text-sm font-semibold tracking-wider uppercase text-gray-500">Métodos de Pago Aceptados</h3>
+                        <div className="flex justify-center items-center space-x-6 mt-4 text-gray-400">
+                            <VisaIcon />
+                            <MastercardIcon />
+                            <PaypalIcon />
+                        </div>
+                    </div>
+                    <p className="text-center text-gray-500 text-sm">&copy; {new Date().getFullYear()} Vellaperfumeria. Todos los derechos reservados.</p>
                 </div>
             </div>
         </footer>

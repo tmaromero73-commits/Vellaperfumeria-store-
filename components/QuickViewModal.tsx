@@ -1,0 +1,247 @@
+import React, { useEffect, useRef, useState } from 'react';
+import type { Product } from './types';
+import type { Currency } from './currency';
+import { formatCurrency } from './currency';
+
+const CloseIcon = () => (
+    <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+);
+
+const GooglePayIcon: React.FC<{className?: string}> = ({ className }) => (
+    <svg className={`h-6 w-6 ${className}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path fill="#fff" d="M19.6,9.46c0-1.12-.13-2.2-.36-3.24H12.22V10.4h4.4c-.19,1.21-.77,2.25-1.63,2.93l2.76,2.12c1.6-1.48,2.65-3.69,2.65-6.2Z"/>
+        <path fill="#fff" d="M12.22,20a7.7,7.7,0,0,0,5.36-1.94l-2.76-2.12c-.91.62-2.07.98-3.31.98-2.54,0-4.69-1.71-5.46-4.01H3.63v2.2C4.94,17.9,8.32,20,12.22,20Z"/>
+        <path fill="#fff" d="M6.76,12.81a4.63,4.63,0,0,1,0-2.84V7.77H3.63a7.93,7.93,0,0,0,0,7.26Z"/>
+        <path fill="#fff" d="M12.22,6.22c1.38,0,2.6.48,3.58,1.4l2.45-2.45A7.7,7.7,0,0,0,12.22,4a7.92,7.92,0,0,0-7.3,4.24l3.13,2.2C8.8,8.14,10.43,6.22,12.22,6.22Z"/>
+    </svg>
+);
+
+const getDefaultVariant = (product: Product): Record<string, string> | null => {
+    if (!product.variants) return null;
+    const defaultVariant: Record<string, string> = {};
+    for (const key in product.variants) {
+        if (product.variants[key].length > 0) {
+           defaultVariant[key] = product.variants[key][0].value;
+        }
+    }
+    return defaultVariant;
+};
+
+const getStockInfo = (stock: number): { text: string; color: string } => {
+    if (stock === 0) {
+        return { text: 'Agotado', color: 'text-red-600' };
+    }
+    if (stock <= 10) {
+        return { text: 'Pocas unidades', color: 'text-amber-600' };
+    }
+    return { text: 'En stock', color: 'text-green-600' };
+};
+
+
+interface QuickViewModalProps {
+    product: Product;
+    currency: Currency;
+    onClose: () => void;
+    onAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
+    onProductSelect: (product: Product) => void;
+    stripe: any;
+    onOrderComplete: () => void;
+}
+
+const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, currency, onClose, onAddToCart, onProductSelect, stripe, onOrderComplete }) => {
+    const modalRef = useRef<HTMLDivElement>(null);
+    const addToCartBtnRef = useRef<HTMLButtonElement>(null);
+    
+    const [selectedVariant, setSelectedVariant] = useState<Record<string, string> | null>(getDefaultVariant(product));
+    const [canMakeGPayPayment, setCanMakeGPayPayment] = useState(false);
+    const paymentRequestRef = useRef<any>(null);
+
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') onClose();
+        };
+        document.addEventListener('keydown', handleKeyDown);
+        modalRef.current?.focus();
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [onClose]);
+
+    // Setup Google Pay
+    useEffect(() => {
+        if (stripe && product) {
+            const pr = stripe.paymentRequest({
+                country: 'ES',
+                currency: currency.toLowerCase(),
+                total: {
+                    label: product.name,
+                    amount: Math.round(product.price * 100),
+                },
+                requestPayerName: true,
+                requestPayerEmail: true,
+            });
+
+            paymentRequestRef.current = pr;
+
+            pr.canMakePayment().then((result: any) => {
+                if (result) {
+                    setCanMakeGPayPayment(true);
+                } else {
+                    setCanMakeGPayPayment(false);
+                }
+            });
+        }
+    }, [stripe, product, currency]);
+
+
+    const handleVariantChange = (variantType: string, value: string) => {
+        setSelectedVariant(prev => ({ ...(prev || {}), [variantType]: value }));
+    };
+
+    const stockInfo = getStockInfo(product.stock);
+    const isOutOfStock = product.stock === 0;
+
+    const handleGooglePay = () => {
+        if (isOutOfStock || !paymentRequestRef.current) return;
+
+        paymentRequestRef.current.on('paymentmethod', async (ev: any) => {
+            console.log('Generated Stripe PaymentMethod for quick view product:', ev.paymentMethod);
+            ev.complete('success');
+            onClose(); // Close the modal
+            onOrderComplete(); // Navigate to confirmation and clear cart
+        });
+
+        paymentRequestRef.current.show();
+    };
+
+    return (
+        <div 
+            className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4"
+            onClick={onClose}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="quick-view-title"
+        >
+            <div
+                ref={modalRef}
+                tabIndex={-1}
+                className="bg-white rounded-lg shadow-xl w-full max-w-3xl mx-auto flex flex-col md:flex-row p-6 relative animate-fade-in-scale max-h-[90vh]"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <button onClick={onClose} className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 p-1 z-10" aria-label="Cerrar">
+                    <CloseIcon />
+                </button>
+                
+                <div className="w-full md:w-1/2 flex items-center justify-center bg-gray-100 rounded-lg p-4">
+                    <img src={product.imageUrl} alt={product.name} className="max-h-80 object-contain" />
+                </div>
+                
+                <div className="w-full md:w-1/2 flex flex-col pt-6 md:pt-0 md:pl-6 overflow-y-auto">
+                    <h2 id="quick-view-title" className="text-2xl font-bold mb-1 pr-8">{product.name}</h2>
+                    <p className="text-sm text-gray-500 mb-2">{product.brand}</p>
+                    
+                     <div className="flex items-baseline gap-3 mb-4">
+                        <p className="text-3xl font-bold text-gray-900">{formatCurrency(product.price, currency)}</p>
+                    </div>
+                    
+                    <div className="text-gray-700 text-sm mb-4 flex-grow pr-2">
+                         <p className="max-h-24 overflow-y-auto mb-4">{product.description}</p>
+
+                        {product.variants && (
+                            <div className="space-y-3">
+                                {Object.keys(product.variants).map((type) => {
+                                    const options = product.variants![type];
+                                    if (!Array.isArray(options)) return null;
+                                    
+                                    return (
+                                        <div key={type}>
+                                            <h3 className="text-xs font-semibold text-gray-800 mb-1">
+                                                {type}: <span className="font-normal">{selectedVariant?.[type]}</span>
+                                            </h3>
+                                            <div className="flex flex-wrap gap-2">
+                                                {options.map(option => {
+                                                    const isSelected = selectedVariant?.[type] === option.value;
+                                                    if (option.colorCode) {
+                                                        return (
+                                                            <button
+                                                                key={option.value}
+                                                                onClick={() => handleVariantChange(type, option.value)}
+                                                                className={`w-6 h-6 rounded-full border-2 transition-all ${isSelected ? 'border-fuchsia-500 ring-1 ring-offset-1 ring-fuchsia-500' : 'border-gray-300'}`}
+                                                                style={{ backgroundColor: option.colorCode }}
+                                                                aria-label={`Seleccionar color ${option.value}`}
+                                                            />
+                                                        );
+                                                    }
+                                                    return (
+                                                        <button
+                                                            key={option.value}
+                                                            onClick={() => handleVariantChange(type, option.value)}
+                                                            className={`px-3 py-1 text-xs font-medium border rounded-md transition-colors ${isSelected ? 'bg-fuchsia-500 text-white' : 'bg-white text-black hover:bg-gray-100'}`}
+                                                        >
+                                                            {option.value}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="mt-auto space-y-3">
+                        <div className="mb-2">
+                            <p className="text-sm font-semibold">Disponibilidad: <span className={`font-bold ${stockInfo.color}`}>{stockInfo.text}</span></p>
+                        </div>
+                        <button
+                            ref={addToCartBtnRef}
+                            onClick={() => {
+                                onAddToCart(product, addToCartBtnRef.current, selectedVariant);
+                                onClose();
+                            }}
+                            disabled={isOutOfStock}
+                            className={`w-full bg-[#EBCFFC] text-black font-bold py-3 rounded-lg hover:bg-[#e0c2fa] transition-colors ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : ''}`}
+                            aria-label={`Añadir ${product.name} al carrito`}
+                        >
+                            {isOutOfStock ? 'Agotado' : 'Añadir al carrito'}
+                        </button>
+                         {canMakeGPayPayment && (
+                            <button
+                               onClick={handleGooglePay}
+                               disabled={isOutOfStock}
+                               className={`w-full bg-black text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-gray-800 transition-colors duration-300 active:scale-95 flex items-center justify-center gap-2 ${isOutOfStock ? 'bg-gray-400 cursor-not-allowed' : ''}`}
+                               aria-label="Pagar con Google Pay"
+                            >
+                               <span className="bg-black"><GooglePayIcon /></span> Comprar ahora
+                            </button>
+                        )}
+                        <button 
+                            onClick={() => {
+                                onProductSelect(product);
+                                onClose();
+                            }}
+                            className="w-full bg-gray-100 text-black font-semibold py-3 rounded-lg hover:bg-gray-200 transition-colors"
+                        >
+                            Ver detalles completos
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <style>
+                {`
+                @keyframes fade-in-scale {
+                    from { transform: scale(0.95); opacity: 0; }
+                    to { transform: scale(1); opacity: 1; }
+                }
+                .animate-fade-in-scale {
+                    animation: fade-in-scale 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                }
+                `}
+            </style>
+        </div>
+    );
+};
+
+export default QuickViewModal;

@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import type { Product } from './ProductCard';
+import type { Product } from './types';
 import type { Currency } from './currency';
 import { formatCurrency } from './currency';
 

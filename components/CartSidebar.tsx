@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import type { CartItem } from '../App';
+import type { CartItem } from './types';
 import type { Currency } from './currency';
 import { formatCurrency } from './currency';
 
@@ -214,5 +214,4 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
     );
 };
 
-// FIX: Add default export to make the component available for import in other files.
 export default CartSidebar;

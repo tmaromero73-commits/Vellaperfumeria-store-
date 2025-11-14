@@ -1,13 +1,18 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { type Product, ProductCard } from './ProductCard';
+import { ProductCard } from './ProductCard';
+import type { Product } from './types';
 import { type Currency, formatCurrency } from './currency';
 import { allProducts } from './products';
+import ImageLightbox from './ImageLightbox';
 
 interface ProductDetailPageProps {
     product: Product;
     currency: Currency;
     onAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     onProductSelect: (product: Product) => void;
+    onQuickView: (product: Product) => void;
+    stripe: any;
+    onOrderComplete: () => void;
 }
 
 // SVG Icons
@@ -61,6 +66,22 @@ const UserIcon = () => (
     </svg>
 );
 
+const MagnifyPlusIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3h-6" />
+    </svg>
+);
+
+const GooglePayIcon: React.FC<{className?: string}> = ({ className }) => (
+    <svg className={`h-6 w-6 ${className}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path fill="#fff" d="M19.6,9.46c0-1.12-.13-2.2-.36-3.24H12.22V10.4h4.4c-.19,1.21-.77,2.25-1.63,2.93l2.76,2.12c1.6-1.48,2.65-3.69,2.65-6.2Z"/>
+        <path fill="#fff" d="M12.22,20a7.7,7.7,0,0,0,5.36-1.94l-2.76-2.12c-.91.62-2.07.98-3.31.98-2.54,0-4.69-1.71-5.46-4.01H3.63v2.2C4.94,17.9,8.32,20,12.22,20Z"/>
+        <path fill="#fff" d="M6.76,12.81a4.63,4.63,0,0,1,0-2.84V7.77H3.63a7.93,7.93,0,0,0,0,7.26Z"/>
+        <path fill="#fff" d="M12.22,6.22c1.38,0,2.6.48,3.58,1.4l2.45-2.45A7.7,7.7,0,0,0,12.22,4a7.92,7.92,0,0,0-7.3,4.24l3.13,2.2C8.8,8.14,10.43,6.22,12.22,6.22Z"/>
+    </svg>
+);
+
+
 interface Review {
     author: string;
     rating: number;
@@ -72,15 +93,21 @@ const getDefaultVariant = (product: Product): Record<string, string> | null => {
     if (!product.variants) return null;
     const defaultVariant: Record<string, string> = {};
     for (const key in product.variants) {
-        defaultVariant[key] = product.variants[key][0].value;
+        if (product.variants[key].length > 0) {
+           defaultVariant[key] = product.variants[key][0].value;
+        }
     }
     return defaultVariant;
 };
 
-const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency, onAddToCart, onProductSelect }) => {
+const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency, onAddToCart, onProductSelect, onQuickView, stripe, onOrderComplete }) => {
     const btnRef = useRef<HTMLButtonElement>(null);
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [copyButtonText, setCopyButtonText] = useState('Copiar enlace');
+    const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+    const [canMakeGPayPayment, setCanMakeGPayPayment] = useState(false);
+    const paymentRequestRef = useRef<any>(null);
+
 
     const [selectedVariant, setSelectedVariant] = useState<Record<string, string> | null>(getDefaultVariant(product));
     const [currentImageUrl, setCurrentImageUrl] = useState(product.imageUrl);
@@ -111,6 +138,33 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
         setCurrentImageUrl(variantImageUrl || product.imageUrl);
     }, [selectedVariant, product.variants, product.imageUrl]);
 
+    // Setup Google Pay
+    useEffect(() => {
+        if (stripe && product) {
+            const pr = stripe.paymentRequest({
+                country: 'ES',
+                currency: currency.toLowerCase(),
+                total: {
+                    label: product.name,
+                    amount: Math.round(product.price * 100),
+                },
+                requestPayerName: true,
+                requestPayerEmail: true,
+            });
+
+            paymentRequestRef.current = pr;
+
+            pr.canMakePayment().then((result: any) => {
+                if (result) {
+                    setCanMakeGPayPayment(true);
+                } else {
+                    setCanMakeGPayPayment(false);
+                }
+            });
+        }
+    }, [stripe, product, currency]);
+
+
     const handleVariantChange = (variantType: string, value: string) => {
         setSelectedVariant(prev => ({ ...(prev || {}), [variantType]: value }));
     };
@@ -125,10 +179,6 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
 
     const productUrl = window.location.href;
     const productTitle = `¡Mira este producto: ${product.name}!`;
-
-    const discountPercent = product.regularPrice && product.regularPrice > product.price
-        ? Math.round(((product.regularPrice - product.price) / product.regularPrice) * 100)
-        : null;
 
     const shareLinks = {
         whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(productTitle)}%20${encodeURIComponent(productUrl)}`,
@@ -178,31 +228,49 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
         .filter(p => p.category === product.category && p.id !== product.id)
         .slice(0, 4);
 
+    const handleGooglePay = () => {
+        if (isOutOfStock || !paymentRequestRef.current) return;
+
+        paymentRequestRef.current.on('paymentmethod', async (ev: any) => {
+            console.log('Generated Stripe PaymentMethod for single product:', ev.paymentMethod);
+            // In a real app, you would send this to your backend to confirm the payment
+            ev.complete('success');
+            onOrderComplete(); // This will clear the cart and navigate to confirmation
+        });
+
+        paymentRequestRef.current.show();
+    };
+
 
     return (
         <div className="container mx-auto">
             <div className="bg-white rounded-lg shadow-lg overflow-hidden md:grid md:grid-cols-5 md:gap-8 p-4 md:p-8">
-                <div className="p-4 flex justify-center items-center bg-white border border-gray-100 rounded-lg md:col-span-3">
-                    <img
-                        src={currentImageUrl}
-                        alt={product.name}
-                        className="max-h-96 object-contain transition-all duration-300"
-                    />
+                <div className="md:col-span-3">
+                    <div 
+                        className="relative group cursor-pointer p-4 flex justify-center items-center bg-white border border-gray-100 rounded-lg"
+                        onClick={() => setIsLightboxOpen(true)}
+                        role="button"
+                        aria-label="Ampliar imagen del producto"
+                    >
+                        <img
+                            src={currentImageUrl}
+                            alt={product.name}
+                            className="max-h-96 object-contain transition-all duration-300"
+                        />
+                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center rounded-lg">
+                            <div className="opacity-0 group-hover:opacity-100 transform group-hover:scale-100 scale-90 transition-all duration-300">
+                                <MagnifyPlusIcon />
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
 
                 <div className="p-4 flex flex-col md:col-span-2">
                     <h1 className="text-3xl md:text-4xl font-bold tracking-wide mb-2">{product.name}</h1>
                     
                     <div className="flex items-baseline gap-3 mb-4">
                         <p className="text-3xl font-bold text-gray-900">{formatCurrency(product.price, currency)}</p>
-                        {product.regularPrice && product.regularPrice > product.price && (
-                            <p className="text-xl text-gray-500 line-through">{formatCurrency(product.regularPrice, currency)}</p>
-                        )}
-                        {discountPercent && (
-                             <span className="bg-gray-100 text-gray-800 text-sm font-bold px-3 py-1 rounded-full">
-                                -{discountPercent}% DTO
-                            </span>
-                        )}
                     </div>
 
                     {product.isShippingSaver && (
@@ -268,7 +336,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                         <p className="text-sm font-semibold">Disponibilidad: <span className={`font-bold ${stockInfo.color}`}>{stockInfo.text}</span></p>
                     </div>
                     
-                    <div className="mt-auto flex flex-col sm:flex-row items-center gap-4">
+                    <div className="mt-auto flex flex-col gap-3">
                         <button
                             ref={btnRef}
                             onClick={() => {
@@ -277,17 +345,27 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                 }
                             }}
                             disabled={isOutOfStock}
-                            className={`w-full sm:w-auto flex-grow font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-300 ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#EBCFFC] text-black hover:bg-[#e0c2fa] transform hover:scale-105 active:scale-95'}`}
+                            className={`w-full font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-300 ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#EBCFFC] text-black hover:bg-[#e0c2fa] transform hover:scale-105 active:scale-95'}`}
                             aria-label={`Añadir ${product.name} al carrito`}
                         >
                             {isOutOfStock ? 'Agotado' : 'Añadir al carrito'}
                         </button>
+                        {canMakeGPayPayment && (
+                            <button
+                               onClick={handleGooglePay}
+                               disabled={isOutOfStock}
+                               className={`w-full bg-black text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-gray-800 transition-colors duration-300 active:scale-95 flex items-center justify-center gap-2 ${isOutOfStock ? 'bg-gray-400 cursor-not-allowed' : ''}`}
+                               aria-label="Pagar con Google Pay"
+                            >
+                               <span className="bg-black"><GooglePayIcon /></span> Comprar ahora
+                            </button>
+                        )}
                         <button
                            onClick={() => {
                                setIsShareModalOpen(true);
                                setCopyButtonText('Copiar enlace');
                            }}
-                           className="w-full sm:w-auto bg-[#EBCFFC] text-black font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#e0c2fa] transition-colors duration-300 active:scale-95"
+                           className="w-full bg-gray-100 text-black font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-gray-200 transition-colors duration-300 active:scale-95"
                            aria-label="Compartir este producto"
                         >
                            Compartir
@@ -320,6 +398,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                 currency={currency}
                                 onAddToCart={onAddToCart}
                                 onProductSelect={onProductSelect}
+                                onQuickView={onQuickView}
                             />
                         ))}
                     </div>
@@ -479,6 +558,15 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                     </div>
                 </div>
             )}
+
+            {isLightboxOpen && (
+                <ImageLightbox
+                    imageUrl={currentImageUrl}
+                    altText={product.name}
+                    onClose={() => setIsLightboxOpen(false)}
+                />
+            )}
+
             <style>
                 {`
                 @keyframes fade-in-scale {

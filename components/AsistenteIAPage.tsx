@@ -100,7 +100,7 @@ const AsistenteIAPage: React.FC = () => {
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="text-center mb-10">
-                <img src="https://i.imgur.com/sFo732c.png" alt="Logo de Vellaperfumeria" className="w-32 h-32 mx-auto mb-4" />
+                <img src="https://storage.googleapis.com/aistudio-public/projects/33d6990c-15a5-4847-8a43-52a510525cb3/perfumeria-logo.jpeg" alt="Logo de Vellaperfumeria" className="w-24 h-24 mx-auto mb-4" />
                 <h1 className="text-4xl font-extrabold text-black tracking-tight">Asistente de Belleza IA</h1>
                 <p className="mt-2 text-lg text-gray-600">¿Necesitas ayuda? Pide recomendaciones y consejos sobre nuestros productos.</p>
             </div>
