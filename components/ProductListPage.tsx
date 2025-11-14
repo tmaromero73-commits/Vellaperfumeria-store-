@@ -1,24 +1,8 @@
-
-
 import React, { useState, useMemo } from 'react';
 import { ProductCard } from './ProductCard';
 import type { Product } from './types';
 import type { Currency } from './currency';
 import { allProducts } from './products';
-
-type Category = Product['category'];
-
-const CATEGORIES: { id: Category; name: string }[] = [
-    { id: 'makeup', name: 'Maquillaje' },
-    { id: 'skincare', name: 'Cuidado Facial' },
-    { id: 'hair', name: 'Cuidado Capilar' },
-    { id: 'perfume', name: 'Perfumes' },
-    { id: 'personal-care', name: 'Cuidado Personal' },
-    { id: 'wellness', name: 'Wellness' },
-    { id: 'men', name: 'Hombre' },
-    { id: 'accessories', name: 'Accesorios' },
-];
-
 
 const ProductListPage: React.FC<{
     currency: Currency;
@@ -27,76 +11,134 @@ const ProductListPage: React.FC<{
     onQuickView: (product: Product) => void;
 }> = ({ currency, onAddToCart, onProductSelect, onQuickView }) => {
     
-    const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
+    const [sortOrder, setSortOrder] = useState('menu_order');
+    const [currentPage, setCurrentPage] = useState(1);
+    const productsPerPage = 12;
 
-    const filteredProducts = useMemo(() => {
-        if (selectedCategory === 'all') {
-            return allProducts;
+    const sortedProducts = useMemo(() => {
+        let sorted = [...allProducts];
+        switch (sortOrder) {
+            case 'popularity':
+                sorted.sort((a, b) => (b.reviewCount || 0) - (a.reviewCount || 0));
+                break;
+            case 'rating':
+                sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+                break;
+            case 'date':
+                // Assuming newer products are at the start of the array
+                sorted.reverse();
+                break;
+            case 'price':
+                sorted.sort((a, b) => a.price - b.price);
+                break;
+            case 'price-desc':
+                sorted.sort((a, b) => b.price - a.price);
+                break;
+            case 'menu_order':
+            default:
+                // Default order is as is in products.ts
+                break;
         }
-        return allProducts.filter(product => product.category === selectedCategory);
-    }, [selectedCategory]);
+        return sorted;
+    }, [sortOrder]);
 
-    const handleCategoryClick = (categoryId: Category | 'all') => {
-        setSelectedCategory(categoryId);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    const paginatedProducts = useMemo(() => {
+        const startIndex = (currentPage - 1) * productsPerPage;
+        return sortedProducts.slice(startIndex, startIndex + productsPerPage);
+    }, [currentPage, sortedProducts]);
+
+    const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
+    const firstItemIndex = (currentPage - 1) * productsPerPage + 1;
+    const lastItemIndex = Math.min(currentPage * productsPerPage, sortedProducts.length);
+
+    const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSortOrder(e.target.value);
+        setCurrentPage(1); // Reset to first page on sort change
     };
+    
+    const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div 
-                className="bg-[#fdf2f8] rounded-lg p-8 md:p-12 mb-12 text-center"
-            >
-                <h1 className="text-4xl font-extrabold text-black tracking-tight">Nuestra Tienda</h1>
-                <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-700">
-                    Explora nuestra colección de fragancias, maquillaje y cuidado personal. Calidad y exclusividad en cada artículo.
+            <h1 className="text-4xl font-extrabold text-black tracking-tight mb-8">Shop</h1>
+
+            <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                <p className="text-sm text-gray-700">
+                    Mostrando {firstItemIndex}–{lastItemIndex} de {sortedProducts.length} resultados
                 </p>
-            </div>
-
-            {/* Category Filters */}
-            <div className="mb-10">
-                <h2 className="text-xl font-bold text-center mb-6">Explora por Categoría</h2>
-                <div className="flex flex-wrap justify-center gap-2 md:gap-4">
-                     <button
-                        onClick={() => handleCategoryClick('all')}
-                        className={`px-4 py-2 text-sm font-semibold rounded-full transition-colors duration-300 ${selectedCategory === 'all' ? 'bg-black text-white' : 'bg-gray-100 text-black hover:bg-gray-200'}`}
+                <form className="woocommerce-ordering">
+                    <select 
+                        name="orderby" 
+                        className="orderby border border-gray-300 rounded-md p-2 text-sm focus:ring-brand-pink focus:border-brand-pink bg-white"
+                        aria-label="Pedido de la tienda"
+                        value={sortOrder}
+                        onChange={handleSortChange}
                     >
-                        Todos
-                    </button>
-                    {CATEGORIES.map(category => (
-                        <button
-                            key={category.id}
-                            onClick={() => handleCategoryClick(category.id)}
-                            className={`px-4 py-2 text-sm font-semibold rounded-full transition-colors duration-300 ${selectedCategory === category.id ? 'bg-black text-white' : 'bg-gray-100 text-black hover:bg-gray-200'}`}
-                        >
-                            {category.name}
-                        </button>
-                    ))}
-                </div>
+                        <option value="menu_order">Orden predeterminado</option>
+                        <option value="popularity">Ordenar por popularidad</option>
+                        <option value="rating">Ordenar por puntuación media</option>
+                        <option value="date">Ordenar por los últimos</option>
+                        <option value="price">Ordenar por precio: bajo a alto</option>
+                        <option value="price-desc">Ordenar por precio: alto a bajo</option>
+                    </select>
+                </form>
             </div>
 
-            {/* Product Grid */}
-            {filteredProducts.length > 0 ? (
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr">
-                    {filteredProducts.map((product, index) => (
-                        <div 
+            {paginatedProducts.length > 0 ? (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-6 auto-rows-fr">
+                    {paginatedProducts.map(product => (
+                        <ProductCard
                             key={product.id}
-                            className={index === 0 && filteredProducts.length > 3 ? 'col-span-2 row-span-2' : ''}
-                        >
-                            <ProductCard
-                                product={product}
-                                currency={currency}
-                                onAddToCart={onAddToCart}
-                                onProductSelect={onProductSelect}
-                                onQuickView={onQuickView}
-                                isFeatured={index === 0 && filteredProducts.length > 3}
-                            />
-                        </div>
+                            product={product}
+                            currency={currency}
+                            onAddToCart={onAddToCart}
+                            onProductSelect={onProductSelect}
+                            onQuickView={onQuickView}
+                        />
                     ))}
                 </div>
             ) : (
                 <div className="text-center py-16">
-                    <p className="text-xl text-gray-600">No se encontraron productos en esta categoría.</p>
+                    <p className="text-xl text-gray-600">No se encontraron productos.</p>
                 </div>
+            )}
+            
+            {/* Pagination */}
+            {totalPages > 1 && (
+                <nav className="flex justify-center items-center space-x-2 mt-12" aria-label="Paginación">
+                    {currentPage > 1 && (
+                         <button
+                            onClick={() => setCurrentPage(currentPage - 1)}
+                            className="text-gray-600 hover:text-black font-semibold py-2 px-4 rounded-md transition"
+                        >
+                            &larr; Anterior
+                        </button>
+                    )}
+                    
+                    {pageNumbers.map(number => (
+                        <button
+                            key={number}
+                            onClick={() => setCurrentPage(number)}
+                            className={`py-2 px-4 rounded-md text-sm font-medium ${
+                                currentPage === number
+                                    ? 'bg-black text-white'
+                                    : 'text-gray-600 hover:bg-gray-100'
+                            }`}
+                            aria-current={currentPage === number ? 'page' : undefined}
+                        >
+                            {number}
+                        </button>
+                    ))}
+
+                    {currentPage < totalPages && (
+                         <button
+                            onClick={() => setCurrentPage(currentPage + 1)}
+                            className="text-gray-600 hover:text-black font-semibold py-2 px-4 rounded-md transition"
+                        >
+                            Siguiente &rarr;
+                        </button>
+                    )}
+                </nav>
             )}
         </div>
     );
