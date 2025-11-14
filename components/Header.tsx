@@ -1,6 +1,4 @@
-
-
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import type { View } from './types';
 import type { Currency } from './currency';
 
@@ -44,6 +42,20 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange, cartCount, onCartClick }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const cartCountRef = useRef<HTMLSpanElement>(null);
+    const prevCartCountRef = useRef<number>(cartCount);
+
+    useEffect(() => {
+        // Animate cart count only when items are added, not removed
+        if (cartCount > prevCartCountRef.current) {
+            cartCountRef.current?.classList.add('animate-pop');
+            const timer = setTimeout(() => {
+                cartCountRef.current?.classList.remove('animate-pop');
+            }, 300); // Duration should match the animation duration
+            return () => clearTimeout(timer);
+        }
+        prevCartCountRef.current = cartCount;
+    }, [cartCount]);
 
     const NavLink: React.FC<{ view: View; children: React.ReactNode }> = ({ view, children }) => (
         <a
@@ -62,7 +74,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
     return (
         <header className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-30">
             {/* Top bar */}
-            <div className="bg-brand-pink text-black text-xs">
+            <div className="bg-brand-pink-dark text-black text-xs">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-1">
                     <div className="flex items-center space-x-4">
                         <a href="https://www.threads.com/@beautieshopvella?xmt=AQF0zHNrv2YdoCmolABWd5JZB7EQbzCLyYByCyzn5RIWN3E" target="_blank" rel="noopener noreferrer" className="hover:text-black/80 transition-colors" aria-label="Threads"><InstagramIcon /></a>
@@ -85,23 +97,26 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
             {/* Main Header */}
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                  {/* Branding Section */}
-                <div className="relative flex justify-center items-center py-4">
+                <div className="relative flex justify-between items-center py-2">
+                    <div className="md:hidden"> {/* Placeholder to balance flexbox */}
+                        <div className="w-14"></div>
+                    </div>
                      {/* Centered Logo and Title */}
-                    <div className="text-center">
-                        <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('home'); }} className="inline-block" aria-label="Vellaperfumeria - Inicio">
-                            <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-20 w-auto" />
+                    <div className="flex-shrink-0">
+                        <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('home'); }} className="flex flex-col items-center" aria-label="Vellaperfumeria - Inicio">
+                            <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-14 w-auto" />
+                            <h1 className="text-sm font-bold tracking-wider text-brand-primary -mt-2">
+                                Vellaperfumeria
+                            </h1>
                         </a>
-                        <h1 className="text-xl font-bold tracking-wider text-gray-800 -mt-2">
-                            <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('home'); }}>Vellaperfumeria</a>
-                        </h1>
                     </div>
 
                     {/* Right side actions (cart, mobile menu) */}
-                    <div className="absolute right-0 flex items-center space-x-2">
+                    <div className="flex items-center space-x-2">
                         <button onClick={onCartClick} className="relative text-gray-800 hover:text-brand-pink-dark p-2" aria-label={`Abrir carrito. Tienes ${cartCount} artículos.`}>
                             <CartIcon />
                             {cartCount > 0 && (
-                                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-black rounded-full">
+                                <span ref={cartCountRef} className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-brand-primary rounded-full">
                                     {cartCount}
                                 </span>
                             )}
@@ -116,7 +131,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                 
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex justify-center space-x-8 items-center border-t py-3">
-                    <a href="#" onClick={(e) => {e.preventDefault(); onNavigate('home')}} className="text-gray-800 hover:text-brand-pink-dark transition-colors font-semibold py-2 block md:inline-block hover-underline-effect">Inicio</a>
+                    <NavLink view="home">Inicio</NavLink>
                     <NavLink view="products">Tienda</NavLink>
                     <NavLink view="ofertas">Ofertas</NavLink>
                     <NavLink view="catalog">Catálogo</NavLink>
@@ -128,7 +143,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
             {isMenuOpen && (
                 <div className="md:hidden bg-white border-t">
                     <nav className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-2">
-                         <a href="#" onClick={(e) => {e.preventDefault(); onNavigate('home')}} className="text-gray-800 hover:text-brand-pink-dark transition-colors font-semibold py-2 block md:inline-block hover-underline-effect">Inicio</a>
+                        <NavLink view="home">Inicio</NavLink>
                         <NavLink view="products">Tienda</NavLink>
                         <NavLink view="ofertas">Ofertas</NavLink>
                         <NavLink view="catalog">Catálogo</NavLink>

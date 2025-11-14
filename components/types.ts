@@ -39,4 +39,4 @@ export interface CartItem {
 }
 
 // App view type
-export type View = 'home' | 'products' | 'productDetail' | 'algas' | 'ofertas' | 'ia' | 'catalog' | 'about' | 'contact' | 'blog' | 'blogPost' | 'orderConfirmation';
+export type View = 'home' | 'products' | 'productDetail' | 'ofertas' | 'ia' | 'catalog' | 'about' | 'contact' | 'blog' | 'blogPost';

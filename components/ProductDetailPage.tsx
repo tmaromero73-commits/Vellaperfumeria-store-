@@ -13,8 +13,6 @@ interface ProductDetailPageProps {
     onAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     onProductSelect: (product: Product) => void;
     onQuickView: (product: Product) => void;
-    stripe: any;
-    onOrderComplete: () => void;
 }
 
 // SVG Icons
@@ -74,15 +72,6 @@ const MagnifyPlusIcon = () => (
     </svg>
 );
 
-const GooglePayIcon: React.FC<{className?: string}> = ({ className }) => (
-    <svg className={`h-6 w-6 ${className}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path fill="#fff" d="M19.6,9.46c0-1.12-.13-2.2-.36-3.24H12.22V10.4h4.4c-.19,1.21-.77,2.25-1.63,2.93l2.76,2.12c1.6-1.48,2.65-3.69,2.65-6.2Z"/>
-        <path fill="#fff" d="M12.22,20a7.7,7.7,0,0,0,5.36-1.94l-2.76-2.12c-.91.62-2.07.98-3.31.98-2.54,0-4.69-1.71-5.46-4.01H3.63v2.2C4.94,17.9,8.32,20,12.22,20Z"/>
-        <path fill="#fff" d="M6.76,12.81a4.63,4.63,0,0,1,0-2.84V7.77H3.63a7.93,7.93,0,0,0,0,7.26Z"/>
-        <path fill="#fff" d="M12.22,6.22c1.38,0,2.6.48,3.58,1.4l2.45-2.45A7.7,7.7,0,0,0,12.22,4a7.92,7.92,0,0,0-7.3,4.24l3.13,2.2C8.8,8.14,10.43,6.22,12.22,6.22Z"/>
-    </svg>
-);
-
 
 interface Review {
     author: string;
@@ -102,13 +91,11 @@ const getDefaultVariant = (product: Product): Record<string, string> | null => {
     return defaultVariant;
 };
 
-const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency, onAddToCart, onProductSelect, onQuickView, stripe, onOrderComplete }) => {
+const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency, onAddToCart, onProductSelect, onQuickView }) => {
     const btnRef = useRef<HTMLButtonElement>(null);
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [copyButtonText, setCopyButtonText] = useState('Copiar enlace');
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-    const [canMakeGPayPayment, setCanMakeGPayPayment] = useState(false);
-    const paymentRequestRef = useRef<any>(null);
 
 
     const [selectedVariant, setSelectedVariant] = useState<Record<string, string> | null>(getDefaultVariant(product));
@@ -139,32 +126,6 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
         // Set the image to the variant-specific one, or fall back to the main product image
         setCurrentImageUrl(variantImageUrl || product.imageUrl);
     }, [selectedVariant, product.variants, product.imageUrl]);
-
-    // Setup Google Pay
-    useEffect(() => {
-        if (stripe && product) {
-            const pr = stripe.paymentRequest({
-                country: 'ES',
-                currency: currency.toLowerCase(),
-                total: {
-                    label: product.name,
-                    amount: Math.round(product.price * 100),
-                },
-                requestPayerName: true,
-                requestPayerEmail: true,
-            });
-
-            paymentRequestRef.current = pr;
-
-            pr.canMakePayment().then((result: any) => {
-                if (result) {
-                    setCanMakeGPayPayment(true);
-                } else {
-                    setCanMakeGPayPayment(false);
-                }
-            });
-        }
-    }, [stripe, product, currency]);
 
 
     const handleVariantChange = (variantType: string, value: string) => {
@@ -229,19 +190,6 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
     const relatedProducts = allProducts
         .filter(p => p.category === product.category && p.id !== product.id)
         .slice(0, 4);
-
-    const handleGooglePay = () => {
-        if (isOutOfStock || !paymentRequestRef.current) return;
-
-        paymentRequestRef.current.on('paymentmethod', async (ev: any) => {
-            console.log('Generated Stripe PaymentMethod for single product:', ev.paymentMethod);
-            // In a real app, you would send this to your backend to confirm the payment
-            ev.complete('success');
-            onOrderComplete(); // This will clear the cart and navigate to confirmation
-        });
-
-        paymentRequestRef.current.show();
-    };
 
     const isDiscounted = product.regularPrice && product.regularPrice > product.price;
 
@@ -361,16 +309,6 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                         >
                             {isOutOfStock ? 'Agotado' : 'Añadir al carrito'}
                         </button>
-                        {canMakeGPayPayment && (
-                            <button
-                               onClick={handleGooglePay}
-                               disabled={isOutOfStock}
-                               className={`w-full bg-black text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-gray-800 transition-colors duration-300 active:scale-95 flex items-center justify-center gap-2 ${isOutOfStock ? 'bg-gray-400 cursor-not-allowed' : ''}`}
-                               aria-label="Pagar con Google Pay"
-                            >
-                               <span className="bg-black"><GooglePayIcon /></span> Comprar ahora
-                            </button>
-                        )}
                         <button
                            onClick={() => {
                                setIsShareModalOpen(true);

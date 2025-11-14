@@ -185,7 +185,9 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                 <span>Total</span>
                                 <span>{formatCurrency(total, currency)}</span>
                             </div>
-                            
+                             <p className="text-xs text-center text-gray-500 pt-2">
+                                Finalizarás tu compra de forma segura en nuestro sitio principal vellaperfumeria.com.
+                            </p>
                             <button
                                 onClick={onCheckout}
                                 className="w-full bg-brand-pink text-black font-bold py-3 rounded-lg mt-2 hover:bg-brand-pink-dark transition-colors"

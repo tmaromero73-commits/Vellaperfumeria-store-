@@ -60,16 +60,16 @@ const ProductListPage: React.FC<{
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl font-extrabold text-black tracking-tight mb-8">Shop</h1>
+            <h1 className="text-4xl font-extrabold text-brand-primary tracking-tight mb-8">Shop</h1>
 
-            <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+            <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 p-4 bg-white rounded-lg shadow-sm border">
                 <p className="text-sm text-gray-700">
                     Mostrando {firstItemIndex}–{lastItemIndex} de {sortedProducts.length} resultados
                 </p>
                 <form className="woocommerce-ordering">
                     <select 
                         name="orderby" 
-                        className="orderby border border-gray-300 rounded-md p-2 text-sm focus:ring-brand-pink focus:border-brand-pink bg-white"
+                        className="orderby border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-brand-pink-dark focus:border-brand-pink-dark bg-white"
                         aria-label="Pedido de la tienda"
                         value={sortOrder}
                         onChange={handleSortChange}
@@ -85,7 +85,7 @@ const ProductListPage: React.FC<{
             </div>
 
             {paginatedProducts.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-6 auto-rows-fr">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 auto-rows-fr">
                     {paginatedProducts.map(product => (
                         <ProductCard
                             key={product.id}
@@ -111,31 +111,33 @@ const ProductListPage: React.FC<{
                             onClick={() => setCurrentPage(currentPage - 1)}
                             className="text-gray-600 hover:text-black font-semibold py-2 px-4 rounded-md transition"
                         >
-                            &larr; Anterior
+                            Página anterior
                         </button>
                     )}
                     
-                    {pageNumbers.map(number => (
-                        <button
-                            key={number}
-                            onClick={() => setCurrentPage(number)}
-                            className={`py-2 px-4 rounded-md text-sm font-medium ${
-                                currentPage === number
-                                    ? 'bg-black text-white'
-                                    : 'text-gray-600 hover:bg-gray-100'
-                            }`}
-                            aria-current={currentPage === number ? 'page' : undefined}
-                        >
-                            {number}
-                        </button>
-                    ))}
+                    <div className="flex items-center space-x-2">
+                        {pageNumbers.map(number => (
+                            <button
+                                key={number}
+                                onClick={() => setCurrentPage(number)}
+                                className={`py-2 px-4 rounded-md text-sm font-medium ${
+                                    currentPage === number
+                                        ? 'bg-brand-primary text-white'
+                                        : 'bg-white text-gray-600 hover:bg-gray-100 border'
+                                }`}
+                                aria-current={currentPage === number ? 'page' : undefined}
+                            >
+                                {number}
+                            </button>
+                        ))}
+                    </div>
 
                     {currentPage < totalPages && (
                          <button
                             onClick={() => setCurrentPage(currentPage + 1)}
                             className="text-gray-600 hover:text-black font-semibold py-2 px-4 rounded-md transition"
                         >
-                            Siguiente &rarr;
+                            Página siguiente
                         </button>
                     )}
                 </nav>

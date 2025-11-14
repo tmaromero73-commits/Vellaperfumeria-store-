@@ -1,5 +1,3 @@
-
-
 import React, { useRef, useState } from 'react';
 import { type Currency, formatCurrency } from './currency';
 import type { Product } from './types';
@@ -20,77 +18,53 @@ export const ProductCard: React.FC<{
 }> = ({ product, currency, onAddToCart, onProductSelect, onQuickView, isFeatured = false }) => {
     const btnRef = useRef<HTMLButtonElement>(null);
     const [isWishlisted, setIsWishlisted] = useState(false);
-
-    const imageContainerClasses = isFeatured ? 'h-96' : 'h-56';
-    const headingClasses = isFeatured ? 'text-lg md:text-xl' : 'text-sm';
     
     const isDiscounted = product.regularPrice && product.regularPrice > product.price;
-    const discountPercentage = isDiscounted
-        ? Math.round(((product.regularPrice - product.price) / product.regularPrice) * 100)
-        : 0;
 
     return (
-        <div className={`bg-white rounded-lg shadow-sm overflow-hidden flex flex-col group border border-gray-200/80 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 ${isFeatured ? 'h-full' : ''}`}>
+        <div className="bg-white rounded-lg overflow-hidden flex flex-col group border border-gray-100 hover:shadow-lg transition-all duration-300">
             <div className="relative cursor-pointer" onClick={() => onProductSelect(product)} role="button" aria-label={`Ver detalles de ${product.name}`}>
-                <div className={`w-full ${imageContainerClasses} flex items-center justify-center p-4 bg-white`}>
-                    <img src={product.imageUrl} alt={product.name} className="w-full h-full object-contain" />
+                <div className="w-full aspect-square flex items-center justify-center p-2 bg-white">
+                    <img src={product.imageUrl} alt={product.name} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" />
                 </div>
                 
-                <div className="absolute top-3 left-3 flex flex-col gap-2">
-                    {discountPercentage > 0 && (
-                        <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wider">
-                            -{discountPercentage}%
-                        </div>
-                    )}
-                    {product.tag && (
-                        <div className="bg-black text-white text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wider">
-                            {product.tag}
-                        </div>
-                    )}
-                </div>
-                 <button 
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        setIsWishlisted(!isWishlisted);
-                    }}
-                    className="absolute top-2 right-2 p-2 rounded-full bg-white/70 backdrop-blur-sm hover:bg-white transition-colors"
-                    aria-label={isWishlisted ? "Quitar de la lista de deseos" : "Añadir a la lista de deseos"}
-                >
-                    <HeartIcon className={isWishlisted ? 'text-red-500 fill-current' : 'text-gray-600'} />
-                </button>
+                {isDiscounted && (
+                    <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2.5 py-1.5 rounded-full uppercase tracking-wider">
+                        Oferta
+                    </div>
+                )}
                 
                 {/* Quick View Overlay */}
-                <div className="absolute inset-0 bg-white/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <button 
                         onClick={(e) => {
                             e.stopPropagation();
                             onQuickView(product);
                         }}
-                        className="bg-black text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-gray-800 transition-transform transform group-hover:scale-100 scale-90"
+                        className="bg-white text-black font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-gray-200 transition-transform transform group-hover:scale-100 scale-90"
                         aria-label={`Vista rápida de ${product.name}`}
                     >
                         Vista Rápida
                     </button>
                 </div>
             </div>
-            <div className="p-4 flex flex-col flex-grow bg-white">
-                <p className="text-xs text-gray-500 uppercase tracking-wider">{product.brand}</p>
+            <div className="p-4 text-center flex flex-col flex-grow bg-white">
                 <h3 
-                    className={`${headingClasses} font-semibold text-black mt-1 flex-grow cursor-pointer hover:text-gray-700`}
+                    className="text-base font-semibold text-brand-primary mt-1 flex-grow cursor-pointer"
                     onClick={() => onProductSelect(product)}
                 >
                     {product.name}
                 </h3>
-                <div className="mt-2 flex items-baseline gap-2">
-                    <p className={`${isFeatured ? 'text-2xl' : 'text-lg'} font-bold ${isDiscounted ? 'text-brand-pink-dark' : 'text-black'}`}>{formatCurrency(product.price, currency)}</p>
+                <div className="mt-2 flex items-baseline justify-center gap-2">
+                    <p className={`text-lg font-bold ${isDiscounted ? 'text-red-600' : 'text-brand-primary'}`}>{formatCurrency(product.price, currency)}</p>
                     {isDiscounted && (
-                        <p className="text-sm text-gray-500 line-through">{formatCurrency(product.regularPrice!, currency)}</p>
+                        <p className="text-sm text-gray-400 line-through">{formatCurrency(product.regularPrice!, currency)}</p>
                     )}
                 </div>
                 <button
                     ref={btnRef}
                     onClick={() => onAddToCart(product, btnRef.current, null)}
-                    className="w-full mt-4 bg-brand-pink text-black font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-brand-pink-dark transition-colors text-sm"
+                    className="w-full mt-4 bg-brand-primary text-white font-semibold py-2.5 px-4 rounded-md hover:bg-gray-700 transition-colors text-sm"
                     aria-label={`Añadir ${product.name} al carrito`}
                 >
                     Añadir al carrito

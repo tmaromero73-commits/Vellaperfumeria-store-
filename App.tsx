@@ -1,6 +1,7 @@
+
+
 import React, { useState, useMemo, useEffect } from 'react';
 import ProductList from './components/ProductList';
-import AlgaePage from './components/AlgaePage';
 import ProductDetailPage from './components/ProductDetailPage';
 import CartSidebar from './components/CartSidebar';
 import type { Currency } from './components/currency';
@@ -18,15 +19,6 @@ import type { BreadcrumbItem } from './components/Breadcrumbs';
 import CatalogPage from './components/CatalogPage';
 import QuickViewModal from './components/QuickViewModal';
 import BottomNavBar from './components/BottomNavBar';
-import OrderConfirmationPage from './components/OrderConfirmationPage';
-
-// As a world-class senior frontend engineer, I must declare this so TypeScript knows about the Stripe script loaded in index.html.
-declare global {
-    interface Window {
-        Stripe: any;
-    }
-}
-
 
 const App: React.FC = () => {
     const [view, setView] = useState<View>('home');
@@ -36,17 +28,7 @@ const App: React.FC = () => {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [currency, setCurrency] = useState<Currency>('EUR');
-    const [stripe, setStripe] = useState<any>(null);
     
-    // Centralized Stripe Initialization
-    useEffect(() => {
-        if (window.Stripe) {
-            // Using a public test key. This should be stored in an environment variable.
-            const stripeInstance = window.Stripe('pk_test_51BTUDGJAJfZb9HEBwDgAbM1GgN2eWp3ZkU8j29D4InTmdS7i8zHADIx2sFLg2vjTSMyl1zCnCmM4MOgC14z0Y4v10080f4q1jM');
-            setStripe(stripeInstance);
-        }
-    }, []);
-
     const handleNavigate = (newView: View) => {
         // When navigating away from product detail, clear the selected product
         if (view === 'productDetail' && newView !== 'productDetail') {
@@ -91,10 +73,10 @@ const App: React.FC = () => {
         
         // Visual feedback for adding to cart
         if (buttonElement) {
-            buttonElement.classList.add('shake');
+            buttonElement.classList.add('pulse-cart');
             setTimeout(() => {
-                 buttonElement.classList.remove('shake');
-            }, 820);
+                 buttonElement.classList.remove('pulse-cart');
+            }, 500);
         }
 
         setIsCartOpen(true);
@@ -116,11 +98,6 @@ const App: React.FC = () => {
         setCartItems(prevItems => prevItems.filter(item => item.id !== cartItemId));
     };
     
-    const handleOrderComplete = () => {
-        setCartItems([]);
-        handleNavigate('orderConfirmation');
-    };
-
     const cartCount = useMemo(() => {
         return cartItems.reduce((total, item) => total + item.quantity, 0);
     }, [cartItems]);
@@ -138,8 +115,6 @@ const App: React.FC = () => {
                     return [homeCrumb, { label: 'Tienda', onClick: () => handleNavigate('products') }, { label: selectedProduct.name }];
                 }
                 return [homeCrumb, { label: 'Tienda', onClick: () => handleNavigate('products') }];
-            case 'algas':
-                 return [homeCrumb, { label: 'Finalizar Compra' }];
             case 'ofertas':
                 return [homeCrumb, { label: 'Ofertas' }];
             case 'ia':
@@ -157,8 +132,6 @@ const App: React.FC = () => {
                     return [homeCrumb, { label: 'Blog', onClick: () => handleNavigate('blog') }, { label: selectedPost.title }];
                 }
                 return [homeCrumb, { label: 'Blog', onClick: () => handleNavigate('blog') }];
-            case 'orderConfirmation':
-                 return [homeCrumb, { label: 'Finalizar Compra', onClick: () => handleNavigate('algas') }, { label: 'Pedido Confirmado' }];
             default:
                 return [];
         }
@@ -176,12 +149,8 @@ const App: React.FC = () => {
                         onAddToCart={handleAddToCart}
                         onProductSelect={handleProductSelect}
                         onQuickView={setQuickViewProduct}
-                        stripe={stripe}
-                        onOrderComplete={handleOrderComplete}
                     />
                 ) : <div className="text-center p-8"> <p>Producto no encontrado</p></div>;
-            case 'algas':
-                return <AlgaePage cartItems={cartItems} currency={currency} onNavigate={handleNavigate} onOrderComplete={handleOrderComplete} stripe={stripe} />;
             case 'ofertas':
                 return <OfertasPage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
             case 'ia':
@@ -201,8 +170,6 @@ const App: React.FC = () => {
                 return <BlogPage posts={blogPosts} onSelectPost={handleSelectPost} />;
             case 'blogPost':
                  return selectedPost ? <BlogPostPage post={selectedPost} allPosts={blogPosts} onSelectPost={handleSelectPost} onBack={handleBackToBlog} /> : <div className="text-center p-8"><p>Artículo no encontrado</p></div>;
-             case 'orderConfirmation':
-                return <OrderConfirmationPage onNavigate={handleNavigate} />;
             case 'home':
             default:
                 return <ProductList
@@ -239,7 +206,7 @@ const App: React.FC = () => {
                 onRemoveItem={handleRemoveItem}
                 onCheckout={() => {
                     setIsCartOpen(false);
-                    handleNavigate('algas'); // Navigate to the checkout-like page
+                    window.open('https://vellaperfumeria.com/finalizar-compra/', '_blank');
                 }}
             />
             {quickViewProduct && (
@@ -252,8 +219,6 @@ const App: React.FC = () => {
                         setQuickViewProduct(null); // Close modal first
                         handleProductSelect(product); // Then navigate
                     }}
-                    stripe={stripe}
-                    onOrderComplete={handleOrderComplete}
                 />
             )}
         </div>
