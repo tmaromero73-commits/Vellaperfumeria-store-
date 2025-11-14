@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useRef, useState } from 'react';
 import type { Product } from './types';
 import type { Currency } from './currency';
@@ -55,6 +57,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, currency, onCl
     const addToCartBtnRef = useRef<HTMLButtonElement>(null);
     
     const [selectedVariant, setSelectedVariant] = useState<Record<string, string> | null>(getDefaultVariant(product));
+    const [currentImageUrl, setCurrentImageUrl] = useState(product.imageUrl);
     const [canMakeGPayPayment, setCanMakeGPayPayment] = useState(false);
     const paymentRequestRef = useRef<any>(null);
 
@@ -67,6 +70,27 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, currency, onCl
         modalRef.current?.focus();
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, [onClose]);
+    
+    useEffect(() => {
+        let variantImageUrl: string | null = null;
+
+        if (product.variants && selectedVariant) {
+            for (const variantType in product.variants) {
+                const selectedValue = selectedVariant[variantType];
+                if (selectedValue) {
+                    const variantOption = product.variants[variantType].find(
+                        v => v.value === selectedValue
+                    );
+                    if (variantOption?.imageUrl) {
+                        variantImageUrl = variantOption.imageUrl;
+                        break;
+                    }
+                }
+            }
+        }
+        setCurrentImageUrl(variantImageUrl || product.imageUrl);
+    }, [selectedVariant, product.variants, product.imageUrl]);
+
 
     // Setup Google Pay
     useEffect(() => {
@@ -101,6 +125,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, currency, onCl
 
     const stockInfo = getStockInfo(product.stock);
     const isOutOfStock = product.stock === 0;
+    const isDiscounted = product.regularPrice && product.regularPrice > product.price;
 
     const handleGooglePay = () => {
         if (isOutOfStock || !paymentRequestRef.current) return;
@@ -133,16 +158,24 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, currency, onCl
                     <CloseIcon />
                 </button>
                 
-                <div className="w-full md:w-1/2 flex items-center justify-center bg-gray-100 rounded-lg p-4">
-                    <img src={product.imageUrl} alt={product.name} className="max-h-80 object-contain" />
+                <div className="w-full md:w-1/2 flex items-center justify-center bg-white rounded-lg p-4">
+                    <img src={currentImageUrl} alt={product.name} className="max-h-80 object-contain" />
                 </div>
                 
                 <div className="w-full md:w-1/2 flex flex-col pt-6 md:pt-0 md:pl-6 overflow-y-auto">
                     <h2 id="quick-view-title" className="text-2xl font-bold mb-1 pr-8">{product.name}</h2>
                     <p className="text-sm text-gray-500 mb-2">{product.brand}</p>
                     
-                     <div className="flex items-baseline gap-3 mb-4">
-                        <p className="text-3xl font-bold text-gray-900">{formatCurrency(product.price, currency)}</p>
+                     <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-4">
+                        <p className={`text-3xl font-bold ${isDiscounted ? 'text-brand-lilac-dark' : 'text-gray-900'}`}>{formatCurrency(product.price, currency)}</p>
+                        {isDiscounted && (
+                            <>
+                                <p className="text-xl text-gray-500 line-through">{formatCurrency(product.regularPrice!, currency)}</p>
+                                <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full uppercase">
+                                    AHORRA {Math.round(((product.regularPrice! - product.price) / product.regularPrice!) * 100)}%
+                                </span>
+                            </>
+                        )}
                     </div>
                     
                     <div className="text-gray-700 text-sm mb-4 flex-grow pr-2">
@@ -167,7 +200,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, currency, onCl
                                                             <button
                                                                 key={option.value}
                                                                 onClick={() => handleVariantChange(type, option.value)}
-                                                                className={`w-6 h-6 rounded-full border-2 transition-all ${isSelected ? 'border-fuchsia-500 ring-1 ring-offset-1 ring-fuchsia-500' : 'border-gray-300'}`}
+                                                                className={`w-6 h-6 rounded-full border-2 transition-all ${isSelected ? 'border-brand-lilac-dark ring-1 ring-offset-1 ring-brand-lilac-dark' : 'border-gray-300'}`}
                                                                 style={{ backgroundColor: option.colorCode }}
                                                                 aria-label={`Seleccionar color ${option.value}`}
                                                             />
@@ -177,7 +210,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, currency, onCl
                                                         <button
                                                             key={option.value}
                                                             onClick={() => handleVariantChange(type, option.value)}
-                                                            className={`px-3 py-1 text-xs font-medium border rounded-md transition-colors ${isSelected ? 'bg-fuchsia-500 text-white' : 'bg-white text-black hover:bg-gray-100'}`}
+                                                            className={`px-3 py-1 text-xs font-medium border rounded-md transition-colors ${isSelected ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-100'}`}
                                                         >
                                                             {option.value}
                                                         </button>
@@ -202,7 +235,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, currency, onCl
                                 onClose();
                             }}
                             disabled={isOutOfStock}
-                            className={`w-full bg-[#EBCFFC] text-black font-bold py-3 rounded-lg hover:bg-[#e0c2fa] transition-colors ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : ''}`}
+                            className={`w-full bg-brand-lilac text-black font-bold py-3 rounded-lg hover:bg-brand-lilac-dark transition-colors ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : ''}`}
                             aria-label={`Añadir ${product.name} al carrito`}
                         >
                             {isOutOfStock ? 'Agotado' : 'Añadir al carrito'}

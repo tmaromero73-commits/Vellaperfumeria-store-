@@ -58,7 +58,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({ onNavigate }) => {
                     </p>
                     <button 
                         onClick={() => onNavigate('contact')}
-                        className="bg-[#f3d9ff] text-black font-semibold py-2 px-6 rounded-md hover:bg-[#e9c2ff] transition-colors"
+                        className="bg-brand-lilac text-black font-semibold py-2 px-6 rounded-md hover:bg-brand-lilac-dark transition-colors"
                     >
                         Únete al Equipo
                     </button>

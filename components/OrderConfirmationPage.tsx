@@ -25,7 +25,7 @@ const OrderConfirmationPage: React.FC<OrderConfirmationPageProps> = ({ onNavigat
                 </p>
                 <button
                     onClick={() => onNavigate('products')}
-                    className="w-full bg-[#EBCFFC] text-black font-bold py-3 rounded-lg hover:bg-[#e0c2fa] transition-colors"
+                    className="w-full bg-brand-lilac text-black font-bold py-3 rounded-lg hover:bg-brand-lilac-dark transition-colors"
                 >
                     Seguir Comprando
                 </button>

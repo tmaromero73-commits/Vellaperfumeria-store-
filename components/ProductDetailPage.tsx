@@ -1,3 +1,5 @@
+
+
 import React, { useRef, useState, useEffect } from 'react';
 import { ProductCard } from './ProductCard';
 import type { Product } from './types';
@@ -241,6 +243,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
         paymentRequestRef.current.show();
     };
 
+    const isDiscounted = product.regularPrice && product.regularPrice > product.price;
 
     return (
         <div className="container mx-auto">
@@ -269,8 +272,16 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                 <div className="p-4 flex flex-col md:col-span-2">
                     <h1 className="text-3xl md:text-4xl font-bold tracking-wide mb-2">{product.name}</h1>
                     
-                    <div className="flex items-baseline gap-3 mb-4">
-                        <p className="text-3xl font-bold text-gray-900">{formatCurrency(product.price, currency)}</p>
+                    <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-4">
+                        <p className={`text-3xl font-bold ${isDiscounted ? 'text-brand-lilac-dark' : 'text-gray-900'}`}>{formatCurrency(product.price, currency)}</p>
+                        {isDiscounted && (
+                            <>
+                                <p className="text-xl text-gray-500 line-through">{formatCurrency(product.regularPrice!, currency)}</p>
+                                <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full uppercase">
+                                    AHORRA {Math.round(((product.regularPrice! - product.price) / product.regularPrice!) * 100)}%
+                                </span>
+                            </>
+                        )}
                     </div>
 
                     {product.isShippingSaver && (
@@ -283,7 +294,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                     <p className="text-gray-800 leading-relaxed mb-4">{product.description}</p>
                     
                      {product.beautyPoints && (
-                        <div className="flex items-center gap-2 text-fuchsia-700 font-semibold my-3 p-3 bg-fuchsia-50 rounded-md border border-fuchsia-200">
+                        <div className="flex items-center gap-2 text-black font-semibold my-3 p-3 bg-brand-lilac/20 rounded-md border border-brand-lilac/50">
                             <SparklesIcon/>
                             <span>Consigue <b>+{product.beautyPoints} Puntos Beauty</b> con este producto</span>
                         </div>
@@ -308,7 +319,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                                         <button
                                                             key={option.value}
                                                             onClick={() => handleVariantChange(type, option.value)}
-                                                            className={`w-8 h-8 rounded-full border-2 transition-all ${isSelected ? 'border-fuchsia-500 ring-2 ring-offset-1 ring-fuchsia-500' : 'border-gray-300'}`}
+                                                            className={`w-8 h-8 rounded-full border-2 transition-all ${isSelected ? 'border-brand-lilac-dark ring-2 ring-offset-1 ring-brand-lilac' : 'border-gray-300'}`}
                                                             style={{ backgroundColor: option.colorCode }}
                                                             aria-label={`Seleccionar color ${option.value}`}
                                                         />
@@ -319,7 +330,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                                     <button
                                                         key={option.value}
                                                         onClick={() => handleVariantChange(type, option.value)}
-                                                        className={`px-4 py-1.5 text-sm font-medium border rounded-md transition-colors ${isSelected ? 'bg-fuchsia-500 text-white' : 'bg-white text-black hover:bg-gray-100'}`}
+                                                        className={`px-4 py-1.5 text-sm font-medium border rounded-md transition-colors ${isSelected ? 'bg-brand-lilac text-black' : 'bg-white text-black hover:bg-gray-100'}`}
                                                     >
                                                         {option.value}
                                                     </button>
@@ -345,7 +356,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                 }
                             }}
                             disabled={isOutOfStock}
-                            className={`w-full font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-300 ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#EBCFFC] text-black hover:bg-[#e0c2fa] transform hover:scale-105 active:scale-95'}`}
+                            className={`w-full font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-300 ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-brand-lilac text-black hover:bg-brand-lilac-dark transform hover:scale-105 active:scale-95'}`}
                             aria-label={`Añadir ${product.name} al carrito`}
                         >
                             {isOutOfStock ? 'Agotado' : 'Añadir al carrito'}
@@ -470,7 +481,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                              <button
                                 type="submit"
                                 disabled={!isReviewFormValid}
-                                className="bg-[#EBCFFC] text-black font-semibold py-2 px-6 rounded-lg shadow-sm hover:bg-[#e0c2fa] transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                                className="bg-black text-white font-semibold py-2 px-6 rounded-lg shadow-sm hover:bg-gray-800 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
                             >
                                 Publicar reseña
                             </button>

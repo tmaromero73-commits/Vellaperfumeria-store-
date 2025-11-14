@@ -23,17 +23,27 @@ export const ProductCard: React.FC<{
 
     const imageContainerClasses = isFeatured ? 'h-96' : 'h-56';
     const headingClasses = isFeatured ? 'text-lg md:text-xl' : 'text-sm';
+    
+    const isDiscounted = product.regularPrice && product.regularPrice > product.price;
+    const discountPercentage = isDiscounted
+        ? Math.round(((product.regularPrice - product.price) / product.regularPrice) * 100)
+        : 0;
 
     return (
-        <div className={`bg-white rounded-lg shadow-sm overflow-hidden flex flex-col group border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 ${isFeatured ? 'h-full' : ''}`}>
+        <div className={`bg-white rounded-lg shadow-sm overflow-hidden flex flex-col group border border-gray-200/80 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 ${isFeatured ? 'h-full' : ''}`}>
             <div className="relative cursor-pointer" onClick={() => onProductSelect(product)} role="button" aria-label={`Ver detalles de ${product.name}`}>
-                <div className={`w-full ${imageContainerClasses} flex items-center justify-center p-4`}>
+                <div className={`w-full ${imageContainerClasses} flex items-center justify-center p-4 bg-white`}>
                     <img src={product.imageUrl} alt={product.name} className="w-full h-full object-contain" />
                 </div>
                 
                 <div className="absolute top-3 left-3 flex flex-col gap-2">
+                    {discountPercentage > 0 && (
+                        <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wider">
+                            -{discountPercentage}%
+                        </div>
+                    )}
                     {product.tag && (
-                        <div className="bg-fuchsia-500 text-white text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wider">
+                        <div className="bg-black text-white text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wider">
                             {product.tag}
                         </div>
                     )}
@@ -63,7 +73,7 @@ export const ProductCard: React.FC<{
                     </button>
                 </div>
             </div>
-            <div className="p-4 flex flex-col flex-grow">
+            <div className="p-4 flex flex-col flex-grow bg-white">
                 <p className="text-xs text-gray-500 uppercase tracking-wider">{product.brand}</p>
                 <h3 
                     className={`${headingClasses} font-semibold text-black mt-1 flex-grow cursor-pointer hover:text-gray-700`}
@@ -72,12 +82,15 @@ export const ProductCard: React.FC<{
                     {product.name}
                 </h3>
                 <div className="mt-2 flex items-baseline gap-2">
-                    <p className={`${isFeatured ? 'text-2xl' : 'text-lg'} font-bold text-black`}>{formatCurrency(product.price, currency)}</p>
+                    <p className={`${isFeatured ? 'text-2xl' : 'text-lg'} font-bold ${isDiscounted ? 'text-brand-lilac-dark' : 'text-black'}`}>{formatCurrency(product.price, currency)}</p>
+                    {isDiscounted && (
+                        <p className="text-sm text-gray-500 line-through">{formatCurrency(product.regularPrice!, currency)}</p>
+                    )}
                 </div>
                 <button
                     ref={btnRef}
                     onClick={() => onAddToCart(product, btnRef.current, null)}
-                    className="w-full mt-4 bg-[#EBCFFC] text-black font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-[#e0c2fa] transition-colors text-sm"
+                    className="w-full mt-4 bg-brand-lilac text-black font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-brand-lilac-dark transition-colors text-sm"
                     aria-label={`Añadir ${product.name} al carrito`}
                 >
                     Añadir al carrito

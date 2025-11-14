@@ -1,6 +1,11 @@
-
 import React from 'react';
 import type { View } from './types';
+
+const ThreadsIcon = () => (
+    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M5.524 7.532v.934a.467.467 0 0 1-.467.467h-.467a.467.467 0 0 1-.467-.467v-.934a2.798 2.798 0 0 1 1.4-2.427 2.798 2.798 0 0 1 3.468-.16c.33.197.63.456.883.766.253.31.455.66.595 1.033a2.798 2.798 0 0 1 0 2.454c-.14.373-.342.723-.595 1.033-.253.31-.553.569-.883.766a2.798 2.798 0 0 1-3.468-.16 2.798 2.798 0 0 1-1.4-2.427v-.934a.467.467 0 0 1 .467-.467h.467a.467.467 0 0 1 .467.467zM8 3.333a4.667 4.667 0 1 0 0 9.334 4.667 4.667 0 0 0 0-9.334z"/>
+    </svg>
+);
 
 const InstagramIcon = () => (
     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -50,58 +55,73 @@ const FooterLink: React.FC<{ onClick: () => void; children: React.ReactNode }> =
 
 const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     return (
-        <footer className="bg-gray-900 text-white">
-            <div className="container mx-auto px-6 py-12">
-                <div className="flex flex-col md:flex-row justify-between items-start text-center md:text-left space-y-10 md:space-y-0">
-                    {/* About Section */}
-                    <div className="w-full md:w-1/3">
+        <footer className="bg-black text-white">
+            <div className="container mx-auto px-6 py-16">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-10 text-center md:text-left">
+                    {/* Column 1: Branding */}
+                    <div className="col-span-2 md:col-span-1">
                          <a href="https://vellaperfumeria.com" target="_blank" rel="noopener noreferrer" className="inline-block hover:opacity-80 transition-opacity mb-4">
-                             <img src="https://storage.googleapis.com/aistudio-public/projects/33d6990c-15a5-4847-8a43-52a510525cb3/perfumeria-logo.jpeg" alt="Vellaperfumeria Logo" className="h-20 w-auto mx-auto md:mx-0" />
+                             <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-24 w-auto mx-auto md:mx-0" />
                         </a>
-                        <p className="text-gray-400 text-sm">
-                            Descubre fragancias que definen tu esencia. Calidad y exclusividad en cada botella.
+                        <h2 className="text-xl font-bold tracking-wider">Vellaperfumeria</h2>
+                        <p className="text-gray-400 text-sm mt-2">
+                            Tu esencia, tu belleza, tu tienda.
                         </p>
                     </div>
 
-                    {/* Quick Links Section */}
-                    <div className="w-full md:w-1/3">
-                        <h2 className="text-lg font-bold tracking-widest uppercase mb-4">Enlaces Rápidos</h2>
+                    {/* Column 2: Navegación */}
+                    <div>
+                        <h3 className="text-lg font-bold tracking-widest uppercase mb-4">Navegación</h3>
                         <ul className="space-y-2 text-sm">
+                           <FooterLink onClick={() => onNavigate('home')}>Inicio</FooterLink>
+                           <FooterLink onClick={() => onNavigate('products')}>Tienda</FooterLink>
+                           <FooterLink onClick={() => onNavigate('ofertas')}>Ofertas</FooterLink>
+                           <FooterLink onClick={() => onNavigate('catalog')}>Catálogo</FooterLink>
+                           <FooterLink onClick={() => onNavigate('ia')}>Asistente IA</FooterLink>
+                        </ul>
+                    </div>
+
+                    {/* Column 3: Ayuda */}
+                     <div>
+                        <h3 className="text-lg font-bold tracking-widest uppercase mb-4">Ayuda</h3>
+                        <ul className="space-y-2 text-sm">
+                            <FooterLink onClick={() => onNavigate('about')}>Sobre Nosotros</FooterLink>
+                            <FooterLink onClick={() => onNavigate('contact')}>Contacto</FooterLink>
+                            <FooterLink onClick={() => onNavigate('blog')}>Blog</FooterLink>
                             <li>
                                 <a
-                                    href="https://vellaperfumeria.com"
+                                    href="https://vellaperfumeria.com/politica-de-privacidad/?v=12470fe406d4"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-gray-400 hover:text-amber-300 transition-colors hover-underline-effect hover-underline-effect-white"
                                 >
-                                    Inicio
+                                    Política de Privacidad
                                 </a>
                             </li>
-                            <FooterLink onClick={() => onNavigate('products')}>Tienda</FooterLink>
-                            <FooterLink onClick={() => onNavigate('blog')}>Blog</FooterLink>
-                            <FooterLink onClick={() => onNavigate('about')}>Sobre Nosotros</FooterLink>
-                            <FooterLink onClick={() => onNavigate('contact')}>Contacto</FooterLink>
                         </ul>
                     </div>
 
-                    {/* Social Media Section */}
-                    <div className="w-full md:w-1/3">
-                        <h2 className="text-lg font-bold tracking-widest uppercase mb-4">Síguenos</h2>
-                        <div className="flex justify-center md:justify-start space-x-6">
-                            <a href="#" className="text-gray-400 hover:text-amber-300 transition-colors" aria-label="Instagram">
+                    {/* Column 4: Redes Sociales */}
+                     <div>
+                        <h3 className="text-lg font-bold tracking-widest uppercase mb-4">Síguenos</h3>
+                        <div className="flex justify-center md:justify-start space-x-4">
+                            <a href="https://www.threads.com/@beautieshopvella?xmt=AQF0zHNrv2YdoCmolABWd5JZB7EQbzCLyYByCyzn5RIWN3E" target="_blank" rel="noopener noreferrer" className="bg-black text-white p-2 rounded-full hover:bg-brand-rose transition-all duration-300 transform hover:scale-110" aria-label="Threads">
+                                <ThreadsIcon />
+                            </a>
+                            <a href="https://www.instagram.com/beautieshopvella" target="_blank" rel="noopener noreferrer" className="bg-black text-white p-2 rounded-full hover:bg-brand-rose transition-all duration-300 transform hover:scale-110" aria-label="Instagram">
                                 <InstagramIcon />
                             </a>
-                            <a href="#" className="text-gray-400 hover:text-amber-300 transition-colors" aria-label="Facebook">
+                            <a href="https://www.facebook.com/vellaperfumeria" target="_blank" rel="noopener noreferrer" className="bg-black text-white p-2 rounded-full hover:bg-brand-rose transition-all duration-300 transform hover:scale-110" aria-label="Facebook">
                                 <FacebookIcon />
                             </a>
-                             <a href="https://wa.me/661202616" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-amber-300 transition-colors" aria-label="WhatsApp">
+                             <a href="https://wa.me/661202616" target="_blank" rel="noopener noreferrer" className="bg-black text-white p-2 rounded-full hover:bg-brand-rose transition-all duration-300 transform hover:scale-110" aria-label="WhatsApp">
                                 <WhatsAppIcon />
                             </a>
                         </div>
                     </div>
                 </div>
 
-                <div className="mt-12 border-t border-gray-800 pt-8">
+                <div className="mt-16 border-t border-gray-800 pt-8">
                      <div className="text-center mb-8">
                         <h3 className="text-sm font-semibold tracking-wider uppercase text-gray-500">Métodos de Pago Aceptados</h3>
                         <div className="flex justify-center items-center space-x-6 mt-4 text-gray-400">

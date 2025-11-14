@@ -2,39 +2,96 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/jpeg" href="https://storage.googleapis.com/aistudio-public/projects/33d6990c-15a5-4847-8a43-52a510525cb3/perfumeria-logo.jpeg" />
+    <link rel="icon" type="image/png" href="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="el color y el timeline stylo al realizar los estilismos con el color y galeria de cosmeticos.Proveedor de cosmetica y wellnes " />
+    <meta name="referrerpolicy" content="no-referrer" />
     <title>Vellaperfumeria</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Raleway:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://js.stripe.com/v3/"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'brand-lilac': '#DCD0FF',
+              'brand-lilac-dark': '#C8B6FF',
+              'brand-rose': '#E9A8D3',
+            }
+          }
+        }
+      }
+    </script>
     <style>
+      :root {
+        --color-background: #FFFFFF;
+        --color-text: #000000;
+        --color-primary: #000000; /* Black for primary buttons */
+        --color-primary-dark: #333333;
+        --color-secondary: #DCD0FF; /* Light Lilac Accent */
+        --color-accent: #000000;
+        --font-body: 'Inter', sans-serif;
+        --font-heading: 'Raleway', sans-serif;
+      }
+
       body {
-        font-family: 'Raleway', sans-serif;
+        font-family: var(--font-body);
+        color: var(--color-text);
+        background-color: var(--color-background);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
       h1, h2, h3, h4, h5, h6 {
-        font-family: 'Raleway', sans-serif;
+        font-family: var(--font-heading);
+        font-weight: 700;
+        color: var(--color-accent);
       }
+      
+      .btn-primary {
+        background-color: var(--color-secondary);
+        color: var(--color-accent);
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      }
+      .btn-primary:hover {
+        background-color: #C8B6FF; /* brand-lilac-dark */
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      }
+
+      .btn-secondary {
+        background-color: transparent;
+        color: var(--color-accent);
+        border: 2px solid var(--color-accent);
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      }
+      .btn-secondary:hover {
+        background-color: var(--color-accent);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      }
+      
       @keyframes shake {
-        10%, 90% {
-          transform: translate3d(-1px, 0, 0);
-        }
-        20%, 80% {
-          transform: translate3d(2px, 0, 0);
-        }
-        30%, 50%, 70% {
-          transform: translate3d(-4px, 0, 0);
-        }
-        40%, 60% {
-          transform: translate3d(4px, 0, 0);
-        }
+        10%, 90% { transform: translate3d(-1px, 0, 0); }
+        20%, 80% { transform: translate3d(2px, 0, 0); }
+        30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+        40%, 60% { transform: translate3d(4px, 0, 0); }
       }
       .shake {
         animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
       }
+
       .hover-underline-effect {
         display: inline-block;
         position: relative;
@@ -48,7 +105,7 @@
         height: 1.5px;
         bottom: -3px;
         left: 0;
-        background-color: #c026d3; /* fuchsia-600 */
+        background-color: var(--color-secondary);
         transform-origin: bottom right;
         transition: transform 0.3s ease-out;
       }
@@ -56,9 +113,8 @@
         transform: scaleX(1);
         transform-origin: bottom left;
       }
-      /* Version for light text on dark background */
       .hover-underline-effect-white::after {
-        background-color: #f0abfc; /* fuchsia-300 */
+        background-color: #DCD0FF;
       }
     </style>
   <script type="importmap">

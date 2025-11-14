@@ -1,3 +1,4 @@
+
 import React, { useRef } from 'react';
 import type { Product } from './types';
 import type { Currency } from './currency';
@@ -58,33 +59,36 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ products, currency, onProdu
                 ref={scrollContainerRef}
                 className="flex space-x-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide"
             >
-                {products.map((product) => (
-                    <div key={product.id} className="snap-center flex-shrink-0 w-64">
-                        <div 
-                            className="bg-white rounded-lg shadow-sm overflow-hidden group cursor-pointer border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-                            onClick={() => onProductSelect(product)}
-                            role="button"
-                            aria-label={`Ver detalles de ${product.name}`}
-                        >
-                            <div className="relative">
-                                <img src={product.imageUrl} alt={product.name} className="w-full h-64 object-cover" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent"></div>
-                                <div className="absolute bottom-0 left-0 p-4">
-                                    <h3 className="text-white font-semibold text-lg">{product.name}</h3>
-                                    <p className="text-white/90 text-sm">{product.brand}</p>
+                {products.map((product) => {
+                    const isDiscounted = product.regularPrice && product.regularPrice > product.price;
+                    return (
+                        <div key={product.id} className="snap-center flex-shrink-0 w-64">
+                            <div 
+                                className="bg-white rounded-lg shadow-sm overflow-hidden group cursor-pointer border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                                onClick={() => onProductSelect(product)}
+                                role="button"
+                                aria-label={`Ver detalles de ${product.name}`}
+                            >
+                                <div className="relative">
+                                    <img src={product.imageUrl} alt={product.name} className="w-full h-64 object-cover" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent"></div>
+                                    <div className="absolute bottom-0 left-0 p-4">
+                                        <h3 className="text-white font-semibold text-lg">{product.name}</h3>
+                                        <p className="text-white/90 text-sm">{product.brand}</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="p-4 bg-gray-50">
-                                <div className="flex items-baseline gap-2">
-                                    <p className="text-xl font-bold text-black">{formatCurrency(product.price, currency)}</p>
-                                    {product.regularPrice && (
-                                        <p className="text-sm text-gray-500 line-through">{formatCurrency(product.regularPrice, currency)}</p>
-                                    )}
+                                <div className="p-4 bg-gray-50">
+                                    <div className="flex items-baseline gap-2">
+                                        <p className={`text-xl font-bold ${isDiscounted ? 'text-brand-lilac-dark' : 'text-black'}`}>{formatCurrency(product.price, currency)}</p>
+                                        {isDiscounted && (
+                                            <p className="text-sm text-gray-500 line-through">{formatCurrency(product.regularPrice!, currency)}</p>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
             <style>{`.scrollbar-hide::-webkit-scrollbar { display: none; } .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }`}</style>
         </section>

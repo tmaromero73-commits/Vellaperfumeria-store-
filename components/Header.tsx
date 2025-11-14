@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import type { View } from './types';
 import type { Currency } from './currency';
@@ -52,61 +53,55 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                 onNavigate(view);
                 setIsMenuOpen(false); // Close menu on navigation
             }}
-            className="text-gray-700 hover:text-fuchsia-600 transition-colors font-semibold py-2 block md:inline-block hover-underline-effect"
+            className="text-gray-700 hover:text-brand-lilac-dark transition-colors font-semibold py-2 block md:inline-block hover-underline-effect"
         >
             {children}
         </a>
     );
 
     return (
-        <header className="bg-white shadow-sm sticky top-0 z-30">
+        <header className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-30">
             {/* Top bar */}
-            <div className="bg-gray-900 text-white text-xs">
+            <div className="bg-brand-lilac text-white text-xs">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-1">
                     <div className="flex items-center space-x-4">
-                        <a href="#" className="hover:text-amber-300 transition-colors" aria-label="Instagram"><InstagramIcon /></a>
-                        <a href="#" className="hover:text-amber-300 transition-colors" aria-label="Facebook"><FacebookIcon /></a>
+                        <a href="https://www.threads.com/@beautieshopvella?xmt=AQF0zHNrv2YdoCmolABWd5JZB7EQbzCLyYByCyzn5RIWN3E" target="_blank" rel="noopener noreferrer" className="hover:text-white/80 transition-colors" aria-label="Threads"><InstagramIcon /></a>
+                        <a href="https://www.facebook.com/vellaperfumeria" target="_blank" rel="noopener noreferrer" className="hover:text-white/80 transition-colors" aria-label="Facebook"><FacebookIcon /></a>
                     </div>
                     <div>
                         <select
                             value={currency}
                             onChange={(e) => onCurrencyChange(e.target.value as Currency)}
-                            className="bg-gray-800 border border-gray-700 rounded-md text-white py-0.5 px-1 focus:outline-none focus:ring-1 focus:ring-amber-300"
+                            className="bg-transparent border border-white/50 rounded-md text-white py-0.5 px-1 focus:outline-none focus:ring-1 focus:ring-white/50"
                             aria-label="Seleccionar moneda"
                         >
-                            <option value="EUR">EUR €</option>
-                            <option value="USD">USD $</option>
-                            <option value="GBP">GBP £</option>
+                            <option value="EUR" className="text-black">EUR €</option>
+                            <option value="USD" className="text-black">USD $</option>
+                            <option value="GBP" className="text-black">GBP £</option>
                         </select>
                     </div>
                 </div>
             </div>
             {/* Main Header */}
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center h-20">
-                    {/* Logo */}
-                    <div className="flex-shrink-0">
-                        <a href="https://vellaperfumeria.com" target="_blank" rel="noopener noreferrer" aria-label="Vellaperfumeria - Inicio">
-                            <img src="https://storage.googleapis.com/aistudio-public/projects/33d6990c-15a5-4847-8a43-52a510525cb3/perfumeria-logo.jpeg" alt="Vellaperfumeria Logo" className="h-16 w-auto" />
+                 {/* Branding Section */}
+                <div className="relative flex justify-center items-center py-4">
+                     {/* Centered Logo and Title */}
+                    <div className="text-center">
+                        <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('home'); }} className="inline-block" aria-label="Vellaperfumeria - Inicio">
+                            <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-20 w-auto" />
                         </a>
+                        <h1 className="text-xl font-bold tracking-wider text-gray-800 -mt-2">
+                            <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('home'); }}>Vellaperfumeria</a>
+                        </h1>
                     </div>
 
-                    {/* Desktop Nav */}
-                    <nav className="hidden md:flex space-x-8 items-center">
-                        <a href="https://vellaperfumeria.com" target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-fuchsia-600 transition-colors font-semibold py-2 block md:inline-block hover-underline-effect">Inicio</a>
-                        <NavLink view="products">Tienda</NavLink>
-                        <NavLink view="ofertas">Ofertas</NavLink>
-                        <NavLink view="catalog">Catálogo</NavLink>
-                        <NavLink view="blog">Blog</NavLink>
-                        <NavLink view="ia">Asistente IA</NavLink>
-                    </nav>
-
                     {/* Right side actions (cart, mobile menu) */}
-                    <div className="flex items-center space-x-4">
-                        <button onClick={onCartClick} className="relative text-gray-700 hover:text-fuchsia-600 p-2" aria-label={`Abrir carrito. Tienes ${cartCount} artículos.`}>
+                    <div className="absolute right-0 flex items-center space-x-2">
+                        <button onClick={onCartClick} className="relative text-gray-700 hover:text-brand-lilac-dark p-2" aria-label={`Abrir carrito. Tienes ${cartCount} artículos.`}>
                             <CartIcon />
                             {cartCount > 0 && (
-                                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-fuchsia-600 rounded-full">
+                                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-black rounded-full">
                                     {cartCount}
                                 </span>
                             )}
@@ -118,12 +113,22 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                         </div>
                     </div>
                 </div>
+                
+                {/* Desktop Nav */}
+                <nav className="hidden md:flex justify-center space-x-8 items-center border-t py-3">
+                    <a href="#" onClick={(e) => {e.preventDefault(); onNavigate('home')}} className="text-gray-700 hover:text-brand-lilac-dark transition-colors font-semibold py-2 block md:inline-block hover-underline-effect">Inicio</a>
+                    <NavLink view="products">Tienda</NavLink>
+                    <NavLink view="ofertas">Ofertas</NavLink>
+                    <NavLink view="catalog">Catálogo</NavLink>
+                    <NavLink view="blog">Blog</NavLink>
+                    <NavLink view="ia">Asistente IA</NavLink>
+                </nav>
             </div>
             {/* Mobile Menu */}
             {isMenuOpen && (
                 <div className="md:hidden bg-white border-t">
                     <nav className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-2">
-                        <a href="https://vellaperfumeria.com" target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-fuchsia-600 transition-colors font-semibold py-2 block md:inline-block hover-underline-effect">Inicio</a>
+                         <a href="#" onClick={(e) => {e.preventDefault(); onNavigate('home')}} className="text-gray-700 hover:text-brand-lilac-dark transition-colors font-semibold py-2 block md:inline-block hover-underline-effect">Inicio</a>
                         <NavLink view="products">Tienda</NavLink>
                         <NavLink view="ofertas">Ofertas</NavLink>
                         <NavLink view="catalog">Catálogo</NavLink>

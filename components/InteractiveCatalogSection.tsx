@@ -1,4 +1,3 @@
-
 import React from 'react';
 import type { View } from './types';
 
@@ -7,7 +6,7 @@ interface InteractiveCatalogSectionProps {
 }
 
 const InteractiveCatalogSection: React.FC<InteractiveCatalogSectionProps> = ({ onNavigate }) => {
-    const catalogCoverUrl = 'https://storage.googleapis.com/aistudio-public/gallery/3c8c7283-f36b-4f7c-9b6f-7f6b49e25d2c.jpg';
+    const catalogCoverUrl = 'https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=1587&auto=format&fit=crop';
 
     return (
         <section>
@@ -26,7 +25,7 @@ const InteractiveCatalogSection: React.FC<InteractiveCatalogSectionProps> = ({ o
                     <img
                         src={catalogCoverUrl}
                         alt="Portada del Catálogo de Vellaperfumeria"
-                        className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-10 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
                         <div className="text-white text-lg font-bold bg-black/50 px-6 py-3 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform group-hover:scale-110">
@@ -42,7 +41,7 @@ const InteractiveCatalogSection: React.FC<InteractiveCatalogSectionProps> = ({ o
                     </p>
                     <button
                         onClick={() => onNavigate('catalog')}
-                        className="inline-block bg-[#f3d9ff] text-black font-semibold py-3 px-8 rounded-md shadow-sm hover:bg-[#e9c2ff] transition-colors"
+                        className="inline-block bg-[var(--color-secondary)] text-black font-semibold py-3 px-8 rounded-md shadow-sm hover:bg-[#E0CDBF] transition-colors"
                     >
                         Ver Catálogo Completo
                     </button>

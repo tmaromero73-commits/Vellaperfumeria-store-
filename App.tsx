@@ -187,11 +187,16 @@ const App: React.FC = () => {
             case 'ia':
                 return <AsistenteIAPage />;
             case 'catalog':
-                return <CatalogPage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
+                return <CatalogPage 
+                    currency={currency}
+                    onAddToCart={handleAddToCart}
+                    onProductSelect={handleProductSelect}
+                    onQuickView={setQuickViewProduct}
+                />;
              case 'about':
-                return <div className="text-center p-8 container mx-auto"><h1 className="text-3xl font-bold text-gray-900">Sobre Nosotros</h1><p className="mt-4 max-w-2xl mx-auto text-gray-800">Somos <a href="https://vellaperfumeria.com" target="_blank" rel="noopener noreferrer" className="text-fuchsia-600 font-semibold hover-underline-effect">Vellaperfumeria</a>, tu tienda de confianza para cosméticos y bienestar. Descubre fragancias que definen tu esencia y productos que cuidan de ti. Calidad y exclusividad en cada artículo.</p></div>;
+                return <div className="text-center p-8 container mx-auto"><h1 className="text-3xl font-bold text-gray-900">Sobre Nosotros</h1><p className="mt-4 max-w-2xl mx-auto text-gray-800">Somos <a href="https://vellaperfumeria.com" target="_blank" rel="noopener noreferrer" className="text-black font-semibold hover-underline-effect">Vellaperfumeria</a>, tu tienda de confianza para cosméticos y bienestar. Descubre fragancias que definen tu esencia y productos que cuidan de ti. Calidad y exclusividad en cada artículo.</p></div>;
             case 'contact':
-                return <div className="text-center p-8 container mx-auto"><h1 className="text-3xl font-bold text-gray-900">Contacto</h1><p className="mt-4 text-gray-800">¿Preguntas? Estamos aquí para ayudarte. Contáctanos por WhatsApp al <a href="https://wa.me/661202616" className="text-fuchsia-600 font-semibold hover-underline-effect">661 20 26 16</a> o visita nuestras redes sociales.</p></div>;
+                return <div className="text-center p-8 container mx-auto"><h1 className="text-3xl font-bold text-gray-900">Contacto</h1><p className="mt-4 text-gray-800">¿Preguntas? Estamos aquí para ayudarte. Contáctanos por WhatsApp al <a href="https://wa.me/661202616" className="text-black font-semibold hover-underline-effect">661 20 26 16</a> o visita nuestras redes sociales.</p></div>;
             case 'blog':
                 return <BlogPage posts={blogPosts} onSelectPost={handleSelectPost} />;
             case 'blogPost':
@@ -211,7 +216,7 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="bg-white min-h-screen pb-16 md:pb-0">
+        <div className="bg-[var(--color-background)] min-h-screen pb-16 md:pb-0">
             <Header
                 onNavigate={handleNavigate}
                 currency={currency}
@@ -219,7 +224,7 @@ const App: React.FC = () => {
                 cartCount={cartCount}
                 onCartClick={() => setIsCartOpen(true)}
             />
-            <main>
+            <main className="pt-8">
                 { view !== 'home' && <Breadcrumbs items={getBreadcrumbs()} /> }
                 {renderView()}
             </main>

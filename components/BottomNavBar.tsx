@@ -51,7 +51,7 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({ onNavigate, currentView }) 
                             key={item.view}
                             onClick={() => onNavigate(item.view)}
                             className={`flex flex-col items-center justify-center text-xs font-medium w-full h-full transition-colors ${
-                                isActive ? 'text-fuchsia-600' : 'text-gray-500 hover:text-fuchsia-500'
+                                isActive ? 'text-black' : 'text-gray-500 hover:text-black'
                             }`}
                             aria-label={item.label}
                             aria-current={isActive ? 'page' : undefined}

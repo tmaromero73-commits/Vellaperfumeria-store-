@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import type { View } from './types';
 
@@ -15,26 +13,21 @@ interface HeroBannerProps {
 
 const HeroBanner: React.FC<HeroBannerProps> = ({ onNavigate }) => {
     return (
-        <section className="bg-gradient-to-r from-fuchsia-50 via-rose-50 to-amber-50">
+        <section className="bg-[var(--color-secondary)]">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid md:grid-cols-2 gap-8 items-center py-12 md:py-20">
                     <div className="text-center md:text-left">
-                        <img 
-                            src="https://storage.googleapis.com/aistudio-public/projects/33d6990c-15a5-4847-8a43-52a510525cb3/perfumeria-logo.jpeg" 
-                            alt="Vellaperfumeria Logo" 
-                            className="h-24 w-auto mx-auto md:mx-0 mb-6" 
-                        />
-                        <h1 className="text-4xl lg:text-5xl font-extrabold text-black tracking-tight leading-tight">
-                            Tu Esencia, Tu Belleza, <span className="text-fuchsia-600">Tu Tienda.</span>
+                         <h1 className="text-4xl lg:text-5xl font-extrabold text-black tracking-tight leading-tight">
+                            Tu Esencia, Tu Belleza, <span className="text-[var(--color-primary)]">Tu Tienda.</span>
                         </h1>
-                        <p className="mt-6 text-lg text-gray-800 max-w-lg mx-auto md:mx-0">
+                        <p className="mt-6 text-lg text-gray-700 max-w-lg mx-auto md:mx-0">
                             Descubre cosméticos, fragancias y productos de bienestar que realzan tu belleza natural. Calidad y exclusividad en cada artículo.
                         </p>
                         
                         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                             <button
                                 onClick={() => onNavigate('products')}
-                                className="bg-[#EBCFFC] text-black font-bold py-3 px-8 rounded-lg shadow-md hover:bg-[#e0c2fa] transition-all duration-300 transform hover:scale-105"
+                                className="btn-primary"
                             >
                                 Explorar Tienda
                             </button>
@@ -42,7 +35,7 @@ const HeroBanner: React.FC<HeroBannerProps> = ({ onNavigate }) => {
                                 href="https://wa.me/661202616" 
                                 target="_blank" 
                                 rel="noopener noreferrer" 
-                                className="bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-gray-700 transition-colors duration-300 flex items-center justify-center gap-2"
+                                className="btn-secondary flex items-center justify-center gap-2"
                             >
                                 <WhatsAppIcon />
                                 Asesoría VIP
@@ -51,8 +44,8 @@ const HeroBanner: React.FC<HeroBannerProps> = ({ onNavigate }) => {
                     </div>
                     <div className="hidden md:block">
                         <img 
-                            src="https://storage.googleapis.com/aistudio-public/gallery/be92241c-959f-4f52-a218-97170a4128f7.jpg" 
-                            alt="Modelo de Vellaperfumeria con un look de maquillaje sofisticado" 
+                            src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                            alt="Una elegante composición de productos de belleza y cuidado de la piel sobre una superficie de mármol" 
                             className="rounded-lg shadow-2xl w-full h-auto object-cover"
                         />
                     </div>

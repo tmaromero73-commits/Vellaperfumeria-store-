@@ -1,5 +1,3 @@
-
-
 // Variant types, used in Product
 export interface VariantOption {
     value: string;
@@ -17,6 +15,7 @@ export interface Product {
     name: string;
     brand: string;
     price: number;
+    regularPrice?: number;
     imageUrl: string;
     description: string;
     stock: number;
