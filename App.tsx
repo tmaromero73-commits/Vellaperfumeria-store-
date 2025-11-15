@@ -99,19 +99,34 @@ const App: React.FC = () => {
 
     /**
      * Handles the checkout process by redirecting to the external store.
-     * It constructs a URL with cart items to be potentially parsed by the target site.
-     * Note: This implementation assumes the target e-commerce site (vellaperfumeria.com)
-     * has a custom mechanism to parse the 'prefill_cart' query parameter.
-     * The format is `?prefill_cart=ID1:QTY1,ID2:QTY2`.
+     * It constructs a URL with cart items to be parsed by vellaperfumeria.com.
+     * The target site must be configured to handle the 'prefill_cart' query parameter.
+     * The format is `ID:QTY[:VARIANTS_JSON]`, with items separated by commas.
+     * Example: `?prefill_cart=17586:2,43243:1:%7B%22Tono%22%3A%22Light%20Ivory%22%7D`
      */
     const handleCheckout = () => {
         if (cartItems.length === 0) return;
 
-        const cartQuery = cartItems.map(item => `${item.product.id}:${item.quantity}`).join(',');
+        const cartQuery = cartItems
+            .map(item => {
+                const productId = item.product.id;
+                const quantity = item.quantity;
+                let itemString = `${productId}:${quantity}`;
+
+                // If the item has selected variants, encode them as a URL-safe JSON string
+                if (item.selectedVariant && Object.keys(item.selectedVariant).length > 0) {
+                    const variantString = encodeURIComponent(JSON.stringify(item.selectedVariant));
+                    itemString += `:${variantString}`;
+                }
+
+                return itemString;
+            })
+            .join(',');
+
+        // The URL for the cart on the main site is /carrito/
+        const checkoutUrl = `https://vellaperfumeria.com/carrito/?prefill_cart=${cartQuery}`;
         
-        const checkoutUrl = `https://vellaperfumeria.com/cart/?prefill_cart=${cartQuery}`;
-        
-        // Redirect the user to the main site's cart page
+        // Redirect the user to the main site's cart page to complete the purchase
         window.location.href = checkoutUrl;
     };
     
