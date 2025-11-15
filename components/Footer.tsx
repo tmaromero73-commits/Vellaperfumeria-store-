@@ -122,7 +122,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                     </div>
                 </div>
 
-                <div className="mt-16 border-t border-gray-800 pt-8">
+                <div className="mt-16 border-t border-gray-600 pt-8">
                      <div className="text-center mb-8">
                         <h3 className="text-sm font-semibold tracking-wider uppercase text-gray-400">Métodos de Pago Aceptados</h3>
                         <div className="flex justify-center items-center space-x-6 mt-4 text-gray-300">
