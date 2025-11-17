@@ -17,19 +17,15 @@ const SortIcon = () => (
 );
 
 const subCategories = [
-    "Bases de maquillaje",
-    "Cremas BB y CC",
-    "Colorete y Bronceador",
-    "Corrector",
-    "Máscara",
-    "Accesorios de Maquillaje",
-    "Paletas de maquillaje",
-    "Polvo",
-    "Imprimación",
+    'Todos',
+    'Perfumes y fragancias',
+    'Cremas Perfumadas',
+    'Fragancias de viaje',
+    'Brumas aromáticas',
+    'Desodorantes y roll-ons'
 ];
 
-
-const MakeupPage: React.FC<{
+const FragrancePage: React.FC<{
     currency: Currency;
     onAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     onProductSelect: (product: Product) => void;
@@ -38,35 +34,30 @@ const MakeupPage: React.FC<{
 }> = ({ currency, onAddToCart, onProductSelect, onQuickView, onCartClick }) => {
     
     const [sortOrder, setSortOrder] = useState('menu_order');
-    const [activeSubCategory, setActiveSubCategory] = useState('Bases de maquillaje');
-
+    const [activeSubCategory, setActiveSubCategory] = useState('Todos');
 
     const pageProducts = useMemo(() => {
-        const baseProducts = allProducts.filter(p => p.category === 'makeup');
-        let filteredProducts: Product[];
+        const baseProducts = allProducts.filter(p => 
+            p.category === 'perfume' || 
+            (p.category === 'personal-care' && p.name.toLowerCase().includes('perfumada'))
+        );
 
+        let filteredProducts: Product[];
         switch (activeSubCategory) {
-            case 'Bases de maquillaje':
-                filteredProducts = baseProducts.filter(p => p.productType === 'Base');
+            case 'Perfumes y fragancias':
+                filteredProducts = baseProducts.filter(p => (p.name.includes('Eau de Parfum') || p.name.includes('Perfume') || p.name.includes('Eau de Toilette')) && !p.name.includes('Tamaño Viaje') && p.category === 'perfume');
                 break;
-            case 'Cremas BB y CC':
-                filteredProducts = baseProducts.filter(p => p.productType === 'Cremas BB y CC');
+            case 'Cremas Perfumadas':
+                filteredProducts = baseProducts.filter(p => p.name.includes('Crema Corporal Perfumada'));
                 break;
-            case 'Colorete y Bronceador':
-                filteredProducts = baseProducts.filter(p => p.productType === 'Colorete y Bronceador');
+            case 'Fragancias de viaje':
+                filteredProducts = baseProducts.filter(p => p.name.includes('Tamaño Viaje'));
                 break;
-            case 'Corrector':
-                 filteredProducts = baseProducts.filter(p => p.productType === 'Corrector');
-                 break;
-            case 'Máscara':
-                filteredProducts = baseProducts.filter(p => p.productType === 'Máscara');
+            case 'Todos':
+                filteredProducts = baseProducts;
                 break;
-            case 'Accesorios de Maquillaje':
-                filteredProducts = baseProducts.filter(p => p.productType === 'Accesorio de Maquillaje');
-                break;
-            case 'Paletas de maquillaje':
-                 filteredProducts = baseProducts.filter(p => p.productType === 'Colorete y Bronceador' && p.name.toLowerCase().includes('paleta'));
-                 break;
+            case 'Brumas aromáticas':
+            case 'Desodorantes y roll-ons':
             default:
                 filteredProducts = [];
         }
@@ -100,7 +91,7 @@ const MakeupPage: React.FC<{
         <div className="bg-white">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="mb-4">
-                    <h1 className="text-3xl font-bold text-brand-primary">{activeSubCategory}</h1>
+                    <h1 className="text-3xl font-bold text-brand-primary">Fragancias</h1>
                 </div>
 
                 {/* Sub-category Tabs */}
@@ -167,4 +158,4 @@ const MakeupPage: React.FC<{
     );
 };
 
-export default MakeupPage;
+export default FragrancePage;

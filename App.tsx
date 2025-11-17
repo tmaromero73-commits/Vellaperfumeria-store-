@@ -21,6 +21,7 @@ import BottomNavBar from './components/BottomNavBar';
 import MakeupPage from './components/MakeupPage';
 import CheckoutPage from './components/AlgaePage';
 import OrderConfirmationPage from './components/OrderConfirmationPage';
+import FragrancePage from './components/FragrancePage';
 
 
 const App: React.FC = () => {
@@ -126,11 +127,15 @@ const App: React.FC = () => {
                 return [homeCrumb, { label: 'Tienda' }];
             case 'makeup':
                 return [homeCrumb, { label: 'Maquillaje' }];
+            case 'fragrance':
+                return [homeCrumb, { label: 'Fragancias' }];
             case 'productDetail':
                 if (selectedProduct) {
                      const crumbs: BreadcrumbItem[] = [homeCrumb];
                      if (selectedProduct.category === 'makeup') {
                         crumbs.push({ label: 'Maquillaje', onClick: () => handleNavigate('makeup') });
+                     } else if (selectedProduct.category === 'perfume') {
+                        crumbs.push({ label: 'Fragancias', onClick: () => handleNavigate('fragrance') });
                      } else {
                         crumbs.push({ label: 'Tienda', onClick: () => handleNavigate('products') });
                      }
@@ -171,6 +176,8 @@ const App: React.FC = () => {
                 return <ProductListPage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onCartClick={handleCartClick} />;
             case 'makeup':
                 return <MakeupPage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onCartClick={handleCartClick} />;
+            case 'fragrance':
+                return <FragrancePage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onCartClick={handleCartClick} />;
             case 'productDetail':
                 return selectedProduct ? (
                     <ProductDetailPage

@@ -58,40 +58,33 @@ const AsistenteIAPage: React.FC = () => {
 
     const handleSendMessage = async (messageText: string) => {
         if (!messageText.trim() || isProcessing || !chat) {
-             if (!chat) setError("El asistente no está disponible en este momento.");
+            if (!chat) setError("El asistente no está disponible en este momento.");
             return;
         }
-
+    
         setError(null);
         setIsProcessing(true);
-
+    
         const userMessage: Message = { role: 'user', text: messageText };
-        setMessages(prev => [...prev, userMessage, { role: 'model', text: '' }]);
+        // Add user message and a "typing" indicator
+        setMessages(prev => [...prev, userMessage, { role: 'model', text: '...' }]);
         setInput('');
-
+    
         try {
-            const responseStream = await chat.sendMessageStream({ message: messageText });
-            
-            let fullModelResponse = "";
-            for await (const chunk of responseStream) {
-                fullModelResponse += chunk.text;
-                setMessages(prev => {
-                    const newMessages = [...prev];
-                    newMessages[newMessages.length - 1].text = fullModelResponse;
-                    return newMessages;
-                });
-            }
+            // Using the non-streaming version for robustness
+            const response = await chat.sendMessage({ message: messageText });
+            const modelText = response.text;
+            const modelMessage: Message = { role: 'model', text: modelText };
+    
+            // Replace the "typing" indicator with the final response
+            setMessages(prev => [...prev.slice(0, -1), modelMessage]);
+    
         } catch (e) {
             console.error("Error sending message to Gemini:", e);
             const errorMessage = "Lo siento, ha ocurrido un error al procesar tu solicitud. Por favor, inténtalo de nuevo más tarde.";
             setError(errorMessage);
-            setMessages(prev => {
-                const newMessages = [...prev];
-                if (newMessages.length > 0 && newMessages[newMessages.length - 1].role === 'model') {
-                   newMessages[newMessages.length - 1].text = errorMessage;
-                }
-                return newMessages;
-            });
+            // Replace the "typing" indicator with the error message
+            setMessages(prev => [...prev.slice(0, -1), { role: 'model', text: errorMessage }]);
         } finally {
             setIsProcessing(false);
         }
@@ -138,7 +131,7 @@ const AsistenteIAPage: React.FC = () => {
                                 </div>
                             )}
                             <div className={`max-w-md p-4 rounded-2xl ${msg.role === 'user' ? 'bg-gray-100 text-gray-800 rounded-br-none' : 'bg-brand-purple/20 text-gray-800 rounded-bl-none'}`}>
-                                 {index === messages.length - 1 && msg.role === 'model' && msg.text === '' && isProcessing ? (
+                                 {msg.text === '...' && isProcessing ? (
                                      <div className="flex items-center space-x-2">
                                         <div className="w-2 h-2 bg-brand-purple rounded-full animate-pulse"></div>
                                         <div className="w-2 h-2 bg-brand-purple rounded-full animate-pulse [animation-delay:0.2s]"></div>
