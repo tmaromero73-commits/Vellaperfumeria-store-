@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 // Types
 import type { View, Product, CartItem } from './components/types';
@@ -114,9 +115,9 @@ const App: React.FC = () => {
     };
 
     const handleCheckout = () => {
-        console.log("Redirecting to checkout page...");
-        // This is the fix requested by the user.
-        window.location.href = 'https://vellaperfumeria.com/checkout/';
+        console.log("Redirecting to cart page...");
+        // Redirecting to the public cart page as requested, using the public URL corresponding to the page-cart template.
+        window.location.href = 'https://vellaperfumeria.com/carrito/';
     };
 
     const handleSelectPost = (post: any) => {
@@ -152,7 +153,11 @@ const App: React.FC = () => {
 
         switch(view.current) {
             case 'products':
-                crumbs.push({ label: 'Tienda' });
+                crumbs.push({ label: 'Tienda', onClick: () => handleNavigate('products', 'all') });
+                if (view.payload && view.payload !== 'all') {
+                    const categoryName = categories.find(c => c.key === view.payload)?.name || view.payload;
+                    crumbs.push({ label: categoryName });
+                }
                 break;
             case 'productDetail':
                 {

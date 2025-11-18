@@ -1,5 +1,8 @@
 
 
+
+
+
 import React, { useState, useRef, useEffect } from 'react';
 import type { View } from './types';
 import type { Currency } from './currency';
@@ -114,7 +117,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                 <div className="flex justify-center py-4 relative">
                     <form action="https://vellaperfumeria.com" method="GET" target="_top">
                         <button type="submit" className="hover:opacity-80 transition-opacity">
-                            <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-24 w-auto" />
+                            <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-32 md:h-44 w-auto" />
                         </button>
                     </form>
                 </div>
@@ -141,6 +144,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                         <NavLink onClick={() => onNavigate('products', 'all')}>Tienda</NavLink>
                         <NavLink onClick={() => onNavigate('products', 'skincare')}>Cuidado Facial</NavLink>
                         <NavLink onClick={() => onNavigate('products', 'makeup')}>Maquillaje</NavLink>
+                        <NavLink onClick={() => onNavigate('products', 'hair')}>Cuidado Capilar</NavLink>
                         <NavLink onClick={() => onNavigate('products', 'perfume')}>Fragancias</NavLink>
                         <NavLink onClick={() => onNavigate('products', 'wellness')}>Wellness</NavLink>
                         <NavLink onClick={() => onNavigate('ofertas')}>Ideas Regalo</NavLink>
@@ -173,6 +177,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                          <NavLink onClick={() => handleMobileNav('products', 'all')} className="py-2">Tienda</NavLink>
                          <NavLink onClick={() => handleMobileNav('products', 'skincare')} className="py-2">Cuidado Facial</NavLink>
                          <NavLink onClick={() => handleMobileNav('products', 'makeup')} className="py-2">Maquillaje</NavLink>
+                         <NavLink onClick={() => handleMobileNav('products', 'hair')} className="py-2">Cuidado Capilar</NavLink>
                          <NavLink onClick={() => handleMobileNav('products', 'perfume')} className="py-2">Fragancias</NavLink>
                          <NavLink onClick={() => handleMobileNav('products', 'wellness')} className="py-2">Wellness</NavLink>
                          <NavLink onClick={() => handleMobileNav('ofertas')} className="py-2">Ideas Regalo</NavLink>

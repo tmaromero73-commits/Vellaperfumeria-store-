@@ -1,5 +1,4 @@
 
-
 import React, { useState, useRef } from 'react';
 import { allProducts } from './products';
 import type { Product } from './types';
@@ -86,19 +85,19 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, currency }) => {
     };
 
     return (
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 h-full flex flex-col md:flex-row gap-6">
+        <div className="w-full px-2 sm:px-4 py-6 h-full flex flex-col md:flex-row gap-6 bg-gray-50">
             
-            {/* Catalog Viewer */}
-            <div className="flex-grow flex flex-col">
-                <div className="mb-4 flex items-center gap-4 flex-wrap md:flex-nowrap">
+            {/* Catalog Viewer - Expanded Size */}
+            <div className="flex-grow flex flex-col min-w-0">
+                <div className="mb-4 flex items-center gap-4 flex-wrap md:flex-nowrap justify-center md:justify-start">
                      {/* Branding in Main Header */}
                     <img 
                         src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
                         alt="Vellaperfumeria Logo" 
-                        className="h-16 w-auto object-contain" 
+                        className="h-20 w-auto object-contain" 
                      />
-                    <div>
-                        <h1 className="text-3xl font-extrabold text-black tracking-tight font-serif">Catálogo BeautyShopVella</h1>
+                    <div className="text-center md:text-left">
+                        <h1 className="text-3xl md:text-4xl font-extrabold text-black tracking-tight font-serif">Catálogo BeautyShopVella</h1>
                         <p className="text-sm text-gray-600 mt-1">
                             Catálogo Digital Interactivo.
                         </p>
@@ -107,7 +106,7 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, currency }) => {
                 
                 <div 
                     className="relative w-full flex-grow bg-white rounded-lg shadow-2xl overflow-hidden border border-gray-200" 
-                    style={{ minHeight: '85vh' }}
+                    style={{ minHeight: '200vh' }} 
                 >
                      <iframe
                         data-ipaper="true"
@@ -119,15 +118,15 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, currency }) => {
                         loading="lazy"
                      />
                 </div>
-                 <div className="text-center mt-2">
-                    <a href={FALLBACK_CATALOG_URL} target="_blank" rel="noopener noreferrer" className="text-xs text-gray-400 hover:text-gray-600 hover:underline">
+                 <div className="text-center mt-4">
+                    <a href={FALLBACK_CATALOG_URL} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 hover:text-brand-purple-dark hover:underline font-medium">
                          ¿No puedes ver el catálogo? Abrir en ventana externa
                     </a>
                 </div>
             </div>
 
             {/* Quick Order Sidebar */}
-            <div className="w-full md:w-80 flex-shrink-0 space-y-6">
+            <div className="w-full md:w-80 lg:w-96 flex-shrink-0 space-y-6">
                 <div className="bg-white p-6 rounded-lg shadow-xl border border-gray-100 sticky top-24">
                     {/* Logo Vellaperfumeria en Sidebar */}
                     <div className="flex justify-center mb-6 pb-4 border-b border-gray-100">
