@@ -1,4 +1,5 @@
 
+
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI, Chat } from "@google/genai";
 
@@ -107,7 +108,7 @@ const AsistenteIAPage: React.FC = () => {
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="text-center mb-10">
-                <img src="https://vellaperfumeria.com/wp-content/uploads/2024/06/vellaperfumeralogo.png" alt="Logo de Vellaperfumeria" className="w-auto h-24 mx-auto mb-4" />
+                <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Logo de Vellaperfumeria" className="w-auto h-24 mx-auto mb-4" />
                 <h1 className="text-4xl font-extrabold text-black tracking-tight">Asistente de Belleza IA</h1>
                 <p className="mt-2 text-lg text-gray-600">¿Necesitas ayuda? Pide recomendaciones y consejos sobre nuestros productos.</p>
             </div>

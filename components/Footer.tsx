@@ -86,7 +86,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                     <div className="sm:col-span-2 lg:col-span-1">
                          <form action="https://vellaperfumeria.com" method="GET" target="_top">
                             <button type="submit" className="inline-block hover:opacity-80 transition-opacity mb-4 cursor-pointer">
-                                <img src="https://vellaperfumeria.com/wp-content/uploads/2024/06/vellaperfumeralogo.png" alt="Vellaperfumeria Logo" className="h-28 w-auto mx-auto md:mx-0 logo-inverted" />
+                                <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-28 w-auto mx-auto md:mx-0 logo-inverted" />
                             </button>
                         </form>
                         <h2 className="text-xl font-bold tracking-wider text-white">Vellaperfumeria</h2>

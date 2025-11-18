@@ -1,4 +1,5 @@
 
+
 import React, { useState, useRef } from 'react';
 import { allProducts } from './products';
 import type { Product } from './types';
@@ -92,7 +93,7 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, currency }) => {
                 <div className="mb-4 flex items-center gap-4 flex-wrap md:flex-nowrap">
                      {/* Branding in Main Header */}
                     <img 
-                        src="https://vellaperfumeria.com/wp-content/uploads/2024/06/vellaperfumeralogo.png" 
+                        src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
                         alt="Vellaperfumeria Logo" 
                         className="h-16 w-auto object-contain" 
                      />
@@ -131,7 +132,7 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, currency }) => {
                     {/* Logo Vellaperfumeria en Sidebar */}
                     <div className="flex justify-center mb-6 pb-4 border-b border-gray-100">
                          <img 
-                            src="https://vellaperfumeria.com/wp-content/uploads/2024/06/vellaperfumeralogo.png" 
+                            src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
                             alt="Vellaperfumeria" 
                             className="w-48 h-auto object-contain" 
                          />

@@ -114,7 +114,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                 <div className="flex justify-center py-4 relative">
                     <form action="https://vellaperfumeria.com" method="GET" target="_top">
                         <button type="submit" className="hover:opacity-80 transition-opacity">
-                            <img src="https://vellaperfumeria.com/wp-content/uploads/2024/06/vellaperfumeralogo.png" alt="Vellaperfumeria Logo" className="h-24 w-auto" />
+                            <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-24 w-auto" />
                         </button>
                     </form>
                 </div>
