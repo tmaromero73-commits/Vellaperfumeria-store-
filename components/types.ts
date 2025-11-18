@@ -1,6 +1,4 @@
 
-
-
 // Variant types, used in Product
 export interface VariantOption {
     value: string;
@@ -45,4 +43,4 @@ export interface CartItem {
 }
 
 // App view type
-export type View = 'home' | 'products' | 'productDetail' | 'ofertas' | 'ia' | 'catalog' | 'about' | 'contact' | 'blog' | 'blogPost';
+export type View = 'home' | 'products' | 'productDetail' | 'ofertas' | 'ia' | 'catalog' | 'about' | 'contact' | 'blog' | 'blogPost' | 'checkout';

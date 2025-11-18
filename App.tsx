@@ -18,6 +18,7 @@ import BlogPage from './components/BlogPage';
 import BlogPostPage from './components/BlogPostPage';
 import QuickViewModal from './components/QuickViewModal';
 import Breadcrumbs, { type BreadcrumbItem } from './components/Breadcrumbs';
+import CheckoutPage from './components/CheckoutPage';
 
 type AppView = {
     current: View;
@@ -115,9 +116,8 @@ const App: React.FC = () => {
     };
 
     const handleCheckout = () => {
-        console.log("Redirecting to cart page...");
-        // Redirecting to the public cart page as requested, using the public URL corresponding to the page-cart template.
-        window.location.href = 'https://vellaperfumeria.com/carrito/';
+        setIsCartOpen(false);
+        handleNavigate('checkout');
     };
 
     const handleSelectPost = (post: any) => {
@@ -142,13 +142,15 @@ const App: React.FC = () => {
                  return <BlogPage posts={blogPosts} onSelectPost={handleSelectPost} />;
             case 'blogPost':
                  return <BlogPostPage post={view.payload} allPosts={blogPosts} onSelectPost={handleSelectPost} onBack={() => handleNavigate('blog')} />;
+            case 'checkout':
+                return <CheckoutPage cartItems={cartItems} currency={currency} />;
             default:
                 return <ProductList onNavigate={handleNavigate} onProductSelect={handleProductSelect} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} currency={currency} onQuickView={setQuickViewProduct} />;
         }
     };
     
     const buildBreadcrumbs = (): BreadcrumbItem[] => {
-        const homeCrumb: BreadcrumbItem = { label: 'Inicio', onClick: () => handleNavigate('home') };
+        const homeCrumb: BreadcrumbItem = { label: 'Inicio', onClick: () => window.location.href = 'https://vellaperfumeria.com' };
         const crumbs = [homeCrumb];
 
         switch(view.current) {
@@ -183,6 +185,9 @@ const App: React.FC = () => {
             case 'blogPost':
                 crumbs.push({ label: 'Blog', onClick: () => handleNavigate('blog') });
                 crumbs.push({ label: view.payload.title });
+                break;
+            case 'checkout':
+                crumbs.push({ label: 'Finalizar Compra' });
                 break;
         }
 

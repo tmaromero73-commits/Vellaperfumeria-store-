@@ -1,5 +1,4 @@
 
-
 import React from 'react';
 import type { View } from './types';
 
@@ -40,15 +39,24 @@ interface BottomNavBarProps {
     currentCategory: string;
 }
 
+interface NavItem {
+    view: View;
+    label: string;
+    icon: React.FC<{ isActive: boolean }>;
+    payload?: any;
+    isExternal?: boolean;
+    href?: string;
+}
+
 const BottomNavBar: React.FC<BottomNavBarProps> = ({ onNavigate, currentView, currentCategory }) => {
     
-    const navItems = [
-        { view: 'home', label: 'Inicio', icon: HomeIcon, payload: undefined },
+    const navItems: NavItem[] = [
+        { view: 'home', label: 'Inicio', icon: HomeIcon, payload: undefined, isExternal: true, href: 'https://vellaperfumeria.com' },
         { view: 'products', label: 'Tienda', icon: ShopIcon, payload: 'all' },
         { view: 'ofertas', label: 'Ofertas', icon: GiftIcon, payload: undefined },
         { view: 'catalog', label: 'Catálogo', icon: CatalogIcon, payload: undefined },
         { view: 'contact', label: 'Ayuda', icon: HelpIcon, payload: undefined },
-    ] as const;
+    ];
 
     return (
         <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-[0_-2px_5px_rgba(0,0,0,0.05)] z-30">
@@ -61,7 +69,11 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({ onNavigate, currentView, cu
                     const Icon = item.icon;
 
                     const handleClick = () => {
-                         onNavigate(item.view, item.payload);
+                         if (item.isExternal && item.href) {
+                            window.location.href = item.href;
+                         } else {
+                            onNavigate(item.view, item.payload);
+                         }
                     };
 
                     return (
