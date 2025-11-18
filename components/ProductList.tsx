@@ -8,7 +8,6 @@ import HeroBanner from './HeroCarousel';
 import type { Currency } from './currency';
 import FeaturesSection from './FeaturesSection';
 import InteractiveCatalogSection from './InteractiveCatalogSection';
-import VideoSection from './VideoSection';
 
 
 const ProductList: React.FC<{
@@ -25,7 +24,7 @@ const ProductList: React.FC<{
     return (
         <div className="space-y-20">
             
-            <HeroBanner onProductSelect={onProductSelect} />
+            <HeroBanner onNavigate={onNavigate} />
             
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <section>
@@ -73,10 +72,6 @@ const ProductList: React.FC<{
                         </button>
                     </div>
                 </section>
-            </div>
-
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                 <VideoSection onNavigate={onNavigate} />
             </div>
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-12">

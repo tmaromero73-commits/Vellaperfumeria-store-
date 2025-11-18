@@ -6,7 +6,7 @@ interface InteractiveCatalogSectionProps {
 }
 
 const InteractiveCatalogSection: React.FC<InteractiveCatalogSectionProps> = ({ onNavigate }) => {
-    const catalogCoverUrl = 'https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=1587&auto=format&fit=crop';
+    const catalogCoverUrl = 'https://es.oriflame.com/--/media/images/brand-pages/the-one/2024/c10/the-one-brand-page-banner-d.ashx';
 
     return (
         <section>
@@ -18,13 +18,13 @@ const InteractiveCatalogSection: React.FC<InteractiveCatalogSectionProps> = ({ o
             <div className="grid md:grid-cols-2 gap-10 items-center">
                 <div 
                     onClick={() => onNavigate('catalog')}
-                    className="relative aspect-[1/1.414] bg-gray-100 rounded-lg shadow-lg overflow-hidden border w-full max-w-md mx-auto group cursor-pointer transform hover:-translate-y-2 transition-transform duration-300"
+                    className="relative aspect-[1.5/1] md:aspect-[4/3] bg-gray-100 rounded-lg shadow-lg overflow-hidden border w-full max-w-xl mx-auto group cursor-pointer transform hover:-translate-y-2 transition-transform duration-300"
                     role="button"
                     aria-label="Ver catálogo"
                 >
                     <img
                         src={catalogCoverUrl}
-                        alt="Portada del Catálogo de Vellaperfumeria"
+                        alt="Portada del Catálogo de Oriflame"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-10 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
@@ -37,7 +37,7 @@ const InteractiveCatalogSection: React.FC<InteractiveCatalogSectionProps> = ({ o
                 <div className="text-center md:text-left">
                     <h3 className="text-2xl font-bold text-gray-800 mb-4">Descubre las Últimas Novedades</h3>
                     <p className="text-gray-600 mb-8 max-w-md mx-auto md:mx-0">
-                        Explora nuestro catálogo digital más reciente. Encuentra tus productos favoritos y descubre ofertas exclusivas en la versión PDF.
+                        Explora nuestro catálogo digital más reciente. Hojea las páginas, descubre productos y encuentra ofertas exclusivas.
                     </p>
                     <button
                         onClick={() => onNavigate('catalog')}

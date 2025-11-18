@@ -1,4 +1,5 @@
 
+
 import React, { useState, useRef, useEffect } from 'react';
 import type { View } from './types';
 import type { Currency } from './currency';
@@ -177,7 +178,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                     <DesktopNavLink view="makeup">Maquillaje</DesktopNavLink>
                     <DesktopNavLink view="fragrance">Fragancias</DesktopNavLink>
                     <DesktopNavLink view="wellness">Wellness</DesktopNavLink>
-                    <DesktopNavLink view="ofertas">Ofertas</DesktopNavLink>
+                    <DesktopNavLink view="ofertas">Ideas Regalo</DesktopNavLink>
                     <DesktopNavLink view="catalog">Catálogo</DesktopNavLink>
                     <DesktopNavLink view="blog">Blog</DesktopNavLink>
                     <DesktopNavLink view="ia">Asistente IA</DesktopNavLink>
@@ -197,7 +198,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                     <NavLink view="makeup">Maquillaje</NavLink>
                     <NavLink view="fragrance">Fragancias</NavLink>
                     <NavLink view="wellness">Wellness</NavLink>
-                    <NavLink view="ofertas">Ofertas</NavLink>
+                    <NavLink view="ofertas">Ideas Regalo</NavLink>
                     <NavLink view="catalog">Catálogo</NavLink>
                     <NavLink view="blog">Blog</NavLink>
                     <NavLink view="ia">Asistente IA</NavLink>

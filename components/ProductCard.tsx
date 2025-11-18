@@ -38,8 +38,8 @@ export const ProductCard: React.FC<{
 
     const handleBuyNow = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
-        // For a true "Buy Now" experience, add the item and go directly to checkout.
-        window.top.location.href = `https://vellaperfumeria.com/checkout/?add-to-cart=${product.id}`;
+        // Redirect to the cart page to reliably add the item before checkout.
+        window.top.location.href = `https://vellaperfumeria.com/cart/?add-to-cart=${product.id}&quantity=1`;
     };
 
     const handleQuickBuy = (e: React.MouseEvent<HTMLButtonElement>) => {

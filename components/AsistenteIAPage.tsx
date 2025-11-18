@@ -32,9 +32,6 @@ const AsistenteIAPage: React.FC = () => {
     useEffect(() => {
         // Initialize the AI chat session
         try {
-            if (!process.env.API_KEY) {
-                throw new Error("API key is not configured.");
-            }
             const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
             const newChat = ai.chats.create({
                 model: 'gemini-2.5-flash',
@@ -54,37 +51,42 @@ const AsistenteIAPage: React.FC = () => {
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         }
-    }, [messages]);
+    }, [messages, isProcessing]);
 
     const handleSendMessage = async (messageText: string) => {
         if (!messageText.trim() || isProcessing || !chat) {
             if (!chat) setError("El asistente no está disponible en este momento.");
             return;
         }
-    
-        setError(null);
-        setIsProcessing(true);
-    
+
         const userMessage: Message = { role: 'user', text: messageText };
-        // Add user message and a "typing" indicator
-        setMessages(prev => [...prev, userMessage, { role: 'model', text: '...' }]);
+        setMessages(prev => [...prev, userMessage, { role: 'model', text: '' }]);
         setInput('');
-    
+        setIsProcessing(true);
+        setError(null);
+
         try {
-            // Using the non-streaming version for robustness
-            const response = await chat.sendMessage({ message: messageText });
-            const modelText = response.text;
-            const modelMessage: Message = { role: 'model', text: modelText };
-    
-            // Replace the "typing" indicator with the final response
-            setMessages(prev => [...prev.slice(0, -1), modelMessage]);
-    
+            const responseStream = await chat.sendMessageStream({ message: messageText });
+
+            for await (const chunk of responseStream) {
+                const chunkText = chunk.text;
+                setMessages(prev => {
+                    const newMessages = [...prev];
+                    const lastMessage = newMessages[newMessages.length - 1];
+                    lastMessage.text += chunkText;
+                    return newMessages;
+                });
+            }
         } catch (e) {
             console.error("Error sending message to Gemini:", e);
             const errorMessage = "Lo siento, ha ocurrido un error al procesar tu solicitud. Por favor, inténtalo de nuevo más tarde.";
             setError(errorMessage);
-            // Replace the "typing" indicator with the error message
-            setMessages(prev => [...prev.slice(0, -1), { role: 'model', text: errorMessage }]);
+            setMessages(prev => {
+                const newMessages = [...prev];
+                const lastMessage = newMessages[newMessages.length - 1];
+                lastMessage.text = errorMessage;
+                return newMessages;
+            });
         } finally {
             setIsProcessing(false);
         }
@@ -105,7 +107,7 @@ const AsistenteIAPage: React.FC = () => {
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="text-center mb-10">
-                <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Logo de Vellaperfumeria" className="w-auto h-24 mx-auto mb-4" />
+                <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%225&ssl=1" alt="Logo de Vellaperfumeria" className="w-auto h-24 mx-auto mb-4" />
                 <h1 className="text-4xl font-extrabold text-black tracking-tight">Asistente de Belleza IA</h1>
                 <p className="mt-2 text-lg text-gray-600">¿Necesitas ayuda? Pide recomendaciones y consejos sobre nuestros productos.</p>
             </div>
@@ -123,31 +125,34 @@ const AsistenteIAPage: React.FC = () => {
                         </div>
                     )}
 
-                    {messages.map((msg, index) => (
-                        <div key={index} className={`flex items-start gap-4 ${msg.role === 'user' ? 'justify-end' : ''}`}>
-                             {msg.role === 'model' && (
-                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-purple/30 flex items-center justify-center">
-                                    <SparklesIcon />
-                                </div>
-                            )}
-                            <div className={`max-w-md p-4 rounded-2xl ${msg.role === 'user' ? 'bg-gray-100 text-gray-800 rounded-br-none' : 'bg-brand-purple/20 text-gray-800 rounded-bl-none'}`}>
-                                 {msg.text === '...' && isProcessing ? (
-                                     <div className="flex items-center space-x-2">
-                                        <div className="w-2 h-2 bg-brand-purple rounded-full animate-pulse"></div>
-                                        <div className="w-2 h-2 bg-brand-purple rounded-full animate-pulse [animation-delay:0.2s]"></div>
-                                        <div className="w-2 h-2 bg-brand-purple rounded-full animate-pulse [animation-delay:0.4s]"></div>
+                    {messages.map((msg, index) => {
+                        const isLastMessage = index === messages.length - 1;
+                        return (
+                            <div key={index} className={`flex items-start gap-4 ${msg.role === 'user' ? 'justify-end' : ''}`}>
+                                 {msg.role === 'model' && (
+                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-purple/30 flex items-center justify-center">
+                                        <SparklesIcon />
                                     </div>
-                                ) : (
-                                     <p className="whitespace-pre-wrap">{msg.text}</p>
+                                )}
+                                <div className={`max-w-md p-4 rounded-2xl ${msg.role === 'user' ? 'bg-gray-100 text-gray-800 rounded-br-none' : 'bg-brand-purple/20 text-gray-800 rounded-bl-none'}`}>
+                                     {isProcessing && isLastMessage && msg.text === '' ? (
+                                         <div className="flex items-center space-x-2">
+                                            <div className="w-2 h-2 bg-brand-purple rounded-full animate-pulse"></div>
+                                            <div className="w-2 h-2 bg-brand-purple rounded-full animate-pulse [animation-delay:0.2s]"></div>
+                                            <div className="w-2 h-2 bg-brand-purple rounded-full animate-pulse [animation-delay:0.4s]"></div>
+                                        </div>
+                                    ) : (
+                                         <p className="whitespace-pre-wrap">{msg.text}</p>
+                                    )}
+                                </div>
+                                {msg.role === 'user' && (
+                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                        <UserIcon />
+                                    </div>
                                 )}
                             </div>
-                            {msg.role === 'user' && (
-                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <UserIcon />
-                                </div>
-                            )}
-                        </div>
-                    ))}
+                        );
+                    })}
                     
                     {error && messages.length === 0 && (
                          <div className="flex items-start gap-4">
@@ -161,7 +166,7 @@ const AsistenteIAPage: React.FC = () => {
                     )}
                 </div>
 
-                {messages.length <= 1 && !isProcessing && (
+                {messages.length === 0 && !isProcessing && (
                     <div className="p-6 pt-0 text-center text-gray-500">
                         <p className="mb-4 text-sm">O prueba con una de estas sugerencias:</p>
                         <div className="flex flex-wrap justify-center gap-2">

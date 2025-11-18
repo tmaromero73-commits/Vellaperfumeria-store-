@@ -1,4 +1,5 @@
 
+
 import React, { useState, useMemo, useEffect } from 'react';
 import ProductList from './components/ProductList';
 import ProductDetailPage from './components/ProductDetailPage';
@@ -109,7 +110,7 @@ const App: React.FC = () => {
         const baseUrl = 'https://vellaperfumeria.com/cart/';
         
         // Construct the query parameters to add all items at once.
-        // WooCommerce supports multiple 'add-to-cart' parameters in the URL.
+        // This URL will attempt to add all items to the cart and redirect to the cart page.
         const queryParams = cartItems.map(item => {
             const productId = item.product.id;
             const quantity = item.quantity;
@@ -147,7 +148,7 @@ const App: React.FC = () => {
                 }
                 return [homeCrumb, { label: 'Tienda', onClick: () => handleNavigate('products') }];
             case 'ofertas':
-                return [homeCrumb, { label: 'Ofertas' }];
+                return [homeCrumb, { label: 'Ideas para Regalar' }];
             case 'ia':
                 return [homeCrumb, { label: 'Asistente IA' }];
              case 'catalog':
@@ -197,13 +198,7 @@ const App: React.FC = () => {
             case 'ia':
                 return <AsistenteIAPage />;
             case 'catalog':
-                return <CatalogPage 
-                    currency={currency}
-                    onAddToCart={handleAddToCart}
-                    onProductSelect={handleProductSelect}
-                    onQuickView={setQuickViewProduct}
-                    onCartClick={handleCartClick}
-                />;
+                return <CatalogPage />;
              case 'about':
                 return <div className="text-center p-8 container mx-auto"><h1 className="text-3xl font-bold text-gray-900">Sobre Nosotros</h1><p className="mt-4 max-w-2xl mx-auto text-gray-800">Somos Vellaperfumeria, tu tienda de confianza para cosméticos y bienestar. Descubre fragancias que definen tu esencia y productos que cuidan de ti. Calidad y exclusividad en cada artículo.</p></div>;
             case 'contact':

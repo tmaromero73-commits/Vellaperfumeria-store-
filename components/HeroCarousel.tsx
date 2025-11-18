@@ -1,165 +1,111 @@
 
+import React, { useState, useEffect, useCallback } from 'react';
+import type { View } from './types';
 
-import React, { useRef, useState, useEffect } from 'react';
-import type { Product } from './types';
-import { allProducts } from './products';
-
-interface HeroBannerProps {
-    onProductSelect: (product: Product) => void;
+interface HeroCarouselProps {
+    onNavigate: (view: View) => void;
 }
 
-const ArrowLeftIcon = () => (
+const slides = [
+    {
+        imageUrl: 'https://images.unsplash.com/photo-1557175344-7e074816f225?q=80&w=1770&auto=format&fit=crop',
+        title: 'Descubre tu Esencia Única',
+        subtitle: 'Explora nuestra colección de fragancias exclusivas.',
+        buttonText: 'Ver Perfumes',
+        view: 'fragrance' as View,
+    },
+    {
+        imageUrl: 'https://images.unsplash.com/photo-1590439471364-192aa70c0b23?q=80&w=1770&auto=format&fit=crop',
+        title: 'El Arte del Cuidado Facial',
+        subtitle: 'Rutinas personalizadas para una piel radiante.',
+        buttonText: 'Ver Cuidado Facial',
+        view: 'skincare' as View,
+    },
+    {
+        imageUrl: 'https://images.unsplash.com/photo-1620469259442-421f1a2f5e23?q=80&w=1887&auto=format&fit=crop',
+        title: 'Colores que Inspiran',
+        subtitle: 'Maquillaje para cada ocasión y estilo.',
+        buttonText: 'Ver Maquillaje',
+        view: 'makeup' as View,
+    },
+];
+
+const ChevronLeftIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
     </svg>
 );
 
-const ArrowRightIcon = () => (
+const ChevronRightIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
     </svg>
 );
 
-const slides = [
-    {
-        productId: 46801,
-        imageUrl: "https://media-cdn.oriflame.com/digitalPromotionsMedia/images/banner-media/ES/20899847/20866148.jpg?version=3",
-        tagline: "¡NUEVO! EAU DE PARFUM DIVINE DARK VELVET",
-        headline: "Un aroma muy femenino para vivir la noche",
-        buttonText: "VER AHORA",
-    },
-    {
-        productId: 46319,
-        imageUrl: "https://media-cdn.oriflame.com/contentImage?externalMediaId=b3ab03fd-b0ec-4e4f-877b-344df824b985&name=4_Promo_split_Novage_600x450&inputFormat=jpg",
-        tagline: "CUIDADO AVANZADO",
-        headline: "Descubre la luminosidad con la Niacinamida",
-        buttonText: "DESCUBRIR",
-    },
-    {
-        productId: 46901,
-        imageUrl: "https://media-cdn.oriflame.com/contentImage?externalMediaId=af7899cd-4872-478b-a836-b22fdd1b8358&name=5_Promo_split_Pearls_600x450+copy&inputFormat=jpg",
-        tagline: "ICÓNICO",
-        headline: "El toque final para un look radiante",
-        buttonText: "COMPRAR",
-    },
-];
 
-const HeroBanner: React.FC<HeroBannerProps> = ({ onProductSelect }) => {
+const HeroCarousel: React.FC<HeroCarouselProps> = ({ onNavigate }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-    // FIX: Replaced NodeJS.Timeout with ReturnType<typeof setTimeout> for browser compatibility.
-    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    const resetTimeout = () => {
-        if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
-        }
+    const nextSlide = useCallback(() => {
+        setCurrentIndex(prevIndex => (prevIndex === slides.length - 1 ? 0 : prevIndex + 1));
+    }, []);
+
+    const prevSlide = () => {
+        setCurrentIndex(prevIndex => (prevIndex === 0 ? slides.length - 1 : prevIndex - 1));
     };
 
     useEffect(() => {
-        resetTimeout();
-        timeoutRef.current = setTimeout(
-            () =>
-                setCurrentIndex((prevIndex) =>
-                    prevIndex === slides.length - 1 ? 0 : prevIndex + 1
-                ),
-            5000 // Change slide every 5 seconds
-        );
-
-        return () => {
-            resetTimeout();
-        };
-    }, [currentIndex]);
-
-    const prevSlide = () => {
-        const isFirstSlide = currentIndex === 0;
-        const newIndex = isFirstSlide ? slides.length - 1 : currentIndex - 1;
-        setCurrentIndex(newIndex);
-    };
-
-    const nextSlide = () => {
-        const isLastSlide = currentIndex === slides.length - 1;
-        const newIndex = isLastSlide ? 0 : currentIndex + 1;
-        setCurrentIndex(newIndex);
-    };
-
-    const goToSlide = (slideIndex: number) => {
-        setCurrentIndex(slideIndex);
-    };
+        const slideInterval = setInterval(nextSlide, 5000);
+        return () => clearInterval(slideInterval);
+    }, [nextSlide]);
     
-    const handleCTAClick = (productId: number) => {
-        const product = allProducts.find(p => p.id === productId);
-        if (product) {
-            onProductSelect(product);
-        }
-    }
-
     return (
-        <div className="h-[60vh] max-h-[600px] w-full m-auto relative group rounded-lg overflow-hidden shadow-lg">
-            <div
-                style={{ backgroundImage: `url(${slides[currentIndex].imageUrl})` }}
-                className="w-full h-full bg-center bg-cover duration-500"
-            >
-                 <div className="w-full h-full flex flex-col items-center justify-center bg-black/40 text-white p-8 text-center">
-                    <p className="text-sm md:text-base font-bold uppercase tracking-widest mb-2 animate-fade-in-down">
-                        {slides[currentIndex].tagline}
-                    </p>
-                    <h2 className="text-3xl md:text-5xl font-extrabold leading-tight max-w-2xl mb-6 animate-fade-in-up">
-                        {slides[currentIndex].headline}
-                    </h2>
-                    <button 
-                        onClick={() => handleCTAClick(slides[currentIndex].productId)}
-                        className="bg-white text-black font-bold py-3 px-8 rounded-md hover:bg-gray-200 transition-colors transform hover:scale-105 animate-fade-in-up"
-                        style={{animationDelay: '0.3s'}}
-                    >
-                        {slides[currentIndex].buttonText}
-                    </button>
-                </div>
-            </div>
-            {/* Left Arrow */}
-            <div className="hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] left-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer hover:bg-black/40 transition">
-                <button onClick={prevSlide} aria-label="Diapositiva anterior">
-                    <ArrowLeftIcon />
-                </button>
-            </div>
-            {/* Right Arrow */}
-            <div className="hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] right-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer hover:bg-black/40 transition">
-                <button onClick={nextSlide} aria-label="Siguiente diapositiva">
-                    <ArrowRightIcon />
-                </button>
-            </div>
-            <div className="flex top-4 justify-center py-2 absolute bottom-5 left-0 right-0">
-                {slides.map((slide, slideIndex) => (
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+             <div className="w-full h-[60vh] max-h-[500px] m-auto relative group rounded-lg overflow-hidden shadow-lg">
+                {slides.map((slide, index) => (
                     <div
-                        key={slideIndex}
-                        onClick={() => goToSlide(slideIndex)}
-                        className={`text-2xl cursor-pointer p-1 ${currentIndex === slideIndex ? 'text-white' : 'text-white/50'}`}
-                        role="button"
-                        aria-label={`Ir a la diapositiva ${slideIndex + 1}`}
+                        key={index}
+                        className={`absolute top-0 left-0 w-full h-full bg-cover bg-center transition-opacity duration-1000 ease-in-out ${index === currentIndex ? 'opacity-100' : 'opacity-0'}`}
+                        style={{ backgroundImage: `url(${slide.imageUrl})` }}
                     >
-                        ●
+                        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                            <div className="text-center text-white p-4">
+                                <h2 className="text-4xl md:text-5xl font-extrabold font-heading drop-shadow-lg" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.6)'}}>{slide.title}</h2>
+                                <p className="mt-4 text-lg md:text-xl drop-shadow-md" style={{textShadow: '1px 1px 3px rgba(0,0,0,0.6)'}}>{slide.subtitle}</p>
+                                <button
+                                    onClick={() => onNavigate(slide.view)}
+                                    className="mt-8 bg-white text-brand-primary font-bold py-3 px-8 rounded-lg shadow-md hover:bg-brand-purple-dark hover:text-white transition-all duration-300 transform hover:scale-105"
+                                >
+                                    {slide.buttonText}
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 ))}
+                
+                {/* Left Arrow */}
+                <div className="hidden group-hover:block absolute top-1/2 -translate-y-1/2 left-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer hover:bg-black/40 transition-colors">
+                    <button onClick={prevSlide} aria-label="Anterior diapositiva"><ChevronLeftIcon /></button>
+                </div>
+                {/* Right Arrow */}
+                <div className="hidden group-hover:block absolute top-1/2 -translate-y-1/2 right-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer hover:bg-black/40 transition-colors">
+                    <button onClick={nextSlide} aria-label="Siguiente diapositiva"><ChevronRightIcon /></button>
+                </div>
+
+                {/* Dots */}
+                <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex space-x-2">
+                    {slides.map((_, index) => (
+                        <button
+                            key={index}
+                            onClick={() => setCurrentIndex(index)}
+                            className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentIndex ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/75'}`}
+                            aria-label={`Ir a diapositiva ${index + 1}`}
+                        />
+                    ))}
+                </div>
             </div>
-             <style>
-                {`
-                @keyframes fade-in-down {
-                    from { opacity: 0; transform: translateY(-20px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-                .animate-fade-in-down {
-                    animation: fade-in-down 0.6s ease-out forwards;
-                }
-                 @keyframes fade-in-up {
-                    from { opacity: 0; transform: translateY(20px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-                .animate-fade-in-up {
-                    animation: fade-in-up 0.6s ease-out forwards;
-                }
-                `}
-            </style>
         </div>
     );
 };
 
-export default HeroBanner;
+export default HeroCarousel;

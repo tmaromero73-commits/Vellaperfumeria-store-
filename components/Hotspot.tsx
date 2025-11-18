@@ -1,7 +1,3 @@
-
-
-
-
 import React, { useState, useRef, useEffect } from 'react';
 import type { Product } from './types';
 import type { Currency } from './currency';
@@ -31,7 +27,7 @@ const Hotspot: React.FC<HotspotProps> = ({ data, currency, onAddToCart }) => {
     // Close popover when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
+            if (popoverRef.current && !popoverRef.current.contains(event.target as Node) && btnRef.current && !btnRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
             }
         };
@@ -63,9 +59,9 @@ const Hotspot: React.FC<HotspotProps> = ({ data, currency, onAddToCart }) => {
         <div
             className="absolute z-10"
             style={{ left: `${data.x}%`, top: `${data.y}%`, transform: 'translate(-50%, -50%)' }}
-            ref={popoverRef}
         >
             <button
+                ref={btnRef}
                 onClick={() => setIsOpen(!isOpen)}
                 className="w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg transform transition-transform hover:scale-110"
                 aria-label={`Ver producto ${product.name}`}
@@ -77,7 +73,7 @@ const Hotspot: React.FC<HotspotProps> = ({ data, currency, onAddToCart }) => {
             </button>
 
             {isOpen && (
-                <div className={popoverClasses()}>
+                <div className={popoverClasses()} ref={popoverRef}>
                      <div className="bg-white rounded-lg shadow-2xl w-64 overflow-hidden border animate-fade-in-up">
                         <img src={product.imageUrl} alt={product.name} className="w-full h-40 object-contain p-2" />
                         <div className="p-3">
@@ -85,9 +81,9 @@ const Hotspot: React.FC<HotspotProps> = ({ data, currency, onAddToCart }) => {
                             <p className="text-gray-600 text-xs mb-2">{product.brand}</p>
                             <p className="font-bold text-lg mb-3">{formatCurrency(product.price, currency)}</p>
                             <button
-                                ref={btnRef}
-                                onClick={() => {
-                                    onAddToCart(product, btnRef.current, null);
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onAddToCart(product, e.currentTarget, null);
                                     setIsOpen(false);
                                 }}
                                 className="w-full bg-brand-purple text-brand-primary font-semibold py-2 px-3 rounded-md hover:bg-brand-purple-dark transition-colors text-sm flex items-center justify-center"
