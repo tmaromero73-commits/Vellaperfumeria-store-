@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import type { View } from './types';
 
@@ -15,9 +16,9 @@ const ShopIcon = ({ isActive }: { isActive: boolean }) => (
     </svg>
 );
 
-const SkincareIcon = ({ isActive }: { isActive: boolean }) => (
+const GiftIcon = ({ isActive }: { isActive: boolean }) => (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive ? 2.5 : 2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v13m0-13V6a2 2 0 012-2h2a2 2 0 012 2v2m-6 0h6m-6 0a2 2 0 00-2 2v11a2 2 0 002 2h6a2 2 0 002-2V10a2 2 0 00-2-2h-6z" />
     </svg>
 );
 
@@ -27,41 +28,45 @@ const CatalogIcon = ({ isActive }: { isActive: boolean }) => (
     </svg>
 );
 
-const UserIcon = ({ isActive }: { isActive: boolean }) => (
+const HelpIcon = ({ isActive }: { isActive: boolean }) => (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive ? 2.5 : 2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+       <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.79 4 4 0 .863-.29 1.66-.785 2.298l-1.397 1.4c-.42.42-.663 1.004-.663 1.622v.51m-3.46-3.46a.75.75 0 011.06 0l2.5 2.5a.75.75 0 01-1.06 1.06l-2.5-2.5a.75.75 0 010-1.06zM12 21a9 9 0 100-18 9 9 0 000 18z" />
     </svg>
 );
 
 interface BottomNavBarProps {
-    onNavigate: (view: View) => void;
+    onNavigate: (view: View, payload?: any) => void;
     currentView: View;
+    currentCategory: string;
 }
 
-const BottomNavBar: React.FC<BottomNavBarProps> = ({ onNavigate, currentView }) => {
+const BottomNavBar: React.FC<BottomNavBarProps> = ({ onNavigate, currentView, currentCategory }) => {
     
     const navItems = [
-        { view: 'home', label: 'Inicio', icon: HomeIcon },
-        { view: 'products', label: 'Tienda', icon: ShopIcon },
-        { view: 'skincare', label: 'Cuidado', icon: SkincareIcon },
-        { view: 'catalog', label: 'Catálogo', icon: CatalogIcon },
-        { view: 'contact', label: 'Cuenta', icon: UserIcon },
+        { view: 'home', label: 'Inicio', icon: HomeIcon, payload: undefined },
+        { view: 'products', label: 'Tienda', icon: ShopIcon, payload: 'all' },
+        { view: 'ofertas', label: 'Ofertas', icon: GiftIcon, payload: undefined },
+        { view: 'catalog', label: 'Catálogo', icon: CatalogIcon, payload: undefined },
+        { view: 'contact', label: 'Ayuda', icon: HelpIcon, payload: undefined },
     ] as const;
 
     return (
         <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-[0_-2px_5px_rgba(0,0,0,0.05)] z-30">
             <nav className="flex justify-around items-center h-16">
                 {navItems.map(item => {
-                    const isActive = currentView === item.view;
+                    const isActive = item.view === 'products'
+                        ? (currentView === 'products' || currentView === 'productDetail')
+                        : currentView === item.view;
+                        
                     const Icon = item.icon;
 
                     const handleClick = () => {
-                         onNavigate(item.view);
+                         onNavigate(item.view, item.payload);
                     };
 
                     return (
                         <button
-                            key={item.view}
+                            key={item.label}
                             onClick={handleClick}
                             className={`flex flex-col items-center justify-center text-xs font-medium w-full h-full transition-colors ${
                                 isActive ? 'text-brand-purple-dark' : 'text-gray-500 hover:text-brand-purple-dark'

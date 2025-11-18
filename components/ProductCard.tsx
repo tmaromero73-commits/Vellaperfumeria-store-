@@ -1,15 +1,10 @@
 
+
 import React, { useRef, useState } from 'react';
 import { type Currency, formatCurrency } from './currency';
 import type { Product } from './types';
 
 // --- ICONS ---
-const QuickBuyIcon = () => (
-    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-    </svg>
-);
-
 const HeartIcon: React.FC<{isFilled: boolean}> = ({ isFilled }) => (
     <svg className="h-6 w-6" fill={isFilled ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
         <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z" />
@@ -27,25 +22,15 @@ export const ProductCard: React.FC<{
     product: Product;
     currency: Currency;
     onAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
+    onQuickAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     onProductSelect: (product: Product) => void;
     onQuickView: (product: Product) => void;
-    onCartClick: () => void;
-}> = ({ product, currency, onAddToCart, onProductSelect, onQuickView, onCartClick }) => {
+}> = ({ product, currency, onAddToCart, onQuickAddToCart, onProductSelect, onQuickView }) => {
     const btnRef = useRef<HTMLButtonElement>(null);
     const [isWishlisted, setIsWishlisted] = useState(false);
 
     const isDiscounted = product.regularPrice && product.regularPrice > product.price;
-
-    const handleBuyNow = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.stopPropagation();
-        // Redirect to the cart page to reliably add the item before checkout.
-        window.top.location.href = `https://vellaperfumeria.com/cart/?add-to-cart=${product.id}&quantity=1`;
-    };
-
-    const handleQuickBuy = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.stopPropagation();
-        onAddToCart(product, e.currentTarget, null);
-    };
+    const hasVariants = product.variants && Object.keys(product.variants).length > 0;
 
     const handleToggleWishlist = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
@@ -65,6 +50,16 @@ export const ProductCard: React.FC<{
             </div>
         );
     };
+    
+    const handleAddToCartClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
+        if (hasVariants) {
+            onProductSelect(product);
+        } else {
+            onQuickAddToCart(product, btnRef.current, null);
+        }
+    };
+
 
     return (
         <div 
@@ -76,13 +71,6 @@ export const ProductCard: React.FC<{
 
                 {/* Hover Overlay */}
                 <div className="absolute top-4 right-4 flex flex-col gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <button
-                        onClick={handleQuickBuy}
-                        className="bg-white/80 backdrop-blur-sm p-2.5 rounded-full text-black hover:bg-white shadow-md transition-all transform hover:scale-110"
-                        aria-label={`Compra rápida de ${product.name}`}
-                    >
-                        <QuickBuyIcon />
-                    </button>
                     <button
                         onClick={handleToggleWishlist}
                         className={`p-2.5 rounded-full text-black shadow-md transition-all transform hover:scale-110 ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white/80 backdrop-blur-sm hover:bg-white'}`}
@@ -101,7 +89,7 @@ export const ProductCard: React.FC<{
                     </div>
                 )}
                 <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{product.brand}</span>
-                <h3 className="text-sm font-semibold text-brand-primary mt-1 flex-grow cursor-pointer min-h-10">
+                <h3 className="text-base font-semibold text-brand-primary mt-1 flex-grow cursor-pointer min-h-10">
                     {product.name}
                 </h3>
                 
@@ -115,7 +103,7 @@ export const ProductCard: React.FC<{
                 )}
                 
                 <div className="mt-3 flex items-baseline justify-start gap-2">
-                    <p className={`text-lg font-bold ${isDiscounted ? 'text-red-600' : 'text-brand-primary'}`}>{formatCurrency(product.price, currency)}</p>
+                    <p className={`text-base font-bold ${isDiscounted ? 'text-red-600' : 'text-brand-primary'}`}>{formatCurrency(product.price, currency)}</p>
                     {isDiscounted && (
                         <p className="text-sm text-gray-400 line-through">{formatCurrency(product.regularPrice!, currency)}</p>
                     )}
@@ -124,19 +112,32 @@ export const ProductCard: React.FC<{
                 <div className="mt-4 flex flex-col gap-2">
                      <button
                         ref={btnRef}
-                        onClick={(e) => { e.stopPropagation(); onAddToCart(product, btnRef.current, null); }}
+                        onClick={handleAddToCartClick}
                         className="w-full bg-brand-primary text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-700 transition-colors text-sm"
                         aria-label={`Añadir ${product.name} al carrito`}
                     >
-                        Añadir al carrito
+                        {hasVariants ? 'Seleccionar Opciones' : 'Añadir al carrito'}
                     </button>
-                    <button
-                        onClick={handleBuyNow}
-                        className="w-full bg-gray-700 text-white font-semibold py-2 px-4 rounded-md hover:bg-black transition-colors text-sm"
-                        aria-label={`Comprar ahora ${product.name}`}
-                    >
-                        Comprar ahora
-                    </button>
+                    {hasVariants ? (
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onQuickView(product); }}
+                            className="block text-center w-full bg-gray-700 text-white font-semibold py-2 px-4 rounded-md hover:bg-black transition-colors text-sm"
+                            aria-label={`Vista Rápida de ${product.name}`}
+                        >
+                            Vista Rápida
+                        </button>
+                    ) : (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onAddToCart(product, null, null);
+                            }}
+                            className="block text-center w-full bg-gray-700 text-white font-semibold py-2 px-4 rounded-md hover:bg-black transition-colors text-sm"
+                            aria-label={`Comprar ahora ${product.name}`}
+                        >
+                            Comprar ahora
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

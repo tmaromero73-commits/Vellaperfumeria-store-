@@ -1,9 +1,12 @@
 
+
+
 // Variant types, used in Product
 export interface VariantOption {
     value: string;
     colorCode?: string;
     imageUrl?: string;
+    variationId?: number;
 }
 
 export interface ProductVariants {
@@ -42,4 +45,4 @@ export interface CartItem {
 }
 
 // App view type
-export type View = 'home' | 'products' | 'productDetail' | 'ofertas' | 'ia' | 'catalog' | 'about' | 'contact' | 'blog' | 'blogPost' | 'makeup' | 'fragrance' | 'wellness' | 'skincare';
+export type View = 'home' | 'products' | 'productDetail' | 'ofertas' | 'ia' | 'catalog' | 'about' | 'contact' | 'blog' | 'blogPost';

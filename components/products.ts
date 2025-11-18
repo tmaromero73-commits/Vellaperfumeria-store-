@@ -175,8 +175,8 @@ export const allProducts: Product[] = [
         reviewCount: 132,
         variants: {
             Tono: [
-                { value: 'Light', colorCode: '#F8E4D5' },
-                { value: 'Medium', colorCode: '#E6C4B0' },
+                { value: 'Light', colorCode: '#F8E4D5', variationId: 4323701 },
+                { value: 'Medium', colorCode: '#E6C4B0', variationId: 4323702 },
             ]
         }
     },
@@ -607,18 +607,18 @@ export const allProducts: Product[] = [
         reviewCount: 936,
         variants: {
             Tono: [
-                { value: 'Pale Ivory', colorCode: '#F9E0CF' },
-                { value: 'Vanilla', colorCode: '#F9E5CC' },
-                { value: 'Porcelain', colorCode: '#EACFBC' },
-                { value: 'Marble', colorCode: '#EAD0B6' },
-                { value: 'Light Rose', colorCode: '#EAD0C0' },
-                { value: 'Light Beige', colorCode: '#E0C0A5' },
-                { value: 'Soft Sand', colorCode: '#DFB8AA' },
-                { value: 'Beige Warm', colorCode: '#D7BAA4' },
-                { value: 'Natural Beige', colorCode: '#D7B4A4' },
-                { value: 'Sienna', colorCode: '#C19674' },
-                { value: 'Toast', colorCode: '#B27E5C' },
-                { value: 'Hazelnut', colorCode: '#8B6555' },
+                { value: 'Pale Ivory', colorCode: '#F9E0CF', variationId: 4690601 },
+                { value: 'Vanilla', colorCode: '#F9E5CC', variationId: 4690602 },
+                { value: 'Porcelain', colorCode: '#EACFBC', variationId: 4690603 },
+                { value: 'Marble', colorCode: '#EAD0B6', variationId: 4690604 },
+                { value: 'Light Rose', colorCode: '#EAD0C0', variationId: 4690605 },
+                { value: 'Light Beige', colorCode: '#E0C0A5', variationId: 4690606 },
+                { value: 'Soft Sand', colorCode: '#DFB8AA', variationId: 4690607 },
+                { value: 'Beige Warm', colorCode: '#D7BAA4', variationId: 4690608 },
+                { value: 'Natural Beige', colorCode: '#D7B4A4', variationId: 4690609 },
+                { value: 'Sienna', colorCode: '#C19674', variationId: 4690610 },
+                { value: 'Toast', colorCode: '#B27E5C', variationId: 4690611 },
+                { value: 'Hazelnut', colorCode: '#8B6555', variationId: 4690612 },
             ]
         }
     },
@@ -637,12 +637,12 @@ export const allProducts: Product[] = [
         reviewCount: 1421,
         variants: {
             Tono: [
-                { value: 'Vanilla Neutral', colorCode: '#F4D7B3' },
-                { value: 'Vanilla Cool', colorCode: '#F7D5BB' },
-                { value: 'Porcelain Warm', colorCode: '#EEC9B4' },
-                { value: 'Light Beige Neutral', colorCode: '#F0CAAA' },
-                { value: 'Light Ivory Neutral', colorCode: '#E1AE8F' },
-                { value: 'Beige Warm', colorCode: '#D2A282' },
+                { value: 'Vanilla Neutral', colorCode: '#F4D7B3', variationId: 4223601 },
+                { value: 'Vanilla Cool', colorCode: '#F7D5BB', variationId: 4223602 },
+                { value: 'Porcelain Warm', colorCode: '#EEC9B4', variationId: 4223603 },
+                { value: 'Light Beige Neutral', colorCode: '#F0CAAA', variationId: 4223604 },
+                { value: 'Light Ivory Neutral', colorCode: '#E1AE8F', variationId: 4223605 },
+                { value: 'Beige Warm', colorCode: '#D2A282', variationId: 4223606 },
             ]
         }
     },
@@ -661,13 +661,13 @@ export const allProducts: Product[] = [
         reviewCount: 954,
          variants: {
             Tono: [
-                { value: 'Vanilla Neutral', colorCode: '#F9DFBF' },
-                { value: 'Porcelain Warm', colorCode: '#E6C59D' },
-                { value: 'Light Beige Neutral', colorCode: '#E6C095' },
-                { value: 'Soft Sand', colorCode: '#E6BB95' },
-                { value: 'Ivory Neutral', colorCode: '#D9B08D' },
-                { value: 'Natural Beige', colorCode: '#D2A282' },
-                { value: 'Beige Warm', colorCode: '#C59A7D' },
+                { value: 'Vanilla Neutral', colorCode: '#F9DFBF', variationId: 4324401 },
+                { value: 'Porcelain Warm', colorCode: '#E6C59D', variationId: 4324402 },
+                { value: 'Light Beige Neutral', colorCode: '#E6C095', variationId: 4324403 },
+                { value: 'Soft Sand', colorCode: '#E6BB95', variationId: 4324404 },
+                { value: 'Ivory Neutral', colorCode: '#D9B08D', variationId: 4324405 },
+                { value: 'Natural Beige', colorCode: '#D2A282', variationId: 4324406 },
+                { value: 'Beige Warm', colorCode: '#C59A7D', variationId: 4324407 },
             ]
         }
     },
@@ -686,11 +686,11 @@ export const allProducts: Product[] = [
         reviewCount: 1973,
          variants: {
             Tono: [
-                { value: 'Vanilla', colorCode: '#E8C396' },
-                { value: 'Porcelain', colorCode: '#E9CAAD' },
-                { value: 'Light Ivory', colorCode: '#DABD9F' },
-                { value: 'Natural Beige', colorCode: '#B38659' },
-                { value: 'Amber', colorCode: '#B58D6A' },
+                { value: 'Vanilla', colorCode: '#E8C396', variationId: 3292201 },
+                { value: 'Porcelain', colorCode: '#E9CAAD', variationId: 3292202 },
+                { value: 'Light Ivory', colorCode: '#DABD9F', variationId: 3292203 },
+                { value: 'Natural Beige', colorCode: '#B38659', variationId: 3292204 },
+                { value: 'Amber', colorCode: '#B58D6A', variationId: 3292205 },
             ]
         }
     },
@@ -709,12 +709,12 @@ export const allProducts: Product[] = [
         reviewCount: 572,
         variants: {
             Tono: [
-                { value: 'Vanilla Neutral', colorCode: '#F9DFBF' },
-                { value: 'Marble Neutral', colorCode: '#E8C9A7' },
-                { value: 'Porcelain Cool', colorCode: '#FDE3D8' },
-                { value: 'Light Ivory Neutral', colorCode: '#E6C095' },
-                { value: 'Beige Neutral', colorCode: '#D5AC96' },
-                { value: 'Beige Warm', colorCode: '#D9AA88' },
+                { value: 'Vanilla Neutral', colorCode: '#F9DFBF', variationId: 4633201 },
+                { value: 'Marble Neutral', colorCode: '#E8C9A7', variationId: 4633202 },
+                { value: 'Porcelain Cool', colorCode: '#FDE3D8', variationId: 4633203 },
+                { value: 'Light Ivory Neutral', colorCode: '#E6C095', variationId: 4633204 },
+                { value: 'Beige Neutral', colorCode: '#D5AC96', variationId: 4633205 },
+                { value: 'Beige Warm', colorCode: '#D9AA88', variationId: 4633206 },
             ]
         }
     },
@@ -733,13 +733,13 @@ export const allProducts: Product[] = [
         reviewCount: 1004,
          variants: {
             Tono: [
-                { value: 'Vanilla Neutral', colorCode: '#F9DFBF' },
-                { value: 'Porcelain Warm', colorCode: '#E6C59D' },
-                { value: 'Marble Neutral', colorCode: '#E8C9A7' },
-                { value: 'Light Beige Neutral', colorCode: '#E6C095' },
-                { value: 'Soft Sand', colorCode: '#F2C6A9' },
-                { value: 'Light Ivory Neutral', colorCode: '#D5AC96' },
-                { value: 'Natural Beige', colorCode: '#D2A282' },
+                { value: 'Vanilla Neutral', colorCode: '#F9DFBF', variationId: 4210201 },
+                { value: 'Porcelain Warm', colorCode: '#E6C59D', variationId: 4210202 },
+                { value: 'Marble Neutral', colorCode: '#E8C9A7', variationId: 4210203 },
+                { value: 'Light Beige Neutral', colorCode: '#E6C095', variationId: 4210204 },
+                { value: 'Soft Sand', colorCode: '#F2C6A9', variationId: 4210205 },
+                { value: 'Light Ivory Neutral', colorCode: '#D5AC96', variationId: 4210206 },
+                { value: 'Natural Beige', colorCode: '#D2A282', variationId: 4210207 },
             ]
         }
     },
@@ -772,16 +772,16 @@ export const allProducts: Product[] = [
         reviewCount: 639,
         variants: {
             Tono: [
-                { value: 'Alabaster Cool', colorCode: '#E5BEAA' },
-                { value: 'Vanilla Neutral', colorCode: '#EBCAAB' },
-                { value: 'Porcelain Cool', colorCode: '#FAC9AA' },
-                { value: 'Beige Neutral', colorCode: '#DAAD87' },
-                { value: 'Ivory Neutral', colorCode: '#CBA077' },
-                { value: 'Beige Warm', colorCode: '#CEA17C' },
-                { value: 'Sun Beige Warm', colorCode: '#D9A170' },
-                { value: 'Amber Warm', colorCode: '#BC8055' },
-                { value: 'Caramel Warm', colorCode: '#AB693E' },
-                { value: 'Chestnut Warm', colorCode: '#835535' },
+                { value: 'Alabaster Cool', colorCode: '#E5BEAA', variationId: 4212501 },
+                { value: 'Vanilla Neutral', colorCode: '#EBCAAB', variationId: 4212502 },
+                { value: 'Porcelain Cool', colorCode: '#FAC9AA', variationId: 4212503 },
+                { value: 'Beige Neutral', colorCode: '#DAAD87', variationId: 4212504 },
+                { value: 'Ivory Neutral', colorCode: '#CBA077', variationId: 4212505 },
+                { value: 'Beige Warm', colorCode: '#CEA17C', variationId: 4212506 },
+                { value: 'Sun Beige Warm', colorCode: '#D9A170', variationId: 4212507 },
+                { value: 'Amber Warm', colorCode: '#BC8055', variationId: 4212508 },
+                { value: 'Caramel Warm', colorCode: '#AB693E', variationId: 4212509 },
+                { value: 'Chestnut Warm', colorCode: '#835535', variationId: 4212510 },
             ]
         }
     },
@@ -814,10 +814,10 @@ export const allProducts: Product[] = [
         reviewCount: 232,
         tag: 'NOVEDAD',
         variants: { Tono: [
-          { value: 'Light', colorCode: '#F5D3B8' },
-          { value: 'Fair', colorCode: '#EBC7A9' },
-          { value: 'Medium', colorCode: '#D8B18E' },
-          { value: 'Dark', colorCode: '#C49871' },
+          { value: 'Light', colorCode: '#F5D3B8', variationId: 4613401 },
+          { value: 'Fair', colorCode: '#EBC7A9', variationId: 4613402 },
+          { value: 'Medium', colorCode: '#D8B18E', variationId: 4613403 },
+          { value: 'Dark', colorCode: '#C49871', variationId: 4613404 },
         ]}
     },
     {
@@ -834,9 +834,9 @@ export const allProducts: Product[] = [
         rating: 4.8,
         reviewCount: 686,
         variants: { Tono: [
-          { value: 'Light', colorCode: '#F4D9C3' },
-          { value: 'Medium', colorCode: '#E3C1A6' },
-          { value: 'Dark', colorCode: '#D3A989' },
+          { value: 'Light', colorCode: '#F4D9C3', variationId: 3564101 },
+          { value: 'Medium', colorCode: '#E3C1A6', variationId: 3564102 },
+          { value: 'Dark', colorCode: '#D3A989', variationId: 3564103 },
         ]}
     },
     {
@@ -853,8 +853,8 @@ export const allProducts: Product[] = [
         rating: 4.8,
         reviewCount: 369,
         variants: { Tono: [
-          { value: 'Light', colorCode: '#F2D3B8' },
-          { value: 'Medium', colorCode: '#E7BE9D' },
+          { value: 'Light', colorCode: '#F2D3B8', variationId: 4211301 },
+          { value: 'Medium', colorCode: '#E7BE9D', variationId: 4211302 },
         ]}
     },
     {
@@ -871,8 +871,8 @@ export const allProducts: Product[] = [
         rating: 4.9,
         reviewCount: 451,
         variants: { Tono: [
-          { value: 'Pink', colorCode: '#E6A4B4' },
-          { value: 'Coral', colorCode: '#F4B08B' },
+          { value: 'Pink', colorCode: '#E6A4B4', variationId: 4076901 },
+          { value: 'Coral', colorCode: '#F4B08B', variationId: 4076902 },
         ]}
     },
     {
@@ -889,8 +889,8 @@ export const allProducts: Product[] = [
         rating: 4.7,
         reviewCount: 723,
         variants: { Tono: [
-          { value: 'Cool Pink', colorCode: '#F7C8E0' },
-          { value: 'Coral Pink', colorCode: '#FFAACF' },
+          { value: 'Cool Pink', colorCode: '#F7C8E0', variationId: 3881001 },
+          { value: 'Coral Pink', colorCode: '#FFAACF', variationId: 3881002 },
         ]}
     },
     {
@@ -907,8 +907,8 @@ export const allProducts: Product[] = [
         rating: 4.9,
         reviewCount: 2588,
         variants: { Tono: [
-          { value: 'Natural Radiance', colorCode: '#D9A170' },
-          { value: 'Luminous Peach', colorCode: '#E5B099' },
+          { value: 'Natural Radiance', colorCode: '#D9A170', variationId: 4700001 },
+          { value: 'Luminous Peach', colorCode: '#E5B099', variationId: 4700002 },
         ]}
     },
     {
@@ -940,10 +940,10 @@ export const allProducts: Product[] = [
         reviewCount: 510,
         tag: 'NOVEDAD',
         variants: { Tono: [
-            { value: 'Sparkling Rose', colorCode: '#F8B195' },
-            { value: 'Glimmering Peach', colorCode: '#F67280' },
-            { value: 'Dazzling Berry', colorCode: '#C06C84' },
-            { value: 'Radiant Bronze', colorCode: '#6C5B7B' },
+            { value: 'Sparkling Rose', colorCode: '#F8B195', variationId: 4694001 },
+            { value: 'Glimmering Peach', colorCode: '#F67280', variationId: 4694002 },
+            { value: 'Dazzling Berry', colorCode: '#C06C84', variationId: 4694003 },
+            { value: 'Radiant Bronze', colorCode: '#6C5B7B', variationId: 4694004 },
         ]}
     },
     {
@@ -960,10 +960,10 @@ export const allProducts: Product[] = [
         rating: 4.8,
         reviewCount: 1466,
         variants: { Tono: [
-            { value: 'Sublime Radiance', colorCode: '#EACDC2' },
-            { value: 'Luminous Peach', colorCode: '#E4B699' },
-            { value: 'Golden Bronze', colorCode: '#D6A07D' },
-            { value: 'Matte Bronze', colorCode: '#C88A61' },
+            { value: 'Sublime Radiance', colorCode: '#EACDC2', variationId: 4491701 },
+            { value: 'Luminous Peach', colorCode: '#E4B699', variationId: 4491702 },
+            { value: 'Golden Bronze', colorCode: '#D6A07D', variationId: 4491703 },
+            { value: 'Matte Bronze', colorCode: '#C88A61', variationId: 4491704 },
         ]}
     },
     // New products

@@ -28,7 +28,7 @@ const WhatsAppIcon = () => (
 );
 
 interface FooterProps {
-    onNavigate: (view: View) => void;
+    onNavigate: (view: View, payload?: any) => void;
 }
 
 const FooterLink: React.FC<{ onClick: () => void; children: React.ReactNode }> = ({ onClick, children }) => (
@@ -47,42 +47,42 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         <footer className="bg-brand-primary text-white border-t border-gray-800">
             <div className="container mx-auto px-6 py-16">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-center md:text-left">
-                    {/* Column 1: Branding */}
                     <div className="sm:col-span-2 lg:col-span-1">
-                         <a href="https://vellaperfumeria.com" target="_top" className="inline-block hover:opacity-80 transition-opacity mb-4 cursor-pointer">
-                             <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-28 w-auto mx-auto md:mx-0" />
-                        </a>
+                         <form action="https://vellaperfumeria.com" method="GET" target="_top">
+                            <button type="submit" className="inline-block hover:opacity-80 transition-opacity mb-4 cursor-pointer">
+                                <img src="https://vellaperfumeria.com/wp-content/uploads/2024/06/vellaperfumeralogo.png" alt="Vellaperfumeria Logo" className="h-28 w-auto mx-auto md:mx-0 logo-inverted" />
+                            </button>
+                        </form>
                         <h2 className="text-xl font-bold tracking-wider text-white">Vellaperfumeria</h2>
                         <p className="text-gray-400 text-sm mt-2">
                             Tu esencia, tu belleza, tu tienda.
                         </p>
                     </div>
 
-                    {/* Column 2: Navegación */}
                     <div>
                         <h3 className="text-base font-bold tracking-widest uppercase mb-4 text-white">Navegación</h3>
                         <ul className="space-y-2 text-sm">
                            <li>
-                                <a 
-                                    href="https://vellaperfumeria.com"
-                                    target="_top"
-                                    className="text-gray-400 hover:text-white transition-colors hover:underline"
-                                >
-                                    Inicio
-                                </a>
+                                <form action="https://vellaperfumeria.com" method="GET" target="_top">
+                                    <button
+                                        type="submit"
+                                        className="text-gray-400 hover:text-white transition-colors hover:underline"
+                                    >
+                                        Inicio
+                                    </button>
+                                </form>
                             </li>
-                           <FooterLink onClick={() => onNavigate('products')}>Tienda</FooterLink>
-                           <FooterLink onClick={() => onNavigate('skincare')}>Cuidado Facial</FooterLink>
-                           <FooterLink onClick={() => onNavigate('makeup')}>Maquillaje</FooterLink>
-                           <FooterLink onClick={() => onNavigate('fragrance')}>Fragancias</FooterLink>
-                           <FooterLink onClick={() => onNavigate('wellness')}>Wellness</FooterLink>
+                           <FooterLink onClick={() => onNavigate('products', 'all')}>Tienda</FooterLink>
+                           <FooterLink onClick={() => onNavigate('products', 'skincare')}>Cuidado Facial</FooterLink>
+                           <FooterLink onClick={() => onNavigate('products', 'makeup')}>Maquillaje</FooterLink>
+                           <FooterLink onClick={() => onNavigate('products', 'perfume')}>Fragancias</FooterLink>
+                           <FooterLink onClick={() => onNavigate('products', 'wellness')}>Wellness</FooterLink>
                            <FooterLink onClick={() => onNavigate('ofertas')}>Ideas Regalo</FooterLink>
                            <FooterLink onClick={() => onNavigate('catalog')}>Catálogo</FooterLink>
                            <FooterLink onClick={() => onNavigate('ia')}>Asistente IA</FooterLink>
                         </ul>
                     </div>
 
-                    {/* Column 3: Ayuda */}
                      <div>
                         <h3 className="text-base font-bold tracking-widest uppercase mb-4 text-white">Ayuda</h3>
                         <ul className="space-y-2 text-sm">
@@ -93,7 +93,6 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                         </ul>
                     </div>
 
-                    {/* Column 4: Redes Sociales */}
                      <div>
                         <h3 className="text-base font-bold tracking-widest uppercase mb-4 text-white">Síguenos</h3>
                         <div className="flex justify-center md:justify-start space-x-4 text-gray-400">

@@ -1,5 +1,7 @@
 
 
+
+
 import React, { useRef, useState, useEffect } from 'react';
 import { ProductCard } from './ProductCard';
 import type { Product } from './types';
@@ -11,9 +13,9 @@ interface ProductDetailPageProps {
     product: Product;
     currency: Currency;
     onAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
+    onQuickAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     onProductSelect: (product: Product) => void;
     onQuickView: (product: Product) => void;
-    onCartClick: () => void;
 }
 
 // SVG Icons
@@ -38,19 +40,19 @@ const SparklesIcon: React.FC<{className?: string}> = ({ className }) => (
 
 
 const WhatsAppIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
         <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 4.315 1.919 6.066l-1.475 5.422 5.571-1.469z" />
     </svg>
 );
 
 const FacebookIcon = () => (
-    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
     </svg>
 );
 
 const TwitterIcon = () => (
-    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
     </svg>
 );
@@ -92,7 +94,7 @@ const getDefaultVariant = (product: Product): Record<string, string> | null => {
     return defaultVariant;
 };
 
-const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency, onAddToCart, onProductSelect, onQuickView, onCartClick }) => {
+const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency, onAddToCart, onQuickAddToCart, onProductSelect, onQuickView }) => {
     const btnRef = useRef<HTMLButtonElement>(null);
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [copyButtonText, setCopyButtonText] = useState('Copiar enlace');
@@ -213,13 +215,13 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
 
 
                 <div className="p-4 flex flex-col md:col-span-2">
-                    <h1 className="text-3xl md:text-4xl font-bold tracking-wide mb-2">{product.name}</h1>
+                    <h1 className="text-2xl md:text-3xl font-bold tracking-wide mb-2">{product.name}</h1>
                     
                     <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-4">
-                        <p className={`text-3xl font-bold ${isDiscounted ? 'text-brand-purple-dark' : 'text-gray-900'}`}>{formatCurrency(product.price, currency)}</p>
+                        <p className={`text-2xl font-bold ${isDiscounted ? 'text-brand-purple-dark' : 'text-gray-900'}`}>{formatCurrency(product.price, currency)}</p>
                         {isDiscounted && (
                             <>
-                                <p className="text-xl text-gray-500 line-through">{formatCurrency(product.regularPrice!, currency)}</p>
+                                <p className="text-lg text-gray-500 line-through">{formatCurrency(product.regularPrice!, currency)}</p>
                                 <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full uppercase">
                                     AHORRA {Math.round(((product.regularPrice! - product.price) / product.regularPrice!) * 100)}%
                                 </span>
@@ -321,14 +323,14 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                 <div className="flex border-b border-gray-200 mb-6">
                     <button 
                         onClick={() => setActiveTab('description')} 
-                        className={`py-3 px-1 mr-6 font-semibold text-lg transition-colors focus:outline-none ${activeTab === 'description' ? 'border-b-2 border-brand-primary text-brand-primary' : 'text-gray-500 hover:text-brand-primary'}`}
+                        className={`py-3 px-1 mr-6 font-semibold text-base transition-colors focus:outline-none ${activeTab === 'description' ? 'border-b-2 border-brand-primary text-brand-primary' : 'text-gray-500 hover:text-brand-primary'}`}
                     >
                         Descripción
                     </button>
                     {product.howToUse && (
                         <button 
                             onClick={() => setActiveTab('howToUse')} 
-                            className={`py-3 px-1 font-semibold text-lg transition-colors focus:outline-none ${activeTab === 'howToUse' ? 'border-b-2 border-brand-primary text-brand-primary' : 'text-gray-500 hover:text-brand-primary'}`}
+                            className={`py-3 px-1 font-semibold text-base transition-colors focus:outline-none ${activeTab === 'howToUse' ? 'border-b-2 border-brand-primary text-brand-primary' : 'text-gray-500 hover:text-brand-primary'}`}
                         >
                             Modo de Empleo
                         </button>
@@ -353,7 +355,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
 
             {relatedProducts.length > 0 && (
                 <section className="mt-16">
-                    <h2 className="text-3xl font-bold mb-8 text-center">También te puede interesar</h2>
+                    <h2 className="text-2xl font-bold mb-8 text-center">También te puede interesar</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         {relatedProducts.map(relatedProduct => (
                             <ProductCard
@@ -361,9 +363,9 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                 product={relatedProduct}
                                 currency={currency}
                                 onAddToCart={onAddToCart}
+                                onQuickAddToCart={onQuickAddToCart}
                                 onProductSelect={onProductSelect}
                                 onQuickView={onQuickView}
-                                onCartClick={onCartClick}
                             />
                         ))}
                     </div>
@@ -373,7 +375,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
 
             {/* --- Reviews Section --- */}
             <div className="mt-12 pt-8 border-t">
-                <h2 className="text-2xl font-bold mb-6">Valoraciones de Clientes</h2>
+                <h2 className="text-xl font-bold mb-6">Valoraciones de Clientes</h2>
                 
                 {/* Review Form */}
                 <div className="bg-gray-50 p-6 rounded-lg mb-8 border border-gray-200">
@@ -410,7 +412,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                         aria-label={`Valorar con ${star} estrella${star > 1 ? 's' : ''}`}
                                     >
                                         <StarIcon
-                                            className={`w-7 h-7 cursor-pointer transition-colors ${
+                                            className={`w-6 h-6 cursor-pointer transition-colors ${
                                                 (hoverRating || newReview.rating) >= star
                                                     ? 'text-amber-400'
                                                     : 'text-gray-300'

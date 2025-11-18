@@ -1,5 +1,7 @@
 
 
+
+
 import React from 'react';
 import { ProductCard } from './ProductCard';
 import type { Product } from './types';
@@ -14,15 +16,15 @@ const giftProducts = allProducts.filter(p => giftProductIds.includes(p.id));
 const IdeasRegaloPage: React.FC<{
     currency: Currency;
     onAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
+    onQuickAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     onProductSelect: (product: Product) => void;
     onQuickView: (product: Product) => void;
-    onCartClick: () => void;
-}> = ({ currency, onAddToCart, onProductSelect, onQuickView, onCartClick }) => {
+}> = ({ currency, onAddToCart, onQuickAddToCart, onProductSelect, onQuickView }) => {
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-                <h2 className="text-4xl font-extrabold text-black tracking-tight">Ideas para Regalar</h2>
-                <p className="mt-2 text-xl text-gray-600 font-semibold">Encuentra el detalle perfecto para cada ocasión.</p>
+                <h2 className="text-3xl font-extrabold text-black tracking-tight">Ideas para Regalar</h2>
+                <p className="mt-2 text-lg text-gray-600 font-semibold">Encuentra el detalle perfecto para cada ocasión.</p>
             </div>
 
             {giftProducts.length > 0 ? (
@@ -33,9 +35,9 @@ const IdeasRegaloPage: React.FC<{
                             product={product}
                             currency={currency}
                             onAddToCart={onAddToCart}
+                            onQuickAddToCart={onQuickAddToCart}
                             onProductSelect={onProductSelect}
                             onQuickView={onQuickView}
-                            onCartClick={onCartClick}
                         />
                     ))}
                 </div>

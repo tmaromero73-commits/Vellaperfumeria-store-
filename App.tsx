@@ -1,4 +1,5 @@
 
+
 import React, { useState, useMemo, useEffect } from 'react';
 import ProductList from './components/ProductList';
 import ProductDetailPage from './components/ProductDetailPage';
@@ -12,17 +13,12 @@ import Footer from './components/Footer';
 import BlogPage from './components/BlogPage';
 import BlogPostPage from './components/BlogPostPage';
 import { blogPosts, type BlogPost } from './components/blogData';
-import ProductListPage from './components/ProductListPage';
+import ShopPage from './components/ShopPage';
 import Breadcrumbs from './components/Breadcrumbs';
 import type { BreadcrumbItem } from './components/Breadcrumbs';
 import CatalogPage from './components/CatalogPage';
 import QuickViewModal from './components/QuickViewModal';
 import BottomNavBar from './components/BottomNavBar';
-import MakeupPage from './components/MakeupPage';
-import FragrancePage from './components/FragrancePage';
-import WellnessPage from './components/WellnessPage';
-import SkincarePage from './components/SkincarePage';
-
 
 const App: React.FC = () => {
     const [view, setView] = useState<View>('home');
@@ -32,14 +28,22 @@ const App: React.FC = () => {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [currency, setCurrency] = useState<Currency>('EUR');
+    const [isCheckingOut, setIsCheckingOut] = useState(false);
+    const [checkoutError, setCheckoutError] = useState<string | null>(null);
+    const [initialCategory, setInitialCategory] = useState<string>('all');
     
-    const handleNavigate = (newView: View) => {
-        // When navigating away from product detail, clear the selected product
+    const handleNavigate = (newView: View, payload?: any) => {
         if (view === 'productDetail' && newView !== 'productDetail') {
             setSelectedProduct(null);
         }
+        if (newView === 'products' && typeof payload === 'string') {
+            setInitialCategory(payload);
+        } else if (newView !== 'products') {
+            setInitialCategory('all');
+        }
+
         setView(newView);
-        window.scrollTo(0, 0); // Scroll to top on page change
+        window.scrollTo(0, 0);
     };
 
     const handleProductSelect = (product: Product) => {
@@ -59,7 +63,7 @@ const App: React.FC = () => {
         setView('blog');
     };
 
-    const handleAddToCart = (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => {
+    const handleQuickAddToCart = (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => {
         const variantString = selectedVariant ? Object.values(selectedVariant).join('-') : '';
         const cartItemId = `${product.id}-${variantString}`;
 
@@ -75,15 +79,16 @@ const App: React.FC = () => {
             return [...prevItems, { id: cartItemId, product, quantity: 1, selectedVariant }];
         });
         
-        // Visual feedback for adding to cart
         if (buttonElement) {
             buttonElement.classList.add('pulse-cart');
             setTimeout(() => {
                  buttonElement.classList.remove('pulse-cart');
             }, 500);
         }
+    };
 
-        // Cart state is now managed locally. Sync happens reliably on checkout.
+    const handleAddToCart = (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => {
+        handleQuickAddToCart(product, buttonElement, selectedVariant);
         setIsCartOpen(true);
     };
 
@@ -103,32 +108,64 @@ const App: React.FC = () => {
         setCartItems(prevItems => prevItems.filter(item => item.id !== cartItemId));
     };
 
-    const handleCheckout = () => {
-        if (cartItems.length === 0) return;
-    
-        const baseUrl = 'https://vellaperfumeria.com/cart/';
-        
-        // Construct the query parameters to add all items at once.
-        // This URL will attempt to add all items to the cart and redirect to the cart page.
-        const queryParams = cartItems.map(item => {
-            const productId = item.product.id;
-            const quantity = item.quantity;
-            // Note: Adding variants via URL is complex and not standard.
-            // This implementation adds the main product, which is a robust solution.
-            // The user can adjust variants on the cart page if needed.
-            return `add-to-cart=${productId}&quantity=${quantity}`;
-        }).join('&');
-    
-        const finalUrl = `${baseUrl}?${queryParams}`;
-        
-        // Redirect the user to the main site's cart, pre-filled with all items.
-        window.top.location.href = finalUrl;
+    const handleCheckout = async () => {
+        if (isCheckingOut || cartItems.length === 0) return;
+
+        setIsCheckingOut(true);
+        setCheckoutError(null);
+        setIsCartOpen(false);
+
+        try {
+            const queryParts = cartItems.map(item => {
+                let selectedVariant = item.selectedVariant;
+
+                if (item.product.variants && !selectedVariant) {
+                    selectedVariant = {};
+                    const variantType = Object.keys(item.product.variants)[0];
+                    const firstOption = item.product.variants[variantType]?.[0];
+                    if (firstOption) {
+                        selectedVariant[variantType] = firstOption.value;
+                    }
+                }
+
+                if (item.product.variants && selectedVariant) {
+                    const variantType = Object.keys(item.product.variants)[0];
+                    const selectedValue = selectedVariant[variantType];
+                    const variantOption = item.product.variants[variantType]?.find(v => v.value === selectedValue);
+
+                    if (variantOption?.variationId) {
+                        const attributeSlug = `attribute_pa_${variantType.toLowerCase()}`;
+                        return `add-to-cart=${item.product.id}&variation_id=${variantOption.variationId}&${attributeSlug}=${encodeURIComponent(selectedValue)}&quantity=${item.quantity}`;
+                    }
+                }
+                
+                return `add-to-cart=${item.product.id}&quantity=${item.quantity}`;
+            });
+
+            // Clear the cart on the destination site and then add products. This prevents stale items from previous sessions.
+            const checkoutUrl = `https://vellaperfumeria.com/cart/?clear-cart=true&${queryParts.join('&')}`;
+            window.top.location.href = checkoutUrl;
+
+        } catch (error) {
+            console.error('Checkout URL construction failed:', error);
+            setCheckoutError('No se pudo preparar el enlace de pago. Por favor, inténtalo de nuevo.');
+            setIsCartOpen(true);
+            setIsCheckingOut(false);
+        }
     };
 
     const cartCount = useMemo(() => {
         return cartItems.reduce((total, item) => total + item.quantity, 0);
     }, [cartItems]);
     
+    const categoriesMap: Record<string, string> = {
+        all: 'Tienda',
+        skincare: 'Cuidado Facial',
+        makeup: 'Maquillaje',
+        perfume: 'Fragancias',
+        wellness: 'Wellness',
+    };
+
     const getBreadcrumbs = (): BreadcrumbItem[] => {
         const homeCrumb: BreadcrumbItem = { label: 'Inicio', onClick: () => handleNavigate('home') };
         
@@ -136,16 +173,20 @@ const App: React.FC = () => {
             case 'home':
                 return [{ label: 'Inicio' }];
             case 'products':
-                return [homeCrumb, { label: 'Tienda' }];
+                const categoryName = categoriesMap[initialCategory] || 'Tienda';
+                 if (initialCategory === 'all') {
+                     return [homeCrumb, { label: 'Tienda' }];
+                 }
+                return [homeCrumb, { label: 'Tienda', onClick: () => handleNavigate('products', 'all') }, { label: categoryName }];
             case 'productDetail':
                 if (selectedProduct) {
                      return [
                         homeCrumb, 
-                        { label: 'Tienda', onClick: () => handleNavigate('products') },
+                        { label: 'Tienda', onClick: () => handleNavigate('products', 'all') },
                         { label: selectedProduct.name }
                     ];
                 }
-                return [homeCrumb, { label: 'Tienda', onClick: () => handleNavigate('products') }];
+                return [homeCrumb, { label: 'Tienda', onClick: () => handleNavigate('products', 'all') }];
             case 'ofertas':
                 return [homeCrumb, { label: 'Ideas para Regalar' }];
             case 'ia':
@@ -163,41 +204,39 @@ const App: React.FC = () => {
                     return [homeCrumb, { label: 'Blog', onClick: () => handleNavigate('blog') }, { label: selectedPost.title }];
                 }
                 return [homeCrumb, { label: 'Blog', onClick: () => handleNavigate('blog') }];
-            case 'makeup':
-                return [homeCrumb, { label: 'Maquillaje' }];
-            case 'fragrance':
-                return [homeCrumb, { label: 'Fragancias' }];
-            case 'wellness':
-                return [homeCrumb, { label: 'Wellness' }];
-            case 'skincare':
-                return [homeCrumb, { label: 'Cuidado Facial' }];
             default:
-                return [];
+                return [homeCrumb];
         }
     };
 
     const renderView = () => {
-        const handleCartClick = () => setIsCartOpen(true);
         switch (view) {
             case 'products':
-                return <ProductListPage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onCartClick={handleCartClick} />;
+                return <ShopPage 
+                            initialCategory={initialCategory} 
+                            currency={currency} 
+                            onAddToCart={handleAddToCart} 
+                            onQuickAddToCart={handleQuickAddToCart} 
+                            onProductSelect={handleProductSelect} 
+                            onQuickView={setQuickViewProduct} 
+                        />;
             case 'productDetail':
                 return selectedProduct ? (
                     <ProductDetailPage
                         product={selectedProduct}
                         currency={currency}
                         onAddToCart={handleAddToCart}
+                        onQuickAddToCart={handleQuickAddToCart}
                         onProductSelect={handleProductSelect}
                         onQuickView={setQuickViewProduct}
-                        onCartClick={handleCartClick}
                     />
                 ) : <div className="text-center p-8"> <p>Producto no encontrado</p></div>;
             case 'ofertas':
-                return <OfertasPage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onCartClick={handleCartClick} />;
+                return <OfertasPage currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
             case 'ia':
                 return <AsistenteIAPage />;
             case 'catalog':
-                return <CatalogPage currency={currency} onAddToCart={handleAddToCart} />;
+                return <CatalogPage />;
              case 'about':
                 return <div className="text-center p-8 container mx-auto"><h1 className="text-3xl font-bold text-gray-900">Sobre Nosotros</h1><p className="mt-4 max-w-2xl mx-auto text-gray-800">Somos Vellaperfumeria, tu tienda de confianza para cosméticos y bienestar. Descubre fragancias que definen tu esencia y productos que cuidan de ti. Calidad y exclusividad en cada artículo.</p></div>;
             case 'contact':
@@ -206,29 +245,21 @@ const App: React.FC = () => {
                 return <BlogPage posts={blogPosts} onSelectPost={handleSelectPost} />;
             case 'blogPost':
                  return selectedPost ? <BlogPostPage post={selectedPost} allPosts={blogPosts} onSelectPost={handleSelectPost} onBack={handleBackToBlog} /> : <div className="text-center p-8"><p>Artículo no encontrado</p></div>;
-            case 'makeup':
-                return <MakeupPage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onCartClick={handleCartClick} />;
-            case 'fragrance':
-                return <FragrancePage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onCartClick={handleCartClick} />;
-            case 'wellness':
-                return <WellnessPage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onCartClick={handleCartClick} />;
-            case 'skincare':
-                return <SkincarePage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onCartClick={handleCartClick} />;
             case 'home':
             default:
                 return <ProductList
                     onNavigate={handleNavigate}
                     onProductSelect={handleProductSelect}
                     onAddToCart={handleAddToCart}
+                    onQuickAddToCart={handleQuickAddToCart}
                     currency={currency}
                     onQuickView={setQuickViewProduct}
-                    onCartClick={handleCartClick}
                 />;
         }
     };
 
     return (
-        <div className="bg-[var(--color-background)] min-h-screen pb-16 md:pb-0">
+        <div className="bg-[var(--color-background)] min-h-screen flex flex-col pb-16 md:pb-0">
             <Header
                 onNavigate={handleNavigate}
                 currency={currency}
@@ -236,12 +267,12 @@ const App: React.FC = () => {
                 cartCount={cartCount}
                 onCartClick={() => setIsCartOpen(true)}
             />
-            <main className="pt-8">
+            <main className="pt-8 flex-grow">
                 { view !== 'home' && <Breadcrumbs items={getBreadcrumbs()} /> }
                 {renderView()}
             </main>
             <Footer onNavigate={handleNavigate} />
-            <BottomNavBar onNavigate={handleNavigate} currentView={view} />
+            <BottomNavBar onNavigate={handleNavigate} currentView={view} currentCategory={initialCategory} />
             <CartSidebar
                 isOpen={isCartOpen}
                 onClose={() => setIsCartOpen(false)}
@@ -250,6 +281,9 @@ const App: React.FC = () => {
                 onUpdateQuantity={handleUpdateQuantity}
                 onRemoveItem={handleRemoveItem}
                 onCheckout={handleCheckout}
+                isCheckingOut={isCheckingOut}
+                checkoutError={checkoutError}
+                onNavigate={handleNavigate}
             />
             {quickViewProduct && (
                  <QuickViewModal
@@ -258,8 +292,8 @@ const App: React.FC = () => {
                     onClose={() => setQuickViewProduct(null)}
                     onAddToCart={handleAddToCart}
                     onProductSelect={(product) => {
-                        setQuickViewProduct(null); // Close modal first
-                        handleProductSelect(product); // Then navigate
+                        setQuickViewProduct(null);
+                        handleProductSelect(product);
                     }}
                 />
             )}

@@ -1,4 +1,5 @@
 
+
 import React, { useState, useRef, useEffect } from 'react';
 import type { View } from './types';
 import type { Currency } from './currency';
@@ -46,15 +47,15 @@ const CartIcon = () => (
     </svg>
 );
 
-const NavLink: React.FC<{ view: View, onNavigate: (view: View) => void, children: React.ReactNode, className?: string }> = ({ view, onNavigate, children, className }) => (
-    <button onClick={() => onNavigate(view)} className={`text-base font-medium text-black hover:text-gray-700 transition-colors duration-200 ${className}`}>
+const NavLink: React.FC<{ onClick: () => void, children: React.ReactNode, className?: string }> = ({ onClick, children, className }) => (
+    <button onClick={onClick} className={`text-base font-medium text-black hover:text-gray-700 transition-colors duration-200 ${className}`}>
         <span className="hover-underline-effect">{children}</span>
     </button>
 );
 
 
 interface HeaderProps {
-    onNavigate: (view: View) => void;
+    onNavigate: (view: View, payload?: any) => void;
     currency: Currency;
     onCurrencyChange: (currency: Currency) => void;
     cartCount: number;
@@ -74,7 +75,6 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
         }
     }, [cartCount]);
     
-    // Close mobile menu on click outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (navRef.current && !navRef.current.contains(event.target as Node)) {
@@ -85,14 +85,13 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const handleMobileNav = (view: View) => {
-        onNavigate(view);
+    const handleMobileNav = (view: View, payload?: any) => {
+        onNavigate(view, payload);
         setIsMobileMenuOpen(false);
     }
 
     return (
         <header className="bg-white shadow-sm sticky top-0 z-30">
-            {/* Announcement Bar */}
             <div className="bg-brand-purple text-brand-primary py-2 text-sm font-medium">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
                     <div className="flex items-center space-x-3 text-brand-primary">
@@ -107,21 +106,19 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                         </span>
                     </div>
                     <div className="flex items-center space-x-4">
-                       {/* This is an empty spacer to balance the flex container */}
                     </div>
                 </div>
             </div>
 
-            {/* Main Header */}
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                 {/* Logo Section (Centered) */}
                 <div className="flex justify-center py-4 relative">
-                    <a href="https://vellaperfumeria.com" target="_top" className="hover:opacity-80 transition-opacity">
-                        <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-24 w-auto" />
-                    </a>
+                    <form action="https://vellaperfumeria.com" method="GET" target="_top">
+                        <button type="submit" className="hover:opacity-80 transition-opacity">
+                            <img src="https://vellaperfumeria.com/wp-content/uploads/2024/06/vellaperfumeralogo.png" alt="Vellaperfumeria Logo" className="h-24 w-auto" />
+                        </button>
+                    </form>
                 </div>
 
-                {/* Navigation Section */}
                 <div className="flex justify-between items-center pb-4 border-t border-gray-100 pt-2">
                     <div className="flex-1 hidden md:flex items-center space-x-4">
                         <select
@@ -140,15 +137,15 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                     </div>
 
                     <nav className="hidden md:flex flex-auto justify-center items-center space-x-6">
-                        <NavLink view="home" onNavigate={onNavigate}>Inicio</NavLink>
-                        <NavLink view="products" onNavigate={onNavigate}>Tienda</NavLink>
-                        <NavLink view="skincare" onNavigate={onNavigate}>Cuidado Facial</NavLink>
-                        <NavLink view="makeup" onNavigate={onNavigate}>Maquillaje</NavLink>
-                        <NavLink view="fragrance" onNavigate={onNavigate}>Fragancias</NavLink>
-                        <NavLink view="wellness" onNavigate={onNavigate}>Wellness</NavLink>
-                        <NavLink view="ofertas" onNavigate={onNavigate}>Ideas Regalo</NavLink>
-                        <NavLink view="catalog" onNavigate={onNavigate}>Catálogo</NavLink>
-                        <NavLink view="ia" onNavigate={onNavigate}>Asistente IA</NavLink>
+                        <NavLink onClick={() => onNavigate('home')}>Inicio</NavLink>
+                        <NavLink onClick={() => onNavigate('products', 'all')}>Tienda</NavLink>
+                        <NavLink onClick={() => onNavigate('products', 'skincare')}>Cuidado Facial</NavLink>
+                        <NavLink onClick={() => onNavigate('products', 'makeup')}>Maquillaje</NavLink>
+                        <NavLink onClick={() => onNavigate('products', 'perfume')}>Fragancias</NavLink>
+                        <NavLink onClick={() => onNavigate('products', 'wellness')}>Wellness</NavLink>
+                        <NavLink onClick={() => onNavigate('ofertas')}>Ideas Regalo</NavLink>
+                        <NavLink onClick={() => onNavigate('catalog')}>Catálogo</NavLink>
+                        <NavLink onClick={() => onNavigate('ia')}>Asistente IA</NavLink>
                     </nav>
 
                     <div className="flex-1 flex justify-end items-center space-x-4">
@@ -169,19 +166,18 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                 </div>
             </div>
 
-            {/* Mobile Menu */}
             {isMobileMenuOpen && (
                  <div ref={navRef} className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t z-20">
                      <nav className="flex flex-col space-y-1 p-4">
-                         <NavLink view="home" onNavigate={handleMobileNav} className="py-2">Inicio</NavLink>
-                         <NavLink view="products" onNavigate={handleMobileNav} className="py-2">Tienda</NavLink>
-                         <NavLink view="skincare" onNavigate={handleMobileNav} className="py-2">Cuidado Facial</NavLink>
-                         <NavLink view="makeup" onNavigate={handleMobileNav} className="py-2">Maquillaje</NavLink>
-                         <NavLink view="fragrance" onNavigate={handleMobileNav} className="py-2">Fragancias</NavLink>
-                         <NavLink view="wellness" onNavigate={handleMobileNav} className="py-2">Wellness</NavLink>
-                         <NavLink view="ofertas" onNavigate={handleMobileNav} className="py-2">Ideas Regalo</NavLink>
-                         <NavLink view="catalog" onNavigate={handleMobileNav} className="py-2">Catálogo</NavLink>
-                         <NavLink view="ia" onNavigate={handleMobileNav} className="py-2">Asistente IA</NavLink>
+                         <NavLink onClick={() => handleMobileNav('home')} className="py-2">Inicio</NavLink>
+                         <NavLink onClick={() => handleMobileNav('products', 'all')} className="py-2">Tienda</NavLink>
+                         <NavLink onClick={() => handleMobileNav('products', 'skincare')} className="py-2">Cuidado Facial</NavLink>
+                         <NavLink onClick={() => handleMobileNav('products', 'makeup')} className="py-2">Maquillaje</NavLink>
+                         <NavLink onClick={() => handleMobileNav('products', 'perfume')} className="py-2">Fragancias</NavLink>
+                         <NavLink onClick={() => handleMobileNav('products', 'wellness')} className="py-2">Wellness</NavLink>
+                         <NavLink onClick={() => handleMobileNav('ofertas')} className="py-2">Ideas Regalo</NavLink>
+                         <NavLink onClick={() => handleMobileNav('catalog')} className="py-2">Catálogo</NavLink>
+                         <NavLink onClick={() => handleMobileNav('ia')} className="py-2">Asistente IA</NavLink>
                      </nav>
                      <div className="p-4 border-t border-gray-100 flex flex-col space-y-4">
                         <button onClick={() => { handleMobileNav('contact'); }} className="text-sm font-medium text-gray-600 hover:text-black transition-colors text-left">
