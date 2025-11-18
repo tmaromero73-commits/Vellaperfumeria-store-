@@ -1,3 +1,4 @@
+
 import React from 'react';
 import type { View } from './types';
 
@@ -24,7 +25,7 @@ const InteractiveCatalogSection: React.FC<InteractiveCatalogSectionProps> = ({ o
                 >
                     <img
                         src={catalogCoverUrl}
-                        alt="Portada del Catálogo de Oriflame"
+                        alt="Portada del Catálogo de BeautyShopVella"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-10 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">

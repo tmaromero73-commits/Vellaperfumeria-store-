@@ -15,7 +15,10 @@ interface CartSidebarProps {
 }
 
 const FREE_SHIPPING_THRESHOLD = 35;
+const DISCOUNT_THRESHOLD = 35; // Same threshold for discount
+const DISCOUNT_PERCENTAGE = 0.15; // 15%
 const SHIPPING_COST = 6.00;
+
 
 const CloseIcon = () => (
     <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -79,6 +82,13 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
         return cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
     }, [cartItems]);
 
+    const discountAmount = useMemo(() => {
+        if (subtotal >= DISCOUNT_THRESHOLD) {
+            return subtotal * DISCOUNT_PERCENTAGE;
+        }
+        return 0;
+    }, [subtotal]);
+
     const totalBeautyPoints = useMemo(() => {
         return cartItems.reduce((total, item) => {
             const points = item.product.beautyPoints || 0;
@@ -97,7 +107,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
         return SHIPPING_COST;
     }, [subtotal, hasShippingSaver]);
 
-    const total = subtotal + shippingCost;
+    const total = subtotal - discountAmount + shippingCost;
     const amountForFreeShipping = FREE_SHIPPING_THRESHOLD - subtotal;
     
     return (
@@ -154,9 +164,13 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                         </div>
 
                         <div className="p-4 border-t bg-gray-50 space-y-4">
-                            {amountForFreeShipping > 0 ? (
+                             {discountAmount > 0 ? (
+                                <p className="text-center text-sm font-semibold text-green-600 p-2 bg-green-50 rounded-md border border-green-200">
+                                    ¡Felicidades! Se ha aplicado un <b>15% de descuento</b> a tu compra.
+                                </p>
+                            ) : amountForFreeShipping > 0 ? (
                                 <div className="text-center text-sm">
-                                    <p>Te faltan <span className="font-bold">{formatCurrency(amountForFreeShipping, currency, { decimals: 2 })}</span> para el envío <b>GRATIS</b>.</p>
+                                    <p>Te faltan <span className="font-bold">{formatCurrency(amountForFreeShipping, currency, { decimals: 2 })}</span> para el envío <b>GRATIS</b> y un <b>15% de descuento</b>.</p>
                                     <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
                                         <div className="bg-brand-purple-dark h-2 rounded-full" style={{ width: `${Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)}%` }}></div>
                                     </div>
@@ -177,6 +191,12 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                     <span className="text-gray-700">Subtotal</span>
                                     <span className="font-semibold">{formatCurrency(subtotal, currency)}</span>
                                 </div>
+                                {discountAmount > 0 && (
+                                     <div className="flex justify-between text-green-600">
+                                        <span className="font-semibold">Descuento (15%)</span>
+                                        <span className="font-semibold">-{formatCurrency(discountAmount, currency)}</span>
+                                    </div>
+                                )}
                                 <div className="flex justify-between">
                                     <span className="text-gray-700">Envío</span>
                                     <span className="font-semibold">{shippingCost === 0 ? 'Gratis' : formatCurrency(shippingCost, currency)}</span>

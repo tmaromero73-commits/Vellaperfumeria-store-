@@ -1,5 +1,4 @@
 
-
 import React, { useState, useRef, useEffect } from 'react';
 import type { View } from './types';
 import type { Currency } from './currency';
@@ -29,16 +28,9 @@ const WhatsAppIcon = () => (
     </svg>
 );
 
-
-const CartIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-    </svg>
-);
-
-const HamburgerIcon = () => (
-     <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+const MenuIcon = () => (
+    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
     </svg>
 );
 
@@ -47,6 +39,19 @@ const CloseIcon = () => (
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
     </svg>
 );
+
+const CartIcon = () => (
+    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+    </svg>
+);
+
+const NavLink: React.FC<{ view: View, onNavigate: (view: View) => void, children: React.ReactNode, className?: string }> = ({ view, onNavigate, children, className }) => (
+    <button onClick={() => onNavigate(view)} className={`text-base font-medium text-black hover:text-gray-700 transition-colors duration-200 ${className}`}>
+        <span className="hover-underline-effect">{children}</span>
+    </button>
+);
+
 
 interface HeaderProps {
     onNavigate: (view: View) => void;
@@ -57,168 +62,130 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange, cartCount, onCartClick }) => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const cartCountRef = useRef<HTMLSpanElement>(null);
-    const prevCartCountRef = useRef<number>(cartCount);
+    const [cartPulse, setCartPulse] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const navRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        // Animate cart count only when items are added, not removed
-        if (cartCount > prevCartCountRef.current) {
-            cartCountRef.current?.classList.add('animate-pop');
-            const timer = setTimeout(() => {
-                cartCountRef.current?.classList.remove('animate-pop');
-            }, 300); // Duration should match the animation duration
+        if (cartCount > 0) {
+            setCartPulse(true);
+            const timer = setTimeout(() => setCartPulse(false), 500);
             return () => clearTimeout(timer);
         }
-        prevCartCountRef.current = cartCount;
     }, [cartCount]);
     
-    // Lock body scroll when mobile menu is open
+    // Close mobile menu on click outside
     useEffect(() => {
-        if (isMenuOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'unset';
-        }
-        return () => {
-            document.body.style.overflow = 'unset';
+        const handleClickOutside = (event: MouseEvent) => {
+            if (navRef.current && !navRef.current.contains(event.target as Node)) {
+                setIsMobileMenuOpen(false);
+            }
         };
-    }, [isMenuOpen]);
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
-    const NavLink: React.FC<{ view: View; children: React.ReactNode }> = ({ view, children }) => (
-        <button
-            onClick={() => {
-                onNavigate(view);
-                setIsMenuOpen(false); // Close menu on navigation
-            }}
-            className="text-3xl font-bold text-brand-primary hover:text-brand-purple-dark transition-colors duration-300"
-        >
-            {children}
-        </button>
-    );
-    
-    const DesktopNavLink: React.FC<{ view: View; children: React.ReactNode }> = ({ view, children }) => (
-         <button
-            onClick={() => onNavigate(view)}
-            className="text-gray-700 hover:text-brand-primary transition-colors font-semibold py-2 hover-underline-effect text-sm uppercase tracking-wider"
-        >
-            {children}
-        </button>
-    );
+    const handleMobileNav = (view: View) => {
+        onNavigate(view);
+        setIsMobileMenuOpen(false);
+    }
 
     return (
-        <header className="bg-white shadow-sm sticky top-0 z-30">
-            {/* Top Bar */}
-            <div className="bg-brand-purple border-b border-brand-purple-dark">
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-center sm:justify-between items-center h-10">
-                    <p className="text-xs text-brand-primary font-medium uppercase tracking-wider hidden sm:block">
-                        Envío GRATIS a partir de 35€
-                    </p>
+        <header className="bg-white shadow-md sticky top-0 z-30">
+            {/* Announcement Bar */}
+            <div className="bg-brand-purple text-brand-primary py-2.5 text-sm font-medium">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-center items-center">
+                    <span>
+                        <span className="font-bold">BLACK FRIDAY</span> | Envío GRATIS en pedidos +35€
+                    </span>
+                </div>
+            </div>
+
+            {/* Top Bar with Socials */}
+            <div className="border-b border-gray-200">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-2">
+                    <div className="flex items-center space-x-4 text-gray-500">
+                        <span className="cursor-pointer hover:text-black transition-colors" aria-label="Threads"><ThreadsIcon /></span>
+                        <span className="cursor-pointer hover:text-black transition-colors" aria-label="Instagram"><InstagramIcon /></span>
+                        <span className="cursor-pointer hover:text-black transition-colors" aria-label="Facebook"><FacebookIcon /></span>
+                        <span className="cursor-pointer hover:text-black transition-colors" aria-label="WhatsApp"><WhatsAppIcon /></span>
+                    </div>
                     <div className="flex items-center space-x-4">
-                        <span className="text-brand-primary" aria-label="Threads"><ThreadsIcon /></span>
-                        <span className="text-brand-primary" aria-label="Instagram"><InstagramIcon /></span>
-                        <span className="text-brand-primary" aria-label="Facebook"><FacebookIcon /></span>
-                        <span className="text-brand-primary" aria-label="WhatsApp"><WhatsAppIcon /></span>
-                    </div>
-                </div>
-            </div>
-
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center py-4">
-                    {/* Left Side (for hamburger on mobile, and spacing on desktop) */}
-                    <div className="flex-1 flex justify-start">
-                        <div className="md:hidden">
-                            <button onClick={() => setIsMenuOpen(true)} className="p-2 text-brand-primary" aria-expanded={isMenuOpen} aria-label="Abrir menú">
-                                <HamburgerIcon />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Centered Logo */}
-                    <div className="flex-1 flex justify-center">
-                        <a href="https://vellaperfumeria.com" target="_top" className="flex flex-col items-center" aria-label="Vellaperfumeria - Inicio">
-                            <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-24 w-auto" />
-                            <span className="text-2xl font-bold tracking-wider text-brand-primary mt-1">
-                                Vellaperfumeria
-                            </span>
-                        </a>
-                    </div>
-
-                    {/* Right Side Actions */}
-                    <div className="flex-1 flex justify-end items-center space-x-2">
-                        <div className="hidden md:block">
-                            <select
-                                value={currency}
-                                onChange={(e) => onCurrencyChange(e.target.value as Currency)}
-                                className="bg-gray-100 border border-gray-300 rounded-md text-brand-primary text-sm py-1.5 px-2 focus:outline-none focus:ring-1 focus:ring-brand-purple"
-                                aria-label="Seleccionar moneda"
-                            >
-                                <option value="EUR">EUR €</option>
-                                <option value="USD">USD $</option>
-                                <option value="GBP">GBP £</option>
-                            </select>
-                        </div>
-
-                        <button onClick={onCartClick} className="relative text-brand-primary hover:text-gray-600 p-2" aria-label={`Abrir carrito. Tienes ${cartCount} artículos.`}>
-                            <CartIcon />
-                            {cartCount > 0 && (
-                                <span ref={cartCountRef} className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
-                                    {cartCount}
-                                </span>
-                            )}
-                        </button>
-                    </div>
-                </div>
-
-                {/* Desktop Navigation */}
-                <nav className="hidden md:flex justify-center space-x-8 items-center py-2 border-t border-gray-100">
-                    <a href="https://vellaperfumeria.com" target="_top" className="text-gray-700 hover:text-brand-primary transition-colors font-semibold py-2 hover-underline-effect text-sm uppercase tracking-wider">Inicio</a>
-                    <DesktopNavLink view="products">Tienda</DesktopNavLink>
-                    <DesktopNavLink view="skincare">Cuidado Facial</DesktopNavLink>
-                    <DesktopNavLink view="makeup">Maquillaje</DesktopNavLink>
-                    <DesktopNavLink view="fragrance">Fragancias</DesktopNavLink>
-                    <DesktopNavLink view="wellness">Wellness</DesktopNavLink>
-                    <DesktopNavLink view="ofertas">Ideas Regalo</DesktopNavLink>
-                    <DesktopNavLink view="catalog">Catálogo</DesktopNavLink>
-                    <DesktopNavLink view="blog">Blog</DesktopNavLink>
-                    <DesktopNavLink view="ia">Asistente IA</DesktopNavLink>
-                </nav>
-            </div>
-
-
-            {/* Mobile Menu - Fullscreen Overlay */}
-            <div className={`md:hidden fixed inset-0 bg-white z-50 flex flex-col items-center justify-center transition-transform duration-300 ease-in-out ${isMenuOpen ? 'translate-y-0' : '-translate-y-full'}`}>
-                 <button onClick={() => setIsMenuOpen(false)} className="absolute top-6 right-6 p-2 text-brand-primary" aria-label="Cerrar menú">
-                    <CloseIcon />
-                </button>
-                <nav className="flex flex-col items-center space-y-8 text-center">
-                    <a href="https://vellaperfumeria.com" target="_top" className="text-3xl font-bold text-brand-primary hover:text-brand-purple-dark transition-colors duration-300">Inicio</a>
-                    <NavLink view="products">Tienda</NavLink>
-                    <NavLink view="skincare">Cuidado Facial</NavLink>
-                    <NavLink view="makeup">Maquillaje</NavLink>
-                    <NavLink view="fragrance">Fragancias</NavLink>
-                    <NavLink view="wellness">Wellness</NavLink>
-                    <NavLink view="ofertas">Ideas Regalo</NavLink>
-                    <NavLink view="catalog">Catálogo</NavLink>
-                    <NavLink view="blog">Blog</NavLink>
-                    <NavLink view="ia">Asistente IA</NavLink>
-                    <div className="pt-8 w-full max-w-xs">
                         <select
                             value={currency}
-                            onChange={(e) => {
-                                onCurrencyChange(e.target.value as Currency);
-                                setIsMenuOpen(false);
-                            }}
-                            className="w-full bg-gray-100 border border-gray-300 rounded-md text-brand-primary text-lg py-3 px-4 focus:outline-none focus:ring-1 focus:ring-brand-purple"
+                            onChange={(e) => onCurrencyChange(e.target.value as Currency)}
+                            className="text-sm font-medium bg-transparent border-none focus:ring-0"
                             aria-label="Seleccionar moneda"
                         >
                             <option value="EUR">EUR €</option>
                             <option value="USD">USD $</option>
                             <option value="GBP">GBP £</option>
                         </select>
+                         <button onClick={() => onNavigate('contact')} className="text-sm font-medium text-gray-600 hover:text-black transition-colors">
+                            Conviértete en Brand Partner
+                        </button>
                     </div>
-                </nav>
+                </div>
             </div>
+
+            {/* Main Header */}
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex justify-between items-center py-4">
+                    {/* Logo */}
+                    <div className="flex-shrink-0">
+                        <a href="https://vellaperfumeria.com" target="_top" className="hover:opacity-80 transition-opacity">
+                            <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-14 w-auto" />
+                        </a>
+                    </div>
+
+                    {/* Desktop Navigation */}
+                    <nav className="hidden md:flex items-center space-x-8">
+                        <NavLink view="home" onNavigate={onNavigate}>Inicio</NavLink>
+                        <NavLink view="products" onNavigate={onNavigate}>Tienda</NavLink>
+                        <NavLink view="skincare" onNavigate={onNavigate}>Cuidado Facial</NavLink>
+                        <NavLink view="makeup" onNavigate={onNavigate}>Maquillaje</NavLink>
+                        <NavLink view="fragrance" onNavigate={onNavigate}>Fragancias</NavLink>
+                        <NavLink view="wellness" onNavigate={onNavigate}>Wellness</NavLink>
+                        <NavLink view="ofertas" onNavigate={onNavigate}>Ideas Regalo</NavLink>
+                        <NavLink view="catalog" onNavigate={onNavigate}>Catálogo</NavLink>
+                        <NavLink view="ia" onNavigate={onNavigate}>Asistente IA</NavLink>
+                    </nav>
+
+                    {/* Icons */}
+                    <div className="flex items-center space-x-4">
+                        <button onClick={onCartClick} className="relative text-black hover:text-gray-700" aria-label={`Ver carrito, ${cartCount} artículos`}>
+                            <CartIcon />
+                            {cartCount > 0 && (
+                                <span key={cartCount} className={`absolute -top-2 -right-2 bg-brand-purple text-black text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center ${cartPulse ? 'animate-pop' : ''}`}>
+                                    {cartCount}
+                                </span>
+                            )}
+                        </button>
+                        <div className="md:hidden">
+                            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} aria-label="Abrir menú">
+                                <MenuIcon />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Mobile Menu */}
+            {isMobileMenuOpen && (
+                 <div ref={navRef} className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t z-20">
+                     <nav className="flex flex-col space-y-1 p-4">
+                         <NavLink view="home" onNavigate={handleMobileNav} className="py-2">Inicio</NavLink>
+                         <NavLink view="products" onNavigate={handleMobileNav} className="py-2">Tienda</NavLink>
+                         <NavLink view="skincare" onNavigate={handleMobileNav} className="py-2">Cuidado Facial</NavLink>
+                         <NavLink view="makeup" onNavigate={handleMobileNav} className="py-2">Maquillaje</NavLink>
+                         <NavLink view="fragrance" onNavigate={handleMobileNav} className="py-2">Fragancias</NavLink>
+                         <NavLink view="wellness" onNavigate={handleMobileNav} className="py-2">Wellness</NavLink>
+                         <NavLink view="ofertas" onNavigate={handleMobileNav} className="py-2">Ideas Regalo</NavLink>
+                         <NavLink view="catalog" onNavigate={handleMobileNav} className="py-2">Catálogo</NavLink>
+                         <NavLink view="ia" onNavigate={handleMobileNav} className="py-2">Asistente IA</NavLink>
+                     </nav>
+                </div>
+            )}
         </header>
     );
 };

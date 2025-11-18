@@ -15,7 +15,7 @@ const CatalogPage: React.FC<CatalogPageProps> = (props) => {
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="text-center mb-8">
-                <h1 className="text-4xl font-extrabold text-black tracking-tight">Catálogo Digital</h1>
+                <h1 className="text-4xl font-extrabold text-black tracking-tight">Catálogo BeautyShopVella</h1>
                 <p className="mt-2 text-lg text-gray-600">Explora nuestro catálogo más reciente para descubrir ofertas y novedades.</p>
             </div>
             
@@ -24,9 +24,10 @@ const CatalogPage: React.FC<CatalogPageProps> = (props) => {
                 style={{ height: 'calc(100vh - 250px)', minHeight: '600px' }}
             >
                  <iframe
-                    src={CATALOGUE_URL}
-                    title="Catálogo Digital Vellaperfumeria"
-                    className="w-full h-full"
+                    src={`${CATALOGUE_URL}?page=1`}
+                    title="Catálogo Digital BeautyShopVella"
+                    className="w-full"
+                    style={{ height: 'calc(100% + 56px)', transform: 'translateY(-56px)' }}
                     frameBorder="0"
                     allowFullScreen
                     aria-label="Visor del catálogo digital interactivo"
