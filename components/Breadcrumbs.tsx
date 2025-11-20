@@ -1,8 +1,11 @@
+
 import React from 'react';
 
 export interface BreadcrumbItem {
   label: string;
   onClick?: () => void;
+  href?: string;
+  target?: string;
 }
 
 interface BreadcrumbsProps {
@@ -16,8 +19,7 @@ const ChevronRightIcon = () => (
 );
 
 const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
-  if (!items || items.length <= 1) {
-    // Don't render breadcrumbs if there's only one or zero items (e.g., on the home page)
+  if (!items || items.length === 0) {
     return null;
   }
 
@@ -31,17 +33,24 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
                 <ChevronRightIcon />
               </div>
             )}
-            {item.onClick && index < items.length - 1 ? (
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  item.onClick?.();
-                }}
-                className="hover:text-brand-purple-dark hover-underline-effect"
-              >
-                {item.label}
-              </a>
+            {/* Allow link if it's NOT the last item OR if it has a target (external link) */}
+            {(item.href || item.onClick) && (index < items.length - 1 || item.target) ? (
+              item.href ? (
+                   <a 
+                      href={item.href}
+                      target={item.target || '_self'}
+                      className="hover:text-brand-purple-dark hover-underline-effect"
+                   >
+                      {item.label}
+                   </a>
+              ) : (
+                <button
+                  onClick={item.onClick}
+                  className="hover:text-brand-purple-dark hover-underline-effect"
+                >
+                  {item.label}
+                </button>
+              )
             ) : (
               <span className="font-semibold text-brand-primary" aria-current="page">
                 {item.label}

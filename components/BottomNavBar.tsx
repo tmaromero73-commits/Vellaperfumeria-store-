@@ -58,7 +58,7 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({ onNavigate, currentView }) 
     ];
 
     return (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] z-50 pb-safe">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#F3E8FF] border-t border-purple-100 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] z-50 pb-safe">
             <nav className="flex justify-around items-center h-16 pb-1">
                 {navItems.map(item => {
                     const isActive = !item.isExternal && (item.view === 'products'
@@ -67,27 +67,39 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({ onNavigate, currentView }) 
                         
                     const Icon = item.icon;
 
-                    const handleClick = () => {
-                         if (item.isExternal && item.href) {
-                            // Use window.open top to ensure we navigate the whole page properly even if inside iframe
-                            window.open(item.href, '_top');
-                         } else {
-                            onNavigate(item.view, item.payload);
-                            window.scrollTo(0, 0);
-                         }
-                    };
+                    const commonClasses = `flex flex-col items-center justify-center w-full h-full transition-colors duration-200 ${
+                                isActive ? 'text-brand-primary' : 'text-gray-500 hover:text-brand-primary'
+                            }`;
+
+                    if (item.isExternal && item.href) {
+                        return (
+                            <a
+                                key={item.label}
+                                href={item.href}
+                                target="_top"
+                                className={commonClasses}
+                                aria-label={item.label}
+                            >
+                                <div className={`p-1 rounded-full transition-all ${isActive ? 'bg-white transform -translate-y-1 shadow-sm' : ''}`}>
+                                    <Icon isActive={isActive} />
+                                </div>
+                                <span className="text-[10px] font-medium mt-0.5">{item.label}</span>
+                            </a>
+                        );
+                    }
 
                     return (
                         <button
                             key={item.label}
-                            onClick={handleClick}
-                            className={`flex flex-col items-center justify-center w-full h-full transition-colors duration-200 ${
-                                isActive ? 'text-brand-primary' : 'text-gray-400 hover:text-brand-primary'
-                            }`}
+                            onClick={() => {
+                                onNavigate(item.view, item.payload);
+                                window.scrollTo(0, 0);
+                            }}
+                            className={commonClasses}
                             aria-label={item.label}
                             aria-current={isActive ? 'page' : undefined}
                         >
-                            <div className={`p-1 rounded-full transition-all ${isActive ? 'bg-purple-50 transform -translate-y-1' : ''}`}>
+                            <div className={`p-1 rounded-full transition-all ${isActive ? 'bg-white transform -translate-y-1 shadow-sm' : ''}`}>
                                 <Icon isActive={isActive} />
                             </div>
                             <span className="text-[10px] font-medium mt-0.5">{item.label}</span>

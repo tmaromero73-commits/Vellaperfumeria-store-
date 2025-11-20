@@ -12,7 +12,7 @@ const ThreadsIcon = () => (
 
 const InstagramIcon = () => (
     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path fillRule="evenodd" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919A118.663 118.663 0 0112 2.163zm0 1.442c-3.143 0-3.509.011-4.72.067-2.694.123-3.997 1.433-4.12 4.12C3.109 9.12 3.098 9.486 3.098 12c0 2.514.011 2.88.067 4.72.123 2.686 1.427 3.996 4.12 4.12 1.21.055 1.577.067 4.72.067 3.143 0 3.509-.011 4.72-.067 2.694-.123 3.997-1.433 4.12-4.12.056-1.84.067-2.206.067-4.72 0-2.514-.011-2.88-.067-4.72-.123-2.686-1.427-3.996-4.12-4.12-1.21-.055-1.577.067-4.72-.067zM12 8.25a3.75 3.75 0 100 7.5 3.75 3.75 0 000-7.5zm0 1.44a2.31 2.31 0 110 4.62 2.31 2.31 0 010-4.62zM18.88 6.54a1.32 1.32 0 100-2.64 1.32 1.32 0 000 2.64z" clipRule="evenodd" />
+        <path fillRule="evenodd" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919A118.663 118.663 0 0112 2.163zm0 1.442c-3.143 0-3.509.011-4.72.067-2.694.123-3.997 1.433-4.12 4.12C3.109 9.12 3.098 9.486 3.098 9.486 3.098 12c0 2.514.011 2.88.067 4.72.123 2.686 1.427 3.996 4.12 4.12 1.21.055 1.577.067 4.72.067 3.143 0 3.509-.011 4.72-.067 2.694-.123 3.997-1.433 4.12-4.12.056-1.84.067-2.206.067-4.72 0-2.514-.011-2.88-.067-4.72-.123-2.686-1.427-3.996-4.12-4.12-1.21-.055-1.577.067-4.72-.067zM12 8.25a3.75 3.75 0 100 7.5 3.75 3.75 0 000-7.5zm0 1.44a2.31 2.31 0 110 4.62 2.31 2.31 0 010-4.62zM18.88 6.54a1.32 1.32 0 100-2.64 1.32 1.32 0 000 2.64z" clipRule="evenodd" />
     </svg>
 );
 
@@ -43,7 +43,7 @@ const CartIcon = () => (
 const NavLink: React.FC<{ onClick?: () => void, href?: string, children: React.ReactNode, className?: string }> = ({ onClick, href, children, className }) => {
     if (href) {
         return (
-            <a href={href} className={`text-base font-medium text-black hover:text-gray-700 transition-colors duration-200 ${className}`}>
+            <a href={href} target="_top" className={`text-base font-medium text-black hover:text-gray-700 transition-colors duration-200 ${className}`}>
                 <span className="hover-underline-effect">{children}</span>
             </a>
         );
@@ -94,8 +94,8 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
 
     return (
         <header className="bg-white shadow-sm sticky top-0 z-30">
-            {/* Updated to "Moradito Brillante Claro" - Bright Light Purple with a hint of pink (#D499F5) */}
-            <div className="bg-[#D499F5] text-black py-2 text-sm font-medium">
+            {/* Updated to Lighter Lilac (#F3E8FF) */}
+            <div className="bg-[#F3E8FF] text-black py-2 text-sm font-medium">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
                     <div className="flex items-center space-x-3">
                         <span className="cursor-pointer hover:opacity-75 transition-opacity text-black" aria-label="Threads"><ThreadsIcon /></span>
@@ -115,11 +115,15 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-center py-4 relative">
-                    <form action="https://vellaperfumeria.com" method="GET" target="_top">
-                        <button type="submit" className="hover:opacity-80 transition-opacity">
-                            <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-32 md:h-44 w-auto" />
-                        </button>
-                    </form>
+                     {/* Standard anchor tag with target=_top for reliable redirection */}
+                    <a 
+                        href="https://vellaperfumeria.com" 
+                        target="_top"
+                        className="hover:opacity-80 transition-opacity inline-block"
+                        aria-label="Volver a Vellaperfumeria.com"
+                    >
+                        <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-32 md:h-44 w-auto" />
+                    </a>
                 </div>
 
                 <div className="flex justify-between items-center pb-4 border-t border-gray-100 pt-2">

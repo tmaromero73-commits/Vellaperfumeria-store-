@@ -143,10 +143,18 @@ const App: React.FC = () => {
     };
     
     const buildBreadcrumbs = (): BreadcrumbItem[] => {
-        const homeCrumb: BreadcrumbItem = { label: 'Inicio', onClick: () => window.location.href = 'https://vellaperfumeria.com' };
+        // Always start with Inicio link to main site
+        const homeCrumb: BreadcrumbItem = { 
+            label: 'Inicio', 
+            href: 'https://vellaperfumeria.com',
+            target: '_top'
+        };
         const crumbs = [homeCrumb];
 
         switch(view.current) {
+            case 'home':
+                crumbs.push({ label: 'Tienda' });
+                break;
             case 'products':
                 crumbs.push({ label: 'Tienda', onClick: () => handleNavigate('products', 'all') });
                 if (view.payload && view.payload !== 'all') {
@@ -257,15 +265,15 @@ const App: React.FC = () => {
                 }
                 
                 .btn-primary {
-                    background-color: #9333EA; /* Purple 600 */
-                    color: white;
+                    background-color: #E9D5FF; /* Purple 200 */
+                    color: black;
                     padding: 0.75rem 1.5rem;
                     border-radius: 0.75rem;
                     font-weight: 600;
                     transition: all 0.2s;
                 }
                 .btn-primary:hover {
-                    background-color: #7E22CE; /* Purple 700 */
+                    background-color: #D8B4FE; /* Purple 300 */
                     transform: translateY(-1px);
                 }
                  .bg-brand-primary { background-color: #9333EA; } /* Purple 600 */

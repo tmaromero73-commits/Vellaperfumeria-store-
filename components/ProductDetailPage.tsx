@@ -299,7 +299,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                 }
                             }}
                             disabled={isOutOfStock}
-                            className={`w-full font-bold py-4 px-6 rounded-xl shadow-lg transition-all duration-300 text-lg ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-purple-600 text-white hover:bg-purple-700 hover:shadow-purple-200 transform hover:-translate-y-1'}`}
+                            className={`w-full font-bold py-4 px-6 rounded-xl shadow-lg transition-all duration-300 text-lg ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#E9D5FF] text-black hover:bg-[#D8B4FE] hover:shadow-purple-200 transform hover:-translate-y-1'}`}
                             aria-label={`Añadir ${product.name} al carrito`}
                         >
                             {isOutOfStock ? 'Agotado' : 'Añadir al carrito'}

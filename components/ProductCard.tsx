@@ -167,7 +167,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                         className={`w-full mt-3 py-3 px-4 rounded-xl font-bold text-sm transition-all duration-300 shadow-sm hover:shadow-md ${
                             product.stock === 0
                                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                : 'bg-purple-600 text-white hover:bg-purple-700 hover:shadow-purple-200 transform hover:-translate-y-0.5'
+                                : 'bg-[#E9D5FF] text-black hover:bg-[#D8B4FE] hover:shadow-purple-200 transform hover:-translate-y-0.5'
                         }`}
                     >
                         {product.stock === 0 

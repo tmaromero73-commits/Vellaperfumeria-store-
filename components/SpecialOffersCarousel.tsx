@@ -27,9 +27,9 @@ const slides = [
         description: "Compra cualquier producto de la selección inferior y activa el precio especial.",
         buttonText: "Ver Selección",
         image: "https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F44961%2F44961_1.png",
-        bgClass: "bg-gradient-to-r from-purple-100 via-white to-purple-50",
-        textClass: "text-brand-primary",
-        buttonClass: "bg-brand-primary text-white hover:bg-purple-700",
+        bgClass: "bg-[#F3E8FF]",
+        textClass: "text-purple-900",
+        buttonClass: "bg-[#E9D5FF] text-black hover:bg-[#D8B4FE]",
         targetId: "seleccion-oferta"
     },
     {
@@ -39,9 +39,9 @@ const slides = [
         description: "Fresa, Mango y Aloe Vera. Aromas irresistibles para tu piel desde 4,99€.",
         buttonText: "Descubrir",
         image: "https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F47440%2F47440_1.png",
-        bgClass: "bg-gradient-to-r from-purple-50 via-white to-purple-100",
-        textClass: "text-purple-800",
-        buttonClass: "bg-black text-white hover:bg-gray-800",
+        bgClass: "bg-purple-50", 
+        textClass: "text-purple-900",
+        buttonClass: "bg-[#E9D5FF] text-black hover:bg-[#D8B4FE]",
         targetId: "seleccion-oferta" 
     },
     {
@@ -51,9 +51,9 @@ const slides = [
         description: "Nueva Eau de Parfum. Sofisticada, elegante y seductora.",
         buttonText: "Ver Fragancia",
         image: "https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F46801%2F46801_1.png",
-        bgClass: "bg-gradient-to-r from-purple-300 to-purple-100",
-        textClass: "text-gray-900",
-        buttonClass: "bg-white text-black hover:bg-gray-200",
+        bgClass: "bg-[#FAF5FF]", 
+        textClass: "text-purple-900",
+        buttonClass: "bg-[#E9D5FF] text-black hover:bg-[#D8B4FE]",
         targetId: null,
         productId: 46801
     }
@@ -138,7 +138,7 @@ const SpecialOffersCarousel: React.FC<SpecialOffersCarouselProps> = ({ onProduct
                         </div>
                         <div className="md:w-1/2 h-full flex items-center justify-center relative">
                             {/* Decorate circles behind image */}
-                            <div className="absolute w-64 h-64 bg-white/30 rounded-full blur-3xl -z-10 transform scale-150"></div>
+                            <div className="absolute w-64 h-64 bg-white/40 rounded-full blur-3xl -z-10 transform scale-150"></div>
                             <img 
                                 src={slide.image} 
                                 alt={slide.title} 

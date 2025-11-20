@@ -10,7 +10,7 @@ const ThreadsIcon = () => (
 
 const InstagramIcon = () => (
     <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path fillRule="evenodd" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919A118.663 118.663 0 0112 2.163zm0 1.442c-3.143 0-3.509.011-4.72.067-2.694.123-3.997 1.433-4.12 4.12C3.109 9.12 3.098 9.486 3.098 12c0 2.514.011 2.88.067 4.72.123 2.686 1.427 3.996 4.12 4.12 1.21.055 1.577.067 4.72.067 3.143 0 3.509-.011 4.72-.067 2.694-.123 3.997-1.433 4.12-4.12.056-1.84.067-2.206.067-4.72 0-2.514-.011-2.88-.067-4.72-.123-2.686-1.427-3.996-4.12-4.12-1.21-.055-1.577.067-4.72-.067zM12 8.25a3.75 3.75 0 100 7.5 3.75 3.75 0 000-7.5zm0 1.44a2.31 2.31 0 110 4.62 2.31 2.31 0 010-4.62zM18.88 6.54a1.32 1.32 0 100-2.64 1.32 1.32 0 000 2.64z" clipRule="evenodd" />
+        <path fillRule="evenodd" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919A118.663 118.663 0 0112 2.163zm0 1.442c-3.143 0-3.509.011-4.72.067-2.694.123-3.997 1.433-4.12 4.12C3.109 9.12 3.098 9.486 3.098 9.486 3.098 12c0 2.514.011 2.88.067 4.72.123 2.686 1.427 3.996 4.12 4.12 1.21.055 1.577.067 4.72.067 3.143 0 3.509-.011 4.72-.067 2.694-.123 3.997-1.433 4.12-4.12.056-1.84.067-2.206.067-4.72 0-2.514-.011-2.88-.067-4.72-.123-2.686-1.427-3.996-4.12-4.12-1.21-.055-1.577.067-4.72-.067zM12 8.25a3.75 3.75 0 100 7.5 3.75 3.75 0 000-7.5zm0 1.44a2.31 2.31 0 110 4.62 2.31 2.31 0 010-4.62zM18.88 6.54a1.32 1.32 0 100-2.64 1.32 1.32 0 000 2.64z" clipRule="evenodd" />
     </svg>
 );
 
@@ -84,11 +84,13 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <div className="container mx-auto px-6 py-16">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-center md:text-left">
                     <div className="sm:col-span-2 lg:col-span-1 flex flex-col items-center text-center md:items-center md:text-center">
-                         <form action="https://vellaperfumeria.com" method="GET" target="_top">
-                            <button type="submit" className="inline-block hover:opacity-80 transition-opacity mb-4 cursor-pointer">
-                                <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-36 w-auto mx-auto" />
-                            </button>
-                        </form>
+                         <a 
+                             href="https://vellaperfumeria.com" 
+                             target="_top"
+                             className="inline-block hover:opacity-80 transition-opacity mb-4 cursor-pointer"
+                         >
+                             <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-36 w-auto mx-auto" />
+                         </a>
                         <h2 className="text-xl font-bold tracking-wider text-white">Vellaperfumeria</h2>
                         <p className="text-gray-400 text-sm mt-2">
                             Tu esencia, tu belleza, tu tienda.
@@ -99,14 +101,13 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                         <h3 className="text-base font-bold tracking-widest uppercase mb-4 text-white">Navegación</h3>
                         <ul className="space-y-2 text-sm">
                            <li>
-                                <form action="https://vellaperfumeria.com" method="GET" target="_top">
-                                    <button
-                                        type="submit"
-                                        className="text-gray-400 hover:text-white transition-colors hover:underline"
-                                    >
-                                        Inicio
-                                    </button>
-                                </form>
+                                <a
+                                    href="https://vellaperfumeria.com" 
+                                    target="_top"
+                                    className="text-gray-400 hover:text-white transition-colors hover:underline"
+                                >
+                                    Inicio
+                                </a>
                             </li>
                            <FooterLink onClick={() => onNavigate('products', 'all')}>Tienda</FooterLink>
                            <FooterLink onClick={() => onNavigate('products', 'skincare')}>Cuidado Facial</FooterLink>
