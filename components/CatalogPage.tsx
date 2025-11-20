@@ -1,15 +1,19 @@
 
 import React, { useState, useRef } from 'react';
 import { allProducts } from './products';
+import { ProductCard } from './ProductCard';
 import type { Product } from './types';
 import type { Currency } from './currency';
 
-// Usamos la URL específica proporcionada para asegurar la versión exacta del catálogo
-const INTERACTIVE_CATALOG_URL = 'https://es-catalogue.oriflame.com/oriflame/es/2025015-brp?HideStandardUI=true&Page=1';
+// URL del Catálogo 16 actualizada
+const INTERACTIVE_CATALOG_URL = 'https://es-catalogue.oriflame.com/oriflame/es/2025016?HideStandardUI=true&Page=1';
 const FALLBACK_CATALOG_URL = 'https://es.oriflame.com/products/digital-catalogue-current';
 
 interface CatalogPageProps {
     onAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
+    onQuickAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
+    onProductSelect: (product: Product) => void;
+    onQuickView: (product: Product) => void;
     currency: Currency;
 }
 
@@ -49,7 +53,7 @@ const PayPalIcon = () => (
     </svg>
 );
 
-const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, currency }) => {
+const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, onQuickAddToCart, onProductSelect, onQuickView, currency }) => {
     const [quickAddCode, setQuickAddCode] = useState('');
     const [addStatus, setAddStatus] = useState<'idle' | 'success' | 'error'>('idle');
     const [statusMessage, setStatusMessage] = useState('');
@@ -59,7 +63,6 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, currency }) => {
         e.preventDefault();
         if (!quickAddCode.trim()) return;
 
-        // Find product by ID (Code)
         const code = parseInt(quickAddCode.trim());
         const product = allProducts.find(p => p.id === code);
 
@@ -69,7 +72,6 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, currency }) => {
             setStatusMessage(`¡${product.name} añadido al carrito!`);
             setQuickAddCode('');
             
-            // Reset status after a few seconds
             setTimeout(() => {
                 setAddStatus('idle');
                 setStatusMessage('');
@@ -84,121 +86,133 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, currency }) => {
         }
     };
 
+    // Featured catalog products for the list below
+    const catalogProducts = allProducts.slice(0, 8); 
+
     return (
-        <div className="w-full px-2 sm:px-4 py-6 h-full flex flex-col md:flex-row gap-6 bg-gray-50">
-            
-            {/* Catalog Viewer - Expanded Size */}
-            <div className="flex-grow flex flex-col min-w-0">
-                <div className="mb-4 flex items-center gap-4 flex-wrap md:flex-nowrap justify-center md:justify-start">
-                     {/* Branding in Main Header */}
-                    <img 
-                        src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
-                        alt="Vellaperfumeria Logo" 
-                        className="h-20 w-auto object-contain" 
-                     />
-                    <div className="text-center md:text-left">
-                        <h1 className="text-3xl md:text-4xl font-extrabold text-black tracking-tight font-serif">Catálogo BeautyShopVella</h1>
-                        <p className="text-sm text-gray-600 mt-1">
-                            Catálogo Digital Interactivo.
-                        </p>
-                    </div>
-                </div>
+        <div className="w-full px-2 sm:px-4 py-6 bg-gray-50">
+            <div className="flex flex-col md:flex-row gap-6 h-full">
                 
-                <div 
-                    className="relative w-full flex-grow bg-white rounded-lg shadow-2xl overflow-hidden border border-gray-200" 
-                    style={{ minHeight: '200vh' }} 
-                >
-                     <iframe
-                        data-ipaper="true"
-                        src={INTERACTIVE_CATALOG_URL}
-                        title="Catálogo Digital BeautyShopVella"
-                        className="w-full h-full absolute inset-0"
-                        frameBorder="0"
-                        allowFullScreen
-                        loading="lazy"
-                     />
-                </div>
-                 <div className="text-center mt-4">
-                    <a href={FALLBACK_CATALOG_URL} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 hover:text-brand-purple-dark hover:underline font-medium">
-                         ¿No puedes ver el catálogo? Abrir en ventana externa
-                    </a>
-                </div>
-            </div>
-
-            {/* Quick Order Sidebar */}
-            <div className="w-full md:w-80 lg:w-96 flex-shrink-0 space-y-6">
-                <div className="bg-white p-6 rounded-lg shadow-xl border border-gray-100 sticky top-24">
-                    {/* Logo Vellaperfumeria en Sidebar */}
-                    <div className="flex justify-center mb-6 pb-4 border-b border-gray-100">
-                         <img 
+                {/* Catalog Viewer */}
+                <div className="flex-grow flex flex-col min-w-0">
+                    <div className="mb-4 flex items-center gap-4 flex-wrap md:flex-nowrap justify-center md:justify-start">
+                        <img 
                             src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
-                            alt="Vellaperfumeria" 
-                            className="w-48 h-auto object-contain" 
-                         />
-                    </div>
-
-                    <div className="flex items-center gap-2 mb-4 text-brand-purple-dark">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                        </svg>
-                        <h2 className="text-lg font-bold text-black">Pedido Rápido</h2>
-                    </div>
-                    
-                    <div className="bg-brand-purple/10 p-4 rounded-md mb-6 border border-brand-purple/20">
-                        <p className="text-sm font-bold text-gray-800 mb-2">¿Cómo comprar?</p>
-                        <ol className="list-decimal list-inside text-sm text-gray-700 space-y-2">
-                            <li>Mira el <strong>Código</strong> del producto en el catálogo.</li>
-                            <li>Ingresa el código aquí.</li>
-                            <li>¡Añádelo a tu cesta!</li>
-                        </ol>
-                    </div>
-
-                    <form onSubmit={handleQuickAdd} className="space-y-3">
-                        <div>
-                            <label htmlFor="quickCode" className="sr-only">Código del producto</label>
-                            <input
-                                type="number"
-                                id="quickCode"
-                                placeholder="Código (ej: 38497)"
-                                className="w-full border border-gray-300 rounded-md px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent"
-                                value={quickAddCode}
-                                onChange={(e) => setQuickAddCode(e.target.value)}
-                            />
-                        </div>
-                        <button
-                            ref={buttonRef}
-                            type="submit"
-                            disabled={!quickAddCode}
-                            className="w-full bg-black text-white font-bold py-3 px-4 rounded-md hover:bg-gray-800 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed shadow-lg"
-                        >
-                            Añadir a la cesta
-                        </button>
-                    </form>
-
-                    {statusMessage && (
-                        <div className={`mt-4 p-3 rounded-md text-sm font-medium animate-fade-in ${
-                            addStatus === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
-                        }`}>
-                            {statusMessage}
-                        </div>
-                    )}
-
-                    <div className="mt-6 pt-6 border-t border-gray-100">
-                         <p className="text-xs font-semibold text-gray-500 text-center mb-3 uppercase tracking-wider">Pagos seguros con:</p>
-                         <div className="flex justify-center gap-3 grayscale-0 opacity-100">
-                            <VisaIcon />
-                            <MastercardIcon />
-                            <PayPalIcon />
+                            alt="Vellaperfumeria Logo" 
+                            className="h-20 w-auto object-contain" 
+                        />
+                        <div className="text-center md:text-left">
+                            <h1 className="text-3xl md:text-4xl font-extrabold text-black tracking-tight font-serif">Catálogo Actual (C16)</h1>
+                            <p className="text-sm text-gray-600 mt-1">
+                                Explora el Catálogo 16 y descubre las mejores ofertas de temporada.
+                            </p>
                         </div>
                     </div>
                     
-                    <div className="mt-4 text-center">
-                        <p className="text-xs text-gray-500">
-                            ¿Dudas? Escríbenos por WhatsApp.
-                        </p>
+                    <div 
+                        className="relative w-full flex-grow bg-white rounded-lg shadow-2xl overflow-hidden border border-gray-200" 
+                        style={{ minHeight: '80vh' }} 
+                    >
+                        <iframe
+                            data-ipaper="true"
+                            src={INTERACTIVE_CATALOG_URL}
+                            title="Catálogo Digital BeautyShopVella"
+                            className="w-full h-full absolute inset-0"
+                            frameBorder="0"
+                            allowFullScreen
+                            loading="lazy"
+                        />
+                    </div>
+                    <div className="text-center mt-4">
+                        <a href={FALLBACK_CATALOG_URL} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 hover:text-brand-purple-dark hover:underline font-medium">
+                            ¿No puedes ver el catálogo? Abrir en ventana externa
+                        </a>
+                    </div>
+                </div>
+
+                {/* Quick Order Sidebar */}
+                <div className="w-full md:w-80 lg:w-96 flex-shrink-0 space-y-6">
+                    <div className="bg-white p-6 rounded-lg shadow-xl border border-gray-100 sticky top-24">
+                        <div className="flex items-center gap-2 mb-4 text-brand-purple-dark">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
+                            <h2 className="text-lg font-bold text-black">Pedido Rápido</h2>
+                        </div>
+                        
+                        <div className="bg-brand-purple/10 p-4 rounded-md mb-6 border border-brand-purple/20">
+                            <p className="text-sm font-bold text-gray-800 mb-2">¿Cómo comprar?</p>
+                            <ol className="list-decimal list-inside text-sm text-gray-700 space-y-2">
+                                <li>Mira el <strong>Código</strong> del producto en el catálogo.</li>
+                                <li>Ingresa el código aquí.</li>
+                                <li>¡Añádelo a tu cesta!</li>
+                            </ol>
+                        </div>
+
+                        <form onSubmit={handleQuickAdd} className="space-y-3">
+                            <div>
+                                <label htmlFor="quickCode" className="sr-only">Código del producto</label>
+                                <input
+                                    type="number"
+                                    id="quickCode"
+                                    placeholder="Código (ej: 38497)"
+                                    className="w-full border border-gray-300 rounded-md px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent"
+                                    value={quickAddCode}
+                                    onChange={(e) => setQuickAddCode(e.target.value)}
+                                />
+                            </div>
+                            <button
+                                ref={buttonRef}
+                                type="submit"
+                                disabled={!quickAddCode}
+                                className="w-full bg-black text-white font-bold py-3 px-4 rounded-md hover:bg-gray-800 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed shadow-lg"
+                            >
+                                Añadir a la cesta
+                            </button>
+                        </form>
+
+                        {statusMessage && (
+                            <div className={`mt-4 p-3 rounded-md text-sm font-medium animate-fade-in ${
+                                addStatus === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
+                            }`}>
+                                {statusMessage}
+                            </div>
+                        )}
+
+                        <div className="mt-6 pt-6 border-t border-gray-100">
+                            <p className="text-xs font-semibold text-gray-500 text-center mb-3 uppercase tracking-wider">Pagos seguros con:</p>
+                            <div className="flex justify-center gap-3 grayscale-0 opacity-100">
+                                <VisaIcon />
+                                <MastercardIcon />
+                                <PayPalIcon />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            {/* Featured Products from Catalog (Visual Baskets) */}
+            <div className="mt-12 border-t border-gray-200 pt-12">
+                <div className="text-center mb-10">
+                    <h2 className="text-3xl font-extrabold text-black tracking-tight">Productos Destacados del Catálogo</h2>
+                    <p className="mt-2 text-lg text-gray-600">Compra directamente tus favoritos</p>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                    {catalogProducts.map(product => (
+                        <ProductCard
+                            key={product.id}
+                            product={product}
+                            currency={currency}
+                            onAddToCart={onAddToCart}
+                            onQuickAddToCart={onQuickAddToCart}
+                            onProductSelect={onProductSelect}
+                            onQuickView={onQuickView}
+                        />
+                    ))}
+                </div>
+            </div>
+
+            <div className="js-logout-data" data-url-eshoplogout="https://es-eshop.oriflame.com/iframe/internal/Services.aspx"></div>
 
             <style>{`
                 @keyframes fade-in {

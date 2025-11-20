@@ -1,7 +1,4 @@
 
-
-
-
 import React, { useRef, useState, useEffect } from 'react';
 import { ProductCard } from './ProductCard';
 import type { Product } from './types';
@@ -37,7 +34,6 @@ const SparklesIcon: React.FC<{className?: string}> = ({ className }) => (
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m1-9l2-2 2 2m-2 4v6m2-6l2 2-2 2M15 3l2 2-2 2m-2-4v4m2 4l2 2-2 2m-8 4h12" />
     </svg>
 );
-
 
 const WhatsAppIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -101,24 +97,18 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('description');
 
-
     const [selectedVariant, setSelectedVariant] = useState<Record<string, string> | null>(getDefaultVariant(product));
     const [currentImageUrl, setCurrentImageUrl] = useState(product.imageUrl);
 
-    // Update image when a variant with a specific image is selected
     useEffect(() => {
         let variantImageUrl: string | null = null;
-
         if (product.variants && selectedVariant) {
-            // Iterate over the product's variant types to find one with an image
             for (const variantType in product.variants) {
                 const selectedValue = selectedVariant[variantType];
                 if (selectedValue) {
                     const variantOption = product.variants[variantType].find(
                         v => v.value === selectedValue
                     );
-                    
-                    // If this selected option has a specific image, use it and stop searching
                     if (variantOption?.imageUrl) {
                         variantImageUrl = variantOption.imageUrl;
                         break;
@@ -126,11 +116,8 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                 }
             }
         }
-
-        // Set the image to the variant-specific one, or fall back to the main product image
         setCurrentImageUrl(variantImageUrl || product.imageUrl);
     }, [selectedVariant, product.variants, product.imageUrl]);
-
 
     const handleVariantChange = (variantType: string, value: string) => {
         setSelectedVariant(prev => ({ ...(prev || {}), [variantType]: value }));
@@ -158,7 +145,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
 
     const getStockInfo = (stock: number): { text: string; color: string } => {
         if (stock === 0) {
-            return { text: 'Agotado', color: 'text-red-600' };
+            return { text: 'Agotado', color: 'text-orange-600' };
         }
         if (stock <= 10) {
             return { text: 'Pocas unidades', color: 'text-amber-600' };
@@ -192,10 +179,10 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
 
     return (
         <div className="container mx-auto">
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden md:grid md:grid-cols-5 md:gap-8 p-4 md:p-8">
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden md:grid md:grid-cols-5 md:gap-8 p-4 md:p-10">
                 <div className="md:col-span-3">
                     <div 
-                        className="relative group cursor-pointer p-4 flex justify-center items-center bg-white border border-gray-100 rounded-lg"
+                        className="relative group cursor-pointer p-6 flex justify-center items-center bg-purple-50/20 rounded-2xl border border-purple-100/50"
                         onClick={() => setIsLightboxOpen(true)}
                         role="button"
                         aria-label="Ampliar imagen del producto"
@@ -203,10 +190,10 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                         <img
                             src={currentImageUrl}
                             alt={product.name}
-                            className="max-h-96 object-contain transition-all duration-300"
+                            className="max-h-[500px] object-contain transition-all duration-300"
                         />
-                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center rounded-lg">
-                            <div className="opacity-0 group-hover:opacity-100 transform group-hover:scale-100 scale-90 transition-all duration-300">
+                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300 flex items-center justify-center rounded-2xl">
+                            <div className="opacity-0 group-hover:opacity-100 transform group-hover:scale-100 scale-90 transition-all duration-300 bg-purple-400/80 p-3 rounded-full backdrop-blur-sm">
                                 <MagnifyPlusIcon />
                             </div>
                         </div>
@@ -215,14 +202,23 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
 
 
                 <div className="p-4 flex flex-col md:col-span-2">
-                    <h1 className="text-2xl md:text-3xl font-bold tracking-wide mb-2">{product.name}</h1>
+                    <div className="mb-2 flex items-center gap-2">
+                        <span className="text-xs font-bold bg-gray-100 px-2 py-1 rounded-lg text-gray-500 uppercase tracking-wide">{product.brand}</span>
+                        {product.rating && (
+                            <div className="flex items-center gap-1">
+                                <StarIcon className="text-amber-300 w-4 h-4" />
+                                <span className="text-sm font-medium text-gray-600">{product.rating} <span className="text-gray-400">({product.reviewCount} reseñas)</span></span>
+                            </div>
+                        )}
+                    </div>
+                    <h1 className="text-3xl font-extrabold tracking-tight mb-4 text-gray-900">{product.name}</h1>
                     
-                    <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-4">
-                        <p className={`text-2xl font-bold ${isDiscounted ? 'text-brand-purple-dark' : 'text-gray-900'}`}>{formatCurrency(product.price, currency)}</p>
+                    <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-6">
+                        <p className={`text-4xl font-extrabold ${isDiscounted ? 'text-purple-500' : 'text-gray-900'}`}>{formatCurrency(product.price, currency)}</p>
                         {isDiscounted && (
                             <>
-                                <p className="text-lg text-gray-500 line-through">{formatCurrency(product.regularPrice!, currency)}</p>
-                                <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full uppercase">
+                                <p className="text-xl text-gray-400 line-through decoration-purple-200">{formatCurrency(product.regularPrice!, currency)}</p>
+                                <span className="bg-purple-400 text-white text-xs font-bold px-2 py-1 rounded-lg uppercase tracking-wider shadow-sm transform -translate-y-1">
                                     AHORRA {Math.round(((product.regularPrice! - product.price) / product.regularPrice!) * 100)}%
                                 </span>
                             </>
@@ -230,50 +226,54 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                     </div>
 
                     {product.isShippingSaver && (
-                        <div className="flex items-center gap-2 text-amber-700 font-semibold my-3 p-3 bg-amber-50 rounded-md border border-amber-200">
-                            <TruckIcon/>
+                        <div className="flex items-center gap-3 text-orange-800 font-medium my-2 p-4 bg-orange-50 rounded-xl border border-orange-200">
+                            <div className="bg-white p-2 rounded-full shadow-sm">
+                                <TruckIcon className="text-orange-500"/>
+                            </div>
                             <span>¡Este producto te da <b>envío GRATIS</b> en todo tu pedido!</span>
                         </div>
                     )}
                     
                      {product.beautyPoints && (
-                        <div className="flex items-center gap-2 text-black font-semibold my-3 p-3 bg-brand-purple/20 rounded-md border border-brand-purple/50">
-                            <SparklesIcon/>
+                        <div className="flex items-center gap-3 text-purple-800 font-medium my-2 p-4 bg-purple-50 rounded-xl border border-purple-200">
+                             <div className="bg-white p-2 rounded-full shadow-sm">
+                                <SparklesIcon className="text-purple-500"/>
+                            </div>
                             <span>Consigue <b>+{product.beautyPoints} Puntos Beauty</b> con este producto</span>
                         </div>
                     )}
 
                     {product.variants && (
-                        <div className="space-y-4 my-6">
+                        <div className="space-y-5 my-8 pt-6 border-t border-gray-100">
                             {Object.keys(product.variants).map((type) => {
                                 const options = product.variants![type];
                                 if (!Array.isArray(options)) return null;
 
                                 return (
                                     <div key={type}>
-                                        <h3 className="text-sm font-semibold text-gray-800 mb-2">
-                                            {type}: <span className="font-normal text-gray-700">{selectedVariant?.[type]}</span>
+                                        <h3 className="text-sm font-bold text-gray-900 mb-3">
+                                            {type}: <span className="font-normal text-gray-600">{selectedVariant?.[type]}</span>
                                         </h3>
-                                        <div className="flex flex-wrap gap-2">
+                                        <div className="flex flex-wrap gap-3">
                                             {options.map(option => {
                                                 const isSelected = selectedVariant?.[type] === option.value;
-                                                if (option.colorCode) { // Render color swatches
+                                                if (option.colorCode) { 
                                                     return (
                                                         <button
                                                             key={option.value}
                                                             onClick={() => handleVariantChange(type, option.value)}
-                                                            className={`w-8 h-8 rounded-full border-2 transition-all ${isSelected ? 'border-brand-purple-dark ring-2 ring-offset-1 ring-brand-purple' : 'border-gray-300'}`}
+                                                            className={`w-10 h-10 rounded-full border-2 transition-all ${isSelected ? 'border-purple-400 ring-2 ring-offset-2 ring-purple-200 scale-110' : 'border-gray-200 hover:border-gray-400'}`}
                                                             style={{ backgroundColor: option.colorCode }}
                                                             aria-label={`Seleccionar color ${option.value}`}
+                                                            title={option.value}
                                                         />
                                                     );
                                                 }
-                                                // Render buttons for other types (e.g., size)
                                                 return (
                                                     <button
                                                         key={option.value}
                                                         onClick={() => handleVariantChange(type, option.value)}
-                                                        className={`px-4 py-1.5 text-sm font-medium border rounded-md transition-colors ${isSelected ? 'bg-brand-purple text-brand-primary' : 'bg-white text-black hover:bg-gray-100'}`}
+                                                        className={`px-5 py-2 text-sm font-medium border rounded-lg transition-all ${isSelected ? 'bg-purple-400 text-white border-purple-500 shadow-md' : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-200'}`}
                                                     >
                                                         {option.value}
                                                     </button>
@@ -286,8 +286,8 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                         </div>
                     )}
                     
-                    <div className="mb-6 mt-auto">
-                        <p className="text-sm font-semibold">Disponibilidad: <span className={`font-bold ${stockInfo.color}`}>{stockInfo.text}</span></p>
+                    <div className="mb-6 mt-auto pt-4">
+                        <p className="text-sm font-semibold text-gray-600">Disponibilidad: <span className={`font-bold ${stockInfo.color}`}>{stockInfo.text}</span></p>
                     </div>
                     
                     <div className="flex flex-col gap-3">
@@ -299,7 +299,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                 }
                             }}
                             disabled={isOutOfStock}
-                            className={`w-full font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-300 ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-brand-purple text-brand-primary hover:bg-brand-purple-dark transform hover:scale-105 active:scale-95'}`}
+                            className={`w-full font-bold py-4 px-6 rounded-xl shadow-lg transition-all duration-300 text-lg ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-purple-600 text-white hover:bg-purple-700 hover:shadow-purple-200 transform hover:-translate-y-1'}`}
                             aria-label={`Añadir ${product.name} al carrito`}
                         >
                             {isOutOfStock ? 'Agotado' : 'Añadir al carrito'}
@@ -309,7 +309,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                setIsShareModalOpen(true);
                                setCopyButtonText('Copiar enlace');
                            }}
-                           className="w-full bg-gray-100 text-black font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-gray-200 transition-colors duration-300 active:scale-95"
+                           className="w-full bg-white border-2 border-gray-100 text-gray-700 font-bold py-3 px-6 rounded-xl hover:bg-purple-50 hover:border-purple-200 hover:text-purple-600 transition-colors duration-300"
                            aria-label="Compartir este producto"
                         >
                            Compartir
@@ -319,34 +319,34 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
             </div>
 
             {/* Description & How to Use Section */}
-            <div className="bg-white rounded-lg shadow-lg p-4 md:p-8 mt-8">
-                <div className="flex border-b border-gray-200 mb-6">
+            <div className="bg-white rounded-2xl shadow-lg p-6 md:p-10 mt-8">
+                <div className="flex border-b border-gray-200 mb-8">
                     <button 
                         onClick={() => setActiveTab('description')} 
-                        className={`py-3 px-1 mr-6 font-semibold text-base transition-colors focus:outline-none ${activeTab === 'description' ? 'border-b-2 border-brand-primary text-brand-primary' : 'text-gray-500 hover:text-brand-primary'}`}
+                        className={`py-4 px-4 mr-4 font-bold text-base transition-all focus:outline-none border-b-4 ${activeTab === 'description' ? 'border-purple-400 text-purple-600' : 'border-transparent text-gray-500 hover:text-purple-400'}`}
                     >
                         Descripción
                     </button>
                     {product.howToUse && (
                         <button 
                             onClick={() => setActiveTab('howToUse')} 
-                            className={`py-3 px-1 font-semibold text-base transition-colors focus:outline-none ${activeTab === 'howToUse' ? 'border-b-2 border-brand-primary text-brand-primary' : 'text-gray-500 hover:text-brand-primary'}`}
+                            className={`py-4 px-4 font-bold text-base transition-all focus:outline-none border-b-4 ${activeTab === 'howToUse' ? 'border-purple-400 text-purple-600' : 'border-transparent text-gray-500 hover:text-purple-400'}`}
                         >
                             Modo de Empleo
                         </button>
                     )}
                 </div>
-                <div className="text-gray-800 leading-relaxed min-h-[100px]">
+                <div className="text-gray-700 leading-relaxed text-lg min-h-[100px]">
                     {activeTab === 'description' && <p>{product.description}</p>}
                     {activeTab === 'howToUse' && product.howToUse && <p className="whitespace-pre-wrap">{product.howToUse}</p>}
                 </div>
             </div>
 
              {product.category === 'skincare' && (
-                <div className="text-center my-10">
+                <div className="text-center my-12">
                     <button 
                         onClick={() => onProductSelect(allProducts.find(p => p.category === 'skincare')!)} 
-                        className="inline-block bg-gray-100 text-gray-800 font-semibold py-3 px-8 rounded-lg hover:bg-gray-200 transition-colors shadow-sm"
+                        className="inline-block bg-purple-50 text-purple-900 font-bold py-4 px-10 rounded-full hover:bg-purple-100 transition-all shadow-sm border border-purple-200"
                     >
                         Ver todos los limpiadores y productos de Skincare
                     </button>
@@ -354,9 +354,9 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
             )}
 
             {relatedProducts.length > 0 && (
-                <section className="mt-16">
-                    <h2 className="text-2xl font-bold mb-8 text-center">También te puede interesar</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <section className="mt-20">
+                    <h2 className="text-3xl font-extrabold mb-10 text-center text-gray-900">También te puede interesar</h2>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                         {relatedProducts.map(relatedProduct => (
                             <ProductCard
                                 key={relatedProduct.id}
@@ -372,64 +372,64 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                 </section>
             )}
 
-
             {/* --- Reviews Section --- */}
-            <div className="mt-12 pt-8 border-t">
-                <h2 className="text-xl font-bold mb-6">Valoraciones de Clientes</h2>
+            <div className="mt-16 pt-10 border-t border-gray-200">
+                <h2 className="text-2xl font-bold mb-8">Valoraciones de Clientes</h2>
                 
-                {/* Review Form */}
-                <div className="bg-gray-50 p-6 rounded-lg mb-8 border border-gray-200">
-                    <form onSubmit={handleReviewSubmit} className="space-y-4">
-                        <h3 className="text-lg font-semibold">Escribe tu opinión</h3>
+                <div className="bg-gray-50 p-8 rounded-2xl mb-10 border border-gray-100">
+                    <form onSubmit={handleReviewSubmit} className="space-y-6">
+                        <h3 className="text-xl font-bold">Escribe tu opinión</h3>
                         {showSuccessMessage && (
-                             <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md" role="alert">
+                             <div className="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 rounded-r-md" role="alert">
                                 <p className="font-bold">¡Gracias!</p>
                                 <p>Tu reseña ha sido publicada.</p>
                             </div>
                         )}
-                        <div>
-                            <label htmlFor="reviewAuthor" className="block text-sm font-medium text-gray-700 mb-1">Tu nombre</label>
-                            <input
-                                type="text"
-                                id="reviewAuthor"
-                                value={newReview.author}
-                                onChange={(e) => setNewReview({ ...newReview, author: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
-                                required
-                            />
-                        </div>
-                        <div>
-                             <label className="block text-sm font-medium text-gray-700 mb-1">Tu valoración</label>
-                             <div className="flex items-center gap-1">
-                                {[1, 2, 3, 4, 5].map((star) => (
-                                    <button
-                                        key={star}
-                                        type="button"
-                                        onClick={() => setNewReview({ ...newReview, rating: star })}
-                                        onMouseEnter={() => setHoverRating(star)}
-                                        onMouseLeave={() => setHoverRating(0)}
-                                        className="focus:outline-none"
-                                        aria-label={`Valorar con ${star} estrella${star > 1 ? 's' : ''}`}
-                                    >
-                                        <StarIcon
-                                            className={`w-6 h-6 cursor-pointer transition-colors ${
-                                                (hoverRating || newReview.rating) >= star
-                                                    ? 'text-amber-400'
-                                                    : 'text-gray-300'
-                                            }`}
-                                        />
-                                    </button>
-                                ))}
+                        <div className="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label htmlFor="reviewAuthor" className="block text-sm font-bold text-gray-700 mb-2">Tu nombre</label>
+                                <input
+                                    type="text"
+                                    id="reviewAuthor"
+                                    value={newReview.author}
+                                    onChange={(e) => setNewReview({ ...newReview, author: e.target.value })}
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-shadow"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                 <label className="block text-sm font-bold text-gray-700 mb-2">Tu valoración</label>
+                                 <div className="flex items-center gap-2 py-2">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                        <button
+                                            key={star}
+                                            type="button"
+                                            onClick={() => setNewReview({ ...newReview, rating: star })}
+                                            onMouseEnter={() => setHoverRating(star)}
+                                            onMouseLeave={() => setHoverRating(0)}
+                                            className="focus:outline-none transform hover:scale-110 transition-transform"
+                                            aria-label={`Valorar con ${star} estrella${star > 1 ? 's' : ''}`}
+                                        >
+                                            <StarIcon
+                                                className={`w-8 h-8 cursor-pointer transition-colors ${
+                                                    (hoverRating || newReview.rating) >= star
+                                                        ? 'text-amber-400'
+                                                        : 'text-gray-300'
+                                                }`}
+                                            />
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                         <div>
-                            <label htmlFor="reviewText" className="block text-sm font-medium text-gray-700 mb-1">Tu reseña</label>
+                            <label htmlFor="reviewText" className="block text-sm font-bold text-gray-700 mb-2">Tu reseña</label>
                             <textarea
                                 id="reviewText"
                                 rows={4}
                                 value={newReview.text}
                                 onChange={(e) => setNewReview({ ...newReview, text: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-shadow"
                                 required
                             />
                         </div>
@@ -437,7 +437,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                              <button
                                 type="submit"
                                 disabled={!isReviewFormValid}
-                                className="bg-black text-white font-semibold py-2 px-6 rounded-lg shadow-sm hover:bg-gray-800 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                                className="bg-black text-white font-bold py-3 px-8 rounded-lg shadow-md hover:bg-purple-500 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
                             >
                                 Publicar reseña
                             </button>
@@ -445,28 +445,27 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                     </form>
                 </div>
 
-                {/* Existing Reviews */}
                 <div className="space-y-6">
                     {reviews.length > 0 ? reviews.map((review, index) => (
-                        <div key={index} className="flex items-start gap-4 p-4 border-b">
-                            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                        <div key={index} className="flex items-start gap-5 p-6 bg-white rounded-xl border border-gray-100 shadow-sm">
+                            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-500">
                                 <UserIcon />
                             </div>
                             <div>
-                                <div className="flex items-center gap-4 mb-1">
-                                    <p className="font-bold">{review.author}</p>
+                                <div className="flex items-center gap-4 mb-2">
+                                    <p className="font-bold text-gray-900">{review.author}</p>
                                     <div className="flex">
                                         {[...Array(5)].map((_, i) => (
-                                            <StarIcon key={i} className={`w-4 h-4 ${i < review.rating ? 'text-amber-400' : 'text-gray-300'}`} />
+                                            <StarIcon key={i} className={`w-4 h-4 ${i < review.rating ? 'text-amber-400' : 'text-gray-200'}`} />
                                         ))}
                                     </div>
+                                    <p className="text-xs text-gray-500">{review.date}</p>
                                 </div>
-                                <p className="text-sm text-gray-600 mb-2">{review.date}</p>
                                 <p className="text-gray-700">{review.text}</p>
                             </div>
                         </div>
                     )) : (
-                        <p className="text-center text-gray-500 py-4">No hay reseñas para este producto todavía. ¡Sé el primero!</p>
+                        <p className="text-center text-gray-500 py-8">No hay reseñas para este producto todavía. ¡Sé el primero!</p>
                     )}
                 </div>
             </div>
@@ -480,46 +479,34 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                     aria-labelledby="share-modal-title"
                 >
                     <div 
-                        className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm mx-4 relative transform transition-all duration-300 scale-95 opacity-0 animate-fade-in-scale"
+                        className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm mx-4 relative transform transition-all duration-300 scale-95 opacity-0 animate-fade-in-scale"
                         onClick={(e) => e.stopPropagation()}
                         style={{animation: 'fade-in-scale 0.3s forwards cubic-bezier(0.16, 1, 0.3, 1)'}}
                     >
                         <button 
                             onClick={() => setIsShareModalOpen(false)} 
-                            className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
-                            aria-label="Cerrar modal"
+                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-2"
                         >
                             <CloseIcon />
                         </button>
-                        
-                        <h2 id="share-modal-title" className="text-xl font-bold mb-2 text-center">Compartir Producto</h2>
-                        <p className="font-semibold truncate mb-4 text-center text-gray-700">{product.name}</p>
-                        
-                        <div className="flex justify-around items-center my-6">
-                            <button className="text-green-500 hover:text-green-600 transition-transform transform hover:scale-110" aria-label="Compartir en WhatsApp">
-                               <WhatsAppIcon />
-                            </button>
-                             <button className="text-blue-600 hover:text-blue-700 transition-transform transform hover:scale-110" aria-label="Compartir en Facebook">
-                               <FacebookIcon />
-                            </button>
-                             <button className="text-gray-800 hover:text-black transition-transform transform hover:scale-110" aria-label="Compartir en Twitter">
-                               <TwitterIcon />
-                            </button>
+                        <h3 id="share-modal-title" className="text-xl font-bold mb-4 text-center">Compartir Producto</h3>
+                        <div className="flex justify-center gap-4 mb-6">
+                            <button className="p-3 bg-gray-100 rounded-full hover:bg-purple-100 text-gray-600 hover:text-purple-600 transition-colors"><FacebookIcon /></button>
+                            <button className="p-3 bg-gray-100 rounded-full hover:bg-purple-100 text-gray-600 hover:text-purple-600 transition-colors"><TwitterIcon /></button>
+                            <button className="p-3 bg-gray-100 rounded-full hover:bg-purple-100 text-gray-600 hover:text-purple-600 transition-colors"><WhatsAppIcon /></button>
                         </div>
-
-                        <div className="flex items-center border rounded-lg p-1">
+                        <div className="relative">
                             <input 
                                 type="text" 
                                 readOnly 
                                 value={productUrl} 
-                                className="flex-grow text-sm text-gray-500 bg-transparent focus:outline-none px-2"
-                                aria-label="Enlace del producto"
+                                className="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 pr-12 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-400"
                             />
                             <button 
-                                onClick={handleCopyLink} 
-                                className={`text-sm font-semibold py-2 px-3 rounded-md transition-colors ${copyButtonText === '¡Copiado!' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                                onClick={handleCopyLink}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 text-purple-500 hover:text-purple-700 font-bold text-sm px-2"
                             >
-                            {copyButtonText}
+                                {copyButtonText === 'Copiar enlace' ? 'Copiar' : '¡Listo!'}
                             </button>
                         </div>
                     </div>
@@ -527,30 +514,22 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
             )}
 
             {isLightboxOpen && (
-                <ImageLightbox
-                    imageUrl={currentImageUrl}
-                    altText={product.name}
-                    onClose={() => setIsLightboxOpen(false)}
+                <ImageLightbox 
+                    imageUrl={currentImageUrl} 
+                    altText={product.name} 
+                    onClose={() => setIsLightboxOpen(false)} 
                 />
             )}
 
-            <style>
-                {`
+             <style>{`
                 @keyframes fade-in-scale {
-                    from {
-                        transform: scale(0.95);
-                        opacity: 0;
-                    }
-                    to {
-                        transform: scale(1);
-                        opacity: 1;
-                    }
+                    from { opacity: 0; transform: scale(0.95); }
+                    to { opacity: 1; transform: scale(1); }
                 }
                 .animate-fade-in-scale {
-                    animation: fade-in-scale 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                    animation: fade-in-scale 0.3s ease-out forwards;
                 }
-                `}
-            </style>
+            `}</style>
         </div>
     );
 };

@@ -36,7 +36,6 @@ const HelpIcon = ({ isActive }: { isActive: boolean }) => (
 interface BottomNavBarProps {
     onNavigate: (view: View, payload?: any) => void;
     currentView: View;
-    currentCategory: string;
 }
 
 interface NavItem {
@@ -48,31 +47,33 @@ interface NavItem {
     href?: string;
 }
 
-const BottomNavBar: React.FC<BottomNavBarProps> = ({ onNavigate, currentView, currentCategory }) => {
+const BottomNavBar: React.FC<BottomNavBarProps> = ({ onNavigate, currentView }) => {
     
     const navItems: NavItem[] = [
         { view: 'home', label: 'Inicio', icon: HomeIcon, payload: undefined, isExternal: true, href: 'https://vellaperfumeria.com' },
         { view: 'products', label: 'Tienda', icon: ShopIcon, payload: 'all' },
         { view: 'ofertas', label: 'Ofertas', icon: GiftIcon, payload: undefined },
         { view: 'catalog', label: 'Catálogo', icon: CatalogIcon, payload: undefined },
-        { view: 'contact', label: 'Ayuda', icon: HelpIcon, payload: undefined },
+        { view: 'contact', label: 'Ayuda', icon: HelpIcon, payload: undefined }, 
     ];
 
     return (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-[0_-2px_5px_rgba(0,0,0,0.05)] z-30">
-            <nav className="flex justify-around items-center h-16">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] z-50 pb-safe">
+            <nav className="flex justify-around items-center h-16 pb-1">
                 {navItems.map(item => {
-                    const isActive = item.view === 'products'
+                    const isActive = !item.isExternal && (item.view === 'products'
                         ? (currentView === 'products' || currentView === 'productDetail')
-                        : currentView === item.view;
+                        : currentView === item.view);
                         
                     const Icon = item.icon;
 
                     const handleClick = () => {
                          if (item.isExternal && item.href) {
-                            window.location.href = item.href;
+                            // Use window.open top to ensure we navigate the whole page properly even if inside iframe
+                            window.open(item.href, '_top');
                          } else {
                             onNavigate(item.view, item.payload);
+                            window.scrollTo(0, 0);
                          }
                     };
 
@@ -80,14 +81,16 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({ onNavigate, currentView, cu
                         <button
                             key={item.label}
                             onClick={handleClick}
-                            className={`flex flex-col items-center justify-center text-xs font-medium w-full h-full transition-colors ${
-                                isActive ? 'text-brand-purple-dark' : 'text-gray-500 hover:text-brand-purple-dark'
+                            className={`flex flex-col items-center justify-center w-full h-full transition-colors duration-200 ${
+                                isActive ? 'text-brand-primary' : 'text-gray-400 hover:text-brand-primary'
                             }`}
                             aria-label={item.label}
                             aria-current={isActive ? 'page' : undefined}
                         >
-                            <Icon isActive={isActive} />
-                            <span>{item.label}</span>
+                            <div className={`p-1 rounded-full transition-all ${isActive ? 'bg-purple-50 transform -translate-y-1' : ''}`}>
+                                <Icon isActive={isActive} />
+                            </div>
+                            <span className="text-[10px] font-medium mt-0.5">{item.label}</span>
                         </button>
                     )
                 })}

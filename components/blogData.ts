@@ -1,5 +1,4 @@
 
-
 import React from 'react';
 
 export interface BlogPost {
@@ -32,7 +31,7 @@ export const blogPosts: BlogPost[] = [
             React.createElement('p', null, 'Una piel bien preparada es la base de cualquier buen maquillaje. Utiliza una prebase iluminadora y una base de acabado jugoso. No olvides el iluminador en los puntos altos del rostro para un extra de luz.'),
             React.createElement('h2', { className: "text-2xl font-bold pt-4" }, '3. Labios protagonistas'),
             React.createElement('p', null, 'Unos labios rojos o en tonos vino son perfectos para las celebraciones. Para una mayor duración, perfila y rellena los labios con un lápiz del mismo tono antes de aplicar el labial.'),
-            React.createElement('blockquote', { className: "border-l-4 border-rose-300 pl-4 italic text-gray-600" }, 'Consejo: Si llevas unos labios potentes, opta por un maquillaje de ojos más sutil para equilibrar el look.'),
+            React.createElement('blockquote', { className: "border-l-4 border-purple-300 pl-4 italic text-gray-600" }, 'Consejo: Si llevas unos labios potentes, opta por un maquillaje de ojos más sutil para equilibrar el look.'),
             React.createElement('h2', { className: "text-2xl font-bold pt-4" }, '4. Mirada impactante'),
             React.createElement('p', null, 'Define bien tus cejas y no escatimes en la máscara de pestañas. Unas pestañas con volumen y bien definidas abrirán tu mirada y le darán un toque festivo y sofisticado.')
         ),
@@ -52,7 +51,7 @@ export const blogPosts: BlogPost[] = [
             React.createElement('p', null, 'Mientras dormimos, nuestra piel entra en modo de reparación. El flujo sanguíneo aumenta, lo que permite una mejor oxigenación y nutrición de las células. Es el momento en que se produce la mayor renovación celular y se sintetiza colágeno, la proteína que mantiene la piel firme y elástica.'),
             React.createElement('h2', { className: "text-2xl font-bold pt-4" }, '¿Qué pasa si no duermes o suficiente?'),
              React.createElement('p', null, 'La falta de sueño provoca un aumento del cortisol, la hormona del estrés, que puede descomponer el colágeno y la elastina, acelerando la aparición de arrugas y flacidez. También puede manifestarse en forma de ojeras, bolsas y una piel más apagada y deshidratada.'),
-            React.createElement('blockquote', { className: "border-l-4 border-rose-300 pl-4 italic text-gray-600" }, 'Dormir entre 7 y 9 horas diarias es fundamental para que tu piel luzca descansada, luminosa y saludable.'),
+            React.createElement('blockquote', { className: "border-l-4 border-purple-300 pl-4 italic text-gray-600" }, 'Dormir entre 7 y 9 horas diarias es fundamental para que tu piel luzca descansada, luminosa y saludable.'),
             React.createElement('h2', { className: "text-2xl font-bold pt-4" }, 'Potencia tu Descanso'),
             React.createElement('p', null, 'Para maximizar los beneficios del sueño, utiliza productos de cuidado nocturno. Una mascarilla de noche o una crema rica en activos reparadores ayudarán a tu piel en su proceso de regeneración, para que te despiertes con un rostro radiante.')
         ),

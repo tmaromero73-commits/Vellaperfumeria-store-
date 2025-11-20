@@ -17,8 +17,9 @@ import CatalogPage from './components/CatalogPage';
 import BlogPage from './components/BlogPage';
 import BlogPostPage from './components/BlogPostPage';
 import QuickViewModal from './components/QuickViewModal';
-import Breadcrumbs, { type BreadcrumbItem } from './components/Breadcrumbs';
 import CheckoutPage from './components/CheckoutPage';
+import Breadcrumbs, { type BreadcrumbItem } from './components/Breadcrumbs';
+import BottomNavBar from './components/BottomNavBar';
 
 type AppView = {
     current: View;
@@ -68,13 +69,7 @@ const App: React.FC = () => {
 
     const showAddToCartConfirmation = (buttonElement: HTMLButtonElement | null) => {
         if (!buttonElement) return;
-        const originalText = buttonElement.innerHTML;
-        buttonElement.innerHTML = '¡Añadido! ✔';
-        buttonElement.classList.add('bg-green-500', 'hover:bg-green-600');
-        setTimeout(() => {
-            buttonElement.innerHTML = originalText;
-            buttonElement.classList.remove('bg-green-500', 'hover:bg-green-600');
-        }, 2000);
+        // Standard confirmation logic if needed
     };
 
     const handleAddToCart = (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => {
@@ -93,7 +88,6 @@ const App: React.FC = () => {
         }
         
         setIsCartOpen(true);
-        if(buttonElement) showAddToCartConfirmation(buttonElement);
     };
     
     const handleQuickAddToCart = (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => {
@@ -116,8 +110,7 @@ const App: React.FC = () => {
     };
 
     const handleCheckout = () => {
-        setIsCartOpen(false);
-        handleNavigate('checkout');
+        setIsCartOpen(true);
     };
 
     const handleSelectPost = (post: any) => {
@@ -137,13 +130,13 @@ const App: React.FC = () => {
             case 'ia':
                 return <AsistenteIAPage />;
             case 'catalog':
-                return <CatalogPage onAddToCart={handleAddToCart} currency={currency} />;
+                return <CatalogPage onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} currency={currency} />;
             case 'blog':
                  return <BlogPage posts={blogPosts} onSelectPost={handleSelectPost} />;
             case 'blogPost':
                  return <BlogPostPage post={view.payload} allPosts={blogPosts} onSelectPost={handleSelectPost} onBack={() => handleNavigate('blog')} />;
             case 'checkout':
-                return <CheckoutPage cartItems={cartItems} currency={currency} />;
+                return <CheckoutPage cartItems={cartItems} currency={currency} onClearCart={() => setCartItems([])} onNavigate={handleNavigate} />;
             default:
                 return <ProductList onNavigate={handleNavigate} onProductSelect={handleProductSelect} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} currency={currency} onQuickView={setQuickViewProduct} />;
         }
@@ -207,7 +200,7 @@ const App: React.FC = () => {
     ];
 
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50 font-sans">
+        <div className="flex flex-col min-h-screen bg-purple-50/30 font-sans">
             <Header
                 onNavigate={handleNavigate}
                 currency={currency}
@@ -215,7 +208,8 @@ const App: React.FC = () => {
                 cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
                 onCartClick={() => setIsCartOpen(true)}
             />
-             <main className="flex-grow py-8 mb-16 md:mb-0">
+             {/* Added padding-bottom (mb-20) to prevent content being hidden behind the bottom nav on mobile */}
+             <main className="flex-grow py-8 mb-20 md:mb-0">
                 <Breadcrumbs items={buildBreadcrumbs()} />
                 {renderContent()}
             </main>
@@ -234,6 +228,8 @@ const App: React.FC = () => {
                 onNavigate={handleNavigate}
             />
 
+            <BottomNavBar onNavigate={handleNavigate} currentView={view.current} />
+
             {quickViewProduct && (
                 <QuickViewModal
                     product={quickViewProduct}
@@ -249,34 +245,45 @@ const App: React.FC = () => {
             
             <style>{`
                 :root {
-                    --color-primary: #3a3a3a;
-                    --color-secondary: #E0C3FC; 
-                    --color-accent: #d1a892;
+                    /* Purple Palette */
+                    --color-primary: #9333EA; /* Purple 600 */
+                    --color-secondary: #E9D5FF; /* Purple 200 */
+                    --color-accent: #FDBA74; /* Orange 300 */
                 }
+                /* Global Selection Color - Soft Purple */
+                ::selection {
+                    background-color: #A855F7; /* Purple 500 */
+                    color: white;
+                }
+                
                 .btn-primary {
-                    background-color: var(--color-primary);
+                    background-color: #9333EA; /* Purple 600 */
                     color: white;
                     padding: 0.75rem 1.5rem;
-                    border-radius: 0.375rem;
+                    border-radius: 0.75rem;
                     font-weight: 600;
-                    transition: background-color 0.2s;
+                    transition: all 0.2s;
                 }
                 .btn-primary:hover {
-                    background-color: #555;
+                    background-color: #7E22CE; /* Purple 700 */
+                    transform: translateY(-1px);
                 }
-                 .bg-brand-primary { background-color: #3a3a3a; }
-                 .text-brand-primary { color: #3a3a3a; }
+                 .bg-brand-primary { background-color: #9333EA; } /* Purple 600 */
+                 .text-brand-primary { color: #9333EA; }
                  
-                 /* Moradito Claro - Soft Lilac */
-                 .bg-brand-purple { background-color: #E0C3FC; } 
-                 .text-brand-purple { color: #E0C3FC; }
+                 /* Brand Purple Classes */
+                 .bg-brand-purple { background-color: #F3E8FF; } /* Purple 100 */
+                 .text-brand-purple { color: #9333EA; } /* Purple 600 */
                  
-                 .bg-brand-purple-dark { background-color: #d1a892; }
-                 .text-brand-purple-dark { color: #d1a892; }
-                 .border-brand-purple { border-color: #E0C3FC; }
-                 .border-brand-purple-dark { border-color: #d1a892; }
-                 .ring-brand-purple { ring-color: #E0C3FC; }
-                 .ring-brand-purple-dark { ring-color: #d1a892; }
+                 .bg-brand-purple-dark { background-color: #D499F5; } /* The Header Color */
+                 .text-brand-purple-dark { color: #6B21A8; } /* Purple 800 */
+                 
+                 .border-brand-purple { border-color: #F3E8FF; }
+                 .border-brand-purple-dark { border-color: #D499F5; }
+                 
+                 .ring-brand-purple { --tw-ring-color: #F3E8FF; }
+                 .ring-brand-purple-dark { --tw-ring-color: #D499F5; }
+
                  .hover-underline-effect {
                     display: inline-block;
                     position: relative;
@@ -289,7 +296,7 @@ const App: React.FC = () => {
                     height: 2px;
                     bottom: -2px;
                     left: 0;
-                    background-color: var(--color-primary);
+                    background-color: #A855F7; /* Purple 500 */
                     transform-origin: bottom right;
                     transition: transform 0.25s ease-out;
                  }
