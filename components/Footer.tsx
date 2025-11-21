@@ -105,7 +105,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                     <div className="sm:col-span-2 lg:col-span-1 flex flex-col items-center text-center md:items-center md:text-center">
                          <a 
                              href={homeUrl}
-                             target="_top"
+                             target="_self"
                              className="inline-block hover:opacity-80 transition-opacity mb-4 cursor-pointer"
                          >
                              <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-36 w-auto mx-auto" />
@@ -122,7 +122,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                            <li>
                                 <a
                                     href={homeUrl}
-                                    target="_top"
+                                    target="_self"
                                     className="text-gray-400 hover:text-white transition-colors hover:underline"
                                 >
                                     Inicio

@@ -1,5 +1,4 @@
 
-
 import React from 'react';
 import type { BlogPost } from './blogData';
 
@@ -32,7 +31,7 @@ const BlogPostPage: React.FC<BlogPostPageProps> = ({ post, allPosts, onSelectPos
         .sort((a, b) => (a.category === post.category ? -1 : b.category === post.category ? 1 : 0)) // Prioritize same category
         .slice(0, 3);
 
-    const navButtonClasses = "py-2 px-5 rounded-lg font-semibold border-2 border-brand-purple-dark text-brand-purple-dark hover:bg-brand-purple-dark hover:text-white transition-colors duration-300 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed";
+    const navButtonClasses = "py-2 px-5 rounded-lg font-semibold border-2 border-purple-400 text-purple-600 hover:bg-purple-600 hover:text-white transition-colors duration-300 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed";
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">

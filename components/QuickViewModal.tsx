@@ -114,7 +114,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, currency, onCl
                     <p className="text-sm text-gray-500 mb-2">{product.brand}</p>
                     
                      <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-4">
-                        <p className={`text-3xl font-bold ${isDiscounted ? 'text-purple-500' : 'text-gray-900'}`}>{formatCurrency(product.price, currency)}</p>
+                        <p className={`text-3xl font-bold ${isDiscounted ? 'text-purple-600' : 'text-gray-900'}`}>{formatCurrency(product.price, currency)}</p>
                         {isDiscounted && (
                             <>
                                 <p className="text-xl text-gray-500 line-through">{formatCurrency(product.regularPrice!, currency)}</p>
@@ -182,7 +182,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, currency, onCl
                                 onClose();
                             }}
                             disabled={isOutOfStock}
-                            className={`w-full bg-[#E9D5FF] text-black font-bold py-3 rounded-lg hover:bg-[#D8B4FE] transition-colors ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : ''}`}
+                            className={`w-full bg-[#E5D4F5] text-black font-bold py-3 rounded-lg hover:bg-[#D8B4FE] transition-colors ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : ''}`}
                             aria-label={`Añadir ${product.name} al carrito`}
                         >
                             {isOutOfStock ? 'Agotado' : 'Añadir al carrito'}

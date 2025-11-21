@@ -78,7 +78,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                     </span>
                 )}
                 {isDiscounted && (
-                    <span className="bg-purple-400 text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider shadow-sm">
+                    <span className="bg-purple-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider shadow-sm">
                         -{discountPercentage}%
                     </span>
                 )}
@@ -103,7 +103,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
 
             {/* Image Section */}
             <div 
-                className="relative aspect-square overflow-hidden bg-gradient-to-b from-white to-purple-50/30 cursor-pointer"
+                className="relative aspect-square overflow-hidden bg-gradient-to-b from-white to-[#FAF5FF] cursor-pointer"
                 onClick={() => onProductSelect(product)}
             >
                 <img
@@ -120,7 +120,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                             e.stopPropagation();
                             onQuickView(product);
                         }}
-                        className="bg-white/90 backdrop-blur-sm text-purple-500 hover:text-purple-600 text-sm font-bold py-2 px-4 rounded-full shadow-lg hover:bg-purple-50 transition-colors flex items-center gap-2 border border-purple-100"
+                        className="bg-white/90 backdrop-blur-sm text-purple-600 hover:text-purple-700 text-sm font-bold py-2 px-4 rounded-full shadow-lg hover:bg-purple-50 transition-colors flex items-center gap-2 border border-purple-100"
                     >
                         <EyeIcon /> Vista Rápida
                     </button>
@@ -140,7 +140,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                 </div>
 
                 <h3 
-                    className="text-sm font-bold text-gray-900 mb-2 line-clamp-2 hover:text-purple-500 transition-colors cursor-pointer"
+                    className="text-sm font-bold text-gray-900 mb-2 line-clamp-2 hover:text-purple-600 transition-colors cursor-pointer"
                     onClick={() => onProductSelect(product)}
                 >
                     {product.name}
@@ -149,7 +149,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                 {/* Price Section */}
                 <div className="mt-auto pt-2">
                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className={`text-lg font-bold ${isDiscounted ? 'text-purple-500' : 'text-gray-900'}`}>
+                        <span className={`text-lg font-bold ${isDiscounted ? 'text-purple-600' : 'text-gray-900'}`}>
                             {formatCurrency(product.price, currency)}
                         </span>
                         {isDiscounted && (

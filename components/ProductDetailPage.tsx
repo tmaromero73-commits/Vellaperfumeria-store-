@@ -131,7 +131,22 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     const [hoverRating, setHoverRating] = useState(0);
 
-    const productUrl = window.location.href;
+    const getShareableUrl = () => {
+        const url = new URL(window.location.origin + window.location.pathname);
+        // Add product id param
+        url.searchParams.set('product_id', product.id.toString());
+        
+        // Preserve existing params like 'v'
+        const currentParams = new URLSearchParams(window.location.search);
+        currentParams.forEach((value, key) => {
+            if (key !== 'product_id') {
+                 url.searchParams.set(key, value);
+            }
+        });
+        return url.toString();
+    };
+    
+    const productUrl = getShareableUrl();
 
     const handleCopyLink = () => {
         navigator.clipboard.writeText(productUrl).then(() => {
@@ -182,7 +197,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden md:grid md:grid-cols-5 md:gap-8 p-4 md:p-10">
                 <div className="md:col-span-3">
                     <div 
-                        className="relative group cursor-pointer p-6 flex justify-center items-center bg-purple-50/20 rounded-2xl border border-purple-100/50"
+                        className="relative group cursor-pointer p-6 flex justify-center items-center bg-[#FAF5FF] rounded-2xl border border-purple-100/50"
                         onClick={() => setIsLightboxOpen(true)}
                         role="button"
                         aria-label="Ampliar imagen del producto"
@@ -214,7 +229,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                     <h1 className="text-3xl font-extrabold tracking-tight mb-4 text-gray-900">{product.name}</h1>
                     
                     <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-6">
-                        <p className={`text-4xl font-extrabold ${isDiscounted ? 'text-purple-500' : 'text-gray-900'}`}>{formatCurrency(product.price, currency)}</p>
+                        <p className={`text-4xl font-extrabold ${isDiscounted ? 'text-purple-600' : 'text-gray-900'}`}>{formatCurrency(product.price, currency)}</p>
                         {isDiscounted && (
                             <>
                                 <p className="text-xl text-gray-400 line-through decoration-purple-200">{formatCurrency(product.regularPrice!, currency)}</p>
@@ -235,7 +250,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                     )}
                     
                      {product.beautyPoints && (
-                        <div className="flex items-center gap-3 text-purple-800 font-medium my-2 p-4 bg-purple-50 rounded-xl border border-purple-200">
+                        <div className="flex items-center gap-3 text-purple-800 font-medium my-2 p-4 bg-[#FAF5FF] rounded-xl border border-purple-200">
                              <div className="bg-white p-2 rounded-full shadow-sm">
                                 <SparklesIcon className="text-purple-500"/>
                             </div>
@@ -346,7 +361,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                 <div className="text-center my-12">
                     <button 
                         onClick={() => onProductSelect(allProducts.find(p => p.category === 'skincare')!)} 
-                        className="inline-block bg-purple-50 text-purple-900 font-bold py-4 px-10 rounded-full hover:bg-purple-100 transition-all shadow-sm border border-purple-200"
+                        className="inline-block bg-[#FAF5FF] text-purple-900 font-bold py-4 px-10 rounded-full hover:bg-purple-100 transition-all shadow-sm border border-purple-200"
                     >
                         Ver todos los limpiadores y productos de Skincare
                     </button>

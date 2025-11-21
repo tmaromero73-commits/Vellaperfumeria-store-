@@ -1,5 +1,4 @@
 
-
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI, Chat } from "@google/genai";
 
@@ -9,7 +8,7 @@ interface Message {
 }
 
 const SparklesIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-brand-purple-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-purple-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m1-9l2-2 2 2m-2 4v6m2-6l2 2-2 2M15 3l2 2-2 2m-2-4v4m2 4l2 2-2 2m-8 4h12" />
     </svg>
 );
@@ -91,7 +90,7 @@ const AsistenteIAPage: React.FC = () => {
         } finally {
             setIsProcessing(false);
         }
-    };
+        };
     
     const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -117,10 +116,10 @@ const AsistenteIAPage: React.FC = () => {
                 <div ref={chatContainerRef} className="flex-grow p-6 overflow-y-auto space-y-6">
                     {messages.length === 0 && !isProcessing && (
                          <div className="flex items-start gap-4">
-                            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-purple/30 flex items-center justify-center">
+                            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
                                 <SparklesIcon />
                             </div>
-                            <div className="max-w-md p-4 rounded-2xl bg-brand-purple/20 text-gray-800 rounded-bl-none">
+                            <div className="max-w-md p-4 rounded-2xl bg-purple-50 text-gray-800 rounded-bl-none border border-purple-100">
                                 <p>¡Hola! Soy tu asistente de belleza personal de Vellaperfumeria. ¿En qué puedo ayudarte hoy?</p>
                             </div>
                         </div>
@@ -131,16 +130,16 @@ const AsistenteIAPage: React.FC = () => {
                         return (
                             <div key={index} className={`flex items-start gap-4 ${msg.role === 'user' ? 'justify-end' : ''}`}>
                                  {msg.role === 'model' && (
-                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-purple/30 flex items-center justify-center">
+                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
                                         <SparklesIcon />
                                     </div>
                                 )}
-                                <div className={`max-w-md p-4 rounded-2xl ${msg.role === 'user' ? 'bg-gray-100 text-gray-800 rounded-br-none' : 'bg-brand-purple/20 text-gray-800 rounded-bl-none'}`}>
+                                <div className={`max-w-md p-4 rounded-2xl ${msg.role === 'user' ? 'bg-gray-100 text-gray-800 rounded-br-none' : 'bg-purple-50 text-gray-800 rounded-bl-none border border-purple-100'}`}>
                                      {isProcessing && isLastMessage && msg.text === '' ? (
                                          <div className="flex items-center space-x-2">
-                                            <div className="w-2 h-2 bg-brand-purple rounded-full animate-pulse"></div>
-                                            <div className="w-2 h-2 bg-brand-purple rounded-full animate-pulse [animation-delay:0.2s]"></div>
-                                            <div className="w-2 h-2 bg-brand-purple rounded-full animate-pulse [animation-delay:0.4s]"></div>
+                                            <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+                                            <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse [animation-delay:0.2s]"></div>
+                                            <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse [animation-delay:0.4s]"></div>
                                         </div>
                                     ) : (
                                          <p className="whitespace-pre-wrap">{msg.text}</p>
@@ -193,7 +192,7 @@ const AsistenteIAPage: React.FC = () => {
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Escribe tu mensaje..."
                             aria-label="Escribe tu mensaje"
-                            className="flex-grow px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-brand-purple-dark"
+                            className="flex-grow px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-400"
                             disabled={isProcessing}
                         />
                         <button 

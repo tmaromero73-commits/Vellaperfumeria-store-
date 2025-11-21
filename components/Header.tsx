@@ -43,13 +43,13 @@ const CartIcon = () => (
 const NavLink: React.FC<{ onClick?: () => void, href?: string, children: React.ReactNode, className?: string }> = ({ onClick, href, children, className }) => {
     if (href) {
         return (
-            <a href={href} target="_top" className={`text-base font-medium text-black hover:text-gray-700 transition-colors duration-200 ${className}`}>
+            <a href={href} target="_self" className={`text-base font-medium text-black hover:text-purple-600 transition-colors duration-200 ${className}`}>
                 <span className="hover-underline-effect">{children}</span>
             </a>
         );
     }
     return (
-        <button onClick={onClick} className={`text-base font-medium text-black hover:text-gray-700 transition-colors duration-200 ${className}`}>
+        <button onClick={onClick} className={`text-base font-medium text-black hover:text-purple-600 transition-colors duration-200 ${className}`}>
             <span className="hover-underline-effect">{children}</span>
         </button>
     );
@@ -112,8 +112,8 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
 
     return (
         <header className="bg-white shadow-sm sticky top-0 z-30">
-            {/* Updated to Lighter Lilac (#F3E8FF) */}
-            <div className="bg-[#F3E8FF] text-black py-2 text-sm font-medium">
+            {/* Purplish-Lilac - #E9D5FF */}
+            <div className="bg-[#E9D5FF] text-black py-2 text-sm font-medium">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
                     <div className="flex items-center space-x-3">
                         <span className="cursor-pointer hover:opacity-75 transition-opacity text-black" aria-label="Threads"><ThreadsIcon /></span>
@@ -133,10 +133,10 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-center py-4 relative">
-                     {/* Standard anchor tag with target=_top for reliable redirection */}
+                     {/* Standard anchor tag with target=_self for reliable internal redirection */}
                     <a 
                         href={homeUrl}
-                        target="_top"
+                        target="_self"
                         className="hover:opacity-80 transition-opacity inline-block"
                         aria-label="Volver a Vellaperfumeria.com"
                     >

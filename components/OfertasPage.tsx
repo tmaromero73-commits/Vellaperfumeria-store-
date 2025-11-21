@@ -12,7 +12,7 @@ const banners = [
         imageUrl: 'https://media-cdn.oriflame.com/contentImage?externalMediaId=b4f0fbe7-2786-457d-b0d1-2fcf05e82f5b&name=1_Promo_split_Week1_600x450&inputFormat=jpg',
         title: 'Esta semana: Compra 2 con un 60% dto',
         buttonText: 'SOLO HASTA 25.11',
-        link: 'https://vellaperfumeria.com/plp/25-16-black-friday'
+        action: 'scroll-black-friday'
     },
     {
         id: 'magical-midnights',
@@ -82,6 +82,10 @@ const triggerProductIds = [
 ];
 const triggerProducts = allProducts.filter(p => triggerProductIds.includes(p.id));
 
+// Black Friday Products
+const blackFridayProductIds = [38557, 42236, 38556, 42255, 41059, 47104, 47006];
+const blackFridayProducts = allProducts.filter(p => blackFridayProductIds.includes(p.id));
+
 
 const OfertasPage: React.FC<{
     currency: Currency;
@@ -97,8 +101,13 @@ const OfertasPage: React.FC<{
             if (element) {
                 element.scrollIntoView({ behavior: 'smooth' });
             }
+        } else if (banner.action === 'scroll-black-friday') {
+            const element = document.getElementById('black-friday-section');
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
         } else if (banner.link) {
-            window.open(banner.link, '_top');
+            window.open(banner.link, '_self');
         }
     };
 
@@ -155,8 +164,34 @@ const OfertasPage: React.FC<{
                 </div>
             </div>
 
+            {/* Black Friday Section */}
+            <div id="black-friday-section" className="bg-[#FAF5FF] py-12 border-t border-purple-100 scroll-mt-24">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-10">
+                        <span className="inline-block py-1 px-3 rounded-full bg-black text-white text-xs font-bold uppercase tracking-wider mb-4">Black Friday</span>
+                        <h2 className="text-3xl font-extrabold text-black mb-4">Compra 2 con un 60% Dto.</h2>
+                        <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+                            Combina tus favoritos de esta selección y llévatelos con un descuento espectacular.
+                        </p>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                        {blackFridayProducts.map(product => (
+                            <ProductCard
+                                key={product.id}
+                                product={product}
+                                currency={currency}
+                                onAddToCart={onAddToCart}
+                                onQuickAddToCart={onQuickAddToCart}
+                                onProductSelect={onProductSelect}
+                                onQuickView={onQuickView}
+                            />
+                        ))}
+                    </div>
+                </div>
+            </div>
+
             {/* Duologi Interactive Section */}
-            <div id="duologi-section" className="bg-purple-50 py-12 border-t border-purple-100 scroll-mt-24">
+            <div id="duologi-section" className="bg-white py-12 border-t border-gray-100 scroll-mt-24">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                      <div className="text-center mb-10">
                         <h2 className="text-3xl font-extrabold text-black mb-4">Configura tu Pack Duologi</h2>
@@ -189,7 +224,7 @@ const OfertasPage: React.FC<{
                         </div>
 
                         {/* Step 2: The Reward */}
-                        <div className="lg:col-span-4 bg-white rounded-xl p-6 border border-purple-100 h-fit sticky top-24 shadow-sm">
+                        <div className="lg:col-span-4 bg-[#FAF5FF] rounded-xl p-6 border border-purple-100 h-fit sticky top-24 shadow-sm">
                              <div className="flex items-center gap-3 mb-6 border-b border-purple-100 pb-4">
                                 <div className="bg-brand-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shrink-0">2</div>
                                 <h3 className="text-xl font-bold text-gray-900">Elige tu Acondicionador</h3>

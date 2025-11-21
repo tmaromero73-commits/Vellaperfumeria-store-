@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
+import ReactDOM from 'react-dom/client';
 // Types
 import type { View, Product, CartItem } from './components/types';
 import type { Currency } from './components/currency';
@@ -35,8 +36,8 @@ const App: React.FC = () => {
     const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
     const [vParam, setVParam] = useState<string | null>(null);
 
-    // Extract params for session ('v') and deep linking ('product_id', 'category')
-    useEffect(() => {
+    // Function to parse URL parameters and determine view
+    const parseUrlParams = useCallback(() => {
         try {
             const urlParams = new URLSearchParams(window.location.search);
             const v = urlParams.get('v');
@@ -45,25 +46,85 @@ const App: React.FC = () => {
             const productId = urlParams.get('product_id');
             const category = urlParams.get('category');
             const targetView = urlParams.get('view');
+            const postId = urlParams.get('post_id');
 
             if (productId) {
                 const product = allProducts.find(p => p.id === parseInt(productId));
                 if (product) {
                     setView({ current: 'productDetail', payload: product });
+                    return;
                 }
-            } else if (category) {
+            } 
+            
+            if (category) {
                 setView({ current: 'products', payload: category });
-            } else if (targetView === 'checkout') {
-                setView({ current: 'checkout' });
-            } else if (targetView) {
+                return;
+            } 
+            
+            if (targetView === 'blogPost' && postId) {
+                const post = blogPosts.find(p => p.id === parseInt(postId));
+                if (post) {
+                    setView({ current: 'blogPost', payload: post });
+                    return;
+                }
+            }
+
+            if (targetView) {
                  if (['home', 'products', 'productDetail', 'ofertas', 'ia', 'catalog', 'about', 'contact', 'blog', 'blogPost', 'checkout'].includes(targetView)) {
                      setView({ current: targetView as View });
+                     return;
                  }
             }
+            
+            // If no specific params, default to home (or keep current if handled elsewhere, but for init it's home)
+            // We check if we are ALREADY at home to avoid resetting state unnecessarily on popstate if logic matches
         } catch (e) {
             console.error("Error processing URL params", e);
         }
     }, []);
+
+    // Initial Load
+    useEffect(() => {
+        parseUrlParams();
+    }, [parseUrlParams]);
+
+    // Handle Browser Back/Forward Buttons
+    useEffect(() => {
+        const handlePopState = () => {
+            parseUrlParams();
+        };
+        window.addEventListener('popstate', handlePopState);
+        return () => window.removeEventListener('popstate', handlePopState);
+    }, [parseUrlParams]);
+
+    // Update URL when View Changes
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        // Preserve 'v' param
+        const currentV = params.get('v');
+        
+        const newParams = new URLSearchParams();
+        if (currentV) newParams.set('v', currentV);
+
+        if (view.current === 'productDetail' && view.payload) {
+            newParams.set('product_id', (view.payload as Product).id.toString());
+        } else if (view.current === 'products' && view.payload && view.payload !== 'all') {
+            newParams.set('category', view.payload);
+        } else if (view.current === 'blogPost' && view.payload) {
+             newParams.set('view', 'blogPost');
+             newParams.set('post_id', view.payload.id);
+        } else if (view.current !== 'home') {
+            newParams.set('view', view.current);
+        }
+
+        const newSearch = newParams.toString();
+        const newUrl = `${window.location.pathname}${newSearch ? '?' + newSearch : ''}`;
+        
+        // Only push state if the URL actually changed to avoid duplicate history entries
+        if (newUrl !== window.location.pathname + window.location.search) {
+             window.history.pushState({}, '', newUrl);
+        }
+    }, [view]);
 
     // Load cart from local storage on initial render
     useEffect(() => {
@@ -97,11 +158,6 @@ const App: React.FC = () => {
 
     const handleProductSelect = (product: Product) => {
         handleNavigate('productDetail', product);
-    };
-
-    const showAddToCartConfirmation = (buttonElement: HTMLButtonElement | null) => {
-        if (!buttonElement) return;
-        // Standard confirmation logic if needed
     };
 
     const handleAddToCart = (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => {
@@ -142,7 +198,8 @@ const App: React.FC = () => {
     };
 
     const handleCheckout = () => {
-        setIsCartOpen(true);
+        setIsCartOpen(false);
+        handleNavigate('checkout');
     };
 
     const handleSelectPost = (post: any) => {
@@ -197,7 +254,7 @@ const App: React.FC = () => {
         const homeCrumb: BreadcrumbItem = { 
             label: 'Inicio', 
             href: homeUrl,
-            target: '_top'
+            target: '_self'
         };
         const crumbs = [homeCrumb];
 
@@ -246,7 +303,7 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-purple-50/30 font-sans">
+        <div className="flex flex-col min-h-screen bg-[#FAF5FF]/50 font-sans text-gray-800">
             <Header
                 onNavigate={handleNavigate}
                 currency={currency}
@@ -291,19 +348,20 @@ const App: React.FC = () => {
             
             <style>{`
                 :root {
-                    /* Purple Palette */
-                    --color-primary: #9333EA; /* Purple 600 */
-                    --color-secondary: #E9D5FF; /* Purple 200 */
-                    --color-accent: #FDBA74; /* Orange 300 */
+                    /* Purplish-Lilac Palette */
+                    --color-primary: #9333EA; 
+                    --color-secondary: #FAF5FF; /* Pale Lavender background */
+                    --color-accent: #E9D5FF; /* Lilac */
+                    --color-custom-lilac: #E9D5FF; /* Main Lilac Theme Color */
                 }
-                /* Global Selection Color - Soft Purple */
+                /* Global Selection Color */
                 ::selection {
-                    background-color: #A855F7; /* Purple 500 */
-                    color: white;
+                    background-color: #D8B4FE;
+                    color: black;
                 }
                 
                 .btn-primary {
-                    background-color: #E9D5FF; /* Purple 200 */
+                    background-color: #E9D5FF; /* Lilac */
                     color: black;
                     padding: 0.75rem 1.5rem;
                     border-radius: 0.75rem;
@@ -311,24 +369,24 @@ const App: React.FC = () => {
                     transition: all 0.2s;
                 }
                 .btn-primary:hover {
-                    background-color: #D8B4FE; /* Purple 300 */
+                    background-color: #D8B4FE; /* Slightly darker lilac */
                     transform: translateY(-1px);
                 }
-                 .bg-brand-primary { background-color: #9333EA; } /* Purple 600 */
+                 .bg-brand-primary { background-color: #9333EA; }
                  .text-brand-primary { color: #9333EA; }
                  
-                 /* Brand Purple Classes */
-                 .bg-brand-purple { background-color: #F3E8FF; } /* Purple 100 */
-                 .text-brand-purple { color: #9333EA; } /* Purple 600 */
+                 /* Brand Colors */
+                 .bg-brand-purple { background-color: #FAF5FF; }
+                 .text-brand-purple { color: #7E22CE; }
                  
-                 .bg-brand-purple-dark { background-color: #D499F5; } /* The Header Color */
-                 .text-brand-purple-dark { color: #6B21A8; } /* Purple 800 */
+                 .bg-brand-purple-dark { background-color: #E9D5FF; }
+                 .text-brand-purple-dark { color: #581C87; }
                  
-                 .border-brand-purple { border-color: #F3E8FF; }
-                 .border-brand-purple-dark { border-color: #D499F5; }
+                 .border-brand-purple { border-color: #E9D5FF; }
+                 .border-brand-purple-dark { border-color: #D8B4FE; }
                  
-                 .ring-brand-purple { --tw-ring-color: #F3E8FF; }
-                 .ring-brand-purple-dark { --tw-ring-color: #D499F5; }
+                 .ring-brand-purple { --tw-ring-color: #E9D5FF; }
+                 .ring-brand-purple-dark { --tw-ring-color: #D8B4FE; }
 
                  .hover-underline-effect {
                     display: inline-block;
@@ -342,7 +400,7 @@ const App: React.FC = () => {
                     height: 2px;
                     bottom: -2px;
                     left: 0;
-                    background-color: #A855F7; /* Purple 500 */
+                    background-color: #D8B4FE;
                     transform-origin: bottom right;
                     transition: transform 0.25s ease-out;
                  }

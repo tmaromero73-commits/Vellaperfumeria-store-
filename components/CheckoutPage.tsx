@@ -136,32 +136,37 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="max-w-3xl mx-auto text-center mb-10">
-                <h1 className="text-3xl font-extrabold text-brand-primary mb-4">Finalizar Compra</h1>
+                <h1 className="text-3xl font-extrabold text-purple-700 mb-4">Finalizar Compra</h1>
                 <p className="text-gray-600">Serás redirigido a tu carrito en Vellaperfumeria.com para completar el pago de forma segura.</p>
             </div>
             
             <div className="max-w-3xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-100">
-                <div className="p-6 md:p-8 bg-gray-50 border-b">
+                <div className="p-6 md:p-8 bg-[#FAF5FF] border-b">
                     <h2 className="text-xl font-bold mb-4">Resumen del Pedido</h2>
                     <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
                          {cartItems.map((item) => (
-                            <div key={item.id} className="flex items-center gap-4 bg-white p-3 rounded-lg border shadow-sm">
+                            <a 
+                                key={item.id} 
+                                href={`https://vellaperfumeria.com/products/product?code=${item.product.id}${vParam ? `&v=${vParam}` : ''}`}
+                                target="_self"
+                                className="flex items-center gap-4 bg-white p-3 rounded-lg border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                            >
                                 <div className="relative flex-shrink-0">
                                     <img src={item.product.imageUrl} alt={item.product.name} className="w-16 h-16 object-contain" />
-                                    <span className="absolute -top-2 -right-2 bg-brand-purple text-black text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                                    <span className="absolute -top-2 -right-2 bg-purple-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
                                         {item.quantity}
                                     </span>
                                 </div>
                                 <div className="flex-grow min-w-0">
-                                    <h3 className="font-semibold text-gray-900 text-sm">{item.product.name}</h3>
+                                    <h3 className="font-semibold text-gray-900 text-sm hover:text-purple-600 transition-colors">{item.product.name}</h3>
                                     {item.selectedVariant && (
                                         <p className="text-xs text-gray-500">{Object.entries(item.selectedVariant).map(([k, v]) => `${k}: ${v}`).join(', ')}</p>
                                     )}
                                 </div>
-                                <div className="text-right font-bold text-brand-primary text-sm whitespace-nowrap">
+                                <div className="text-right font-bold text-purple-600 text-sm whitespace-nowrap">
                                     {formatCurrency(item.product.price * item.quantity, currency)}
                                 </div>
-                            </div>
+                            </a>
                         ))}
                     </div>
                 </div>
@@ -185,10 +190,10 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                     </div>
 
                     <div className="space-y-4">
-                        {/* Direct link for robust redirection */}
+                        {/* Direct link for robust redirection. Target self ensures it stays within the context requested. */}
                         <a 
                             href={checkoutUrl}
-                            target="_top"
+                            target="_self"
                             rel="noopener noreferrer"
                             className="w-full bg-[#E9D5FF] text-black font-bold py-4 rounded-xl text-lg shadow-lg hover:bg-[#D8B4FE] hover:shadow-xl transition-all transform hover:-translate-y-0.5 flex justify-center items-center gap-3 cursor-pointer"
                         >

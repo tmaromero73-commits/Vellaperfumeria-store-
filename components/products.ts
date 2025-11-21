@@ -2,6 +2,106 @@
 import type { Product } from './types';
 
 export const allProducts: Product[] = [
+    // --- BLACK FRIDAY / OFERTA 60% (Added) ---
+    {
+        id: 38557,
+        name: "Astaxantina y Extracto de Arándano Wellosophy",
+        brand: "Wellosophy",
+        price: 32.00,
+        regularPrice: 32.00,
+        imageUrl: "https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F38557%2FES%2F38557_1.png&MediaId=16706466&Version=2&w=600&bc=%23f5f5f5&ib=%23f5f5f5&h=600&q=90&imageFormat=WebP",
+        description: "Complemento alimenticio con antioxidantes naturales, incluyendo astaxantina y extracto de arándano.",
+        stock: 50,
+        category: "wellness",
+        tag: "OFERTA",
+        rating: 4.9,
+        reviewCount: 1816
+    },
+    {
+        id: 42236,
+        name: "Maquillaje Antienvejecimiento Serum Boost SPF 12 Giordani Gold",
+        brand: "Giordani Gold",
+        price: 31.00,
+        regularPrice: 31.00,
+        imageUrl: "https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F42236%2F42236_1.png&MediaId=18407486&Version=5&w=600&bc=%23f5f5f5&ib=%23f5f5f5&h=600&q=90&imageFormat=WebP",
+        description: "Base de maquillaje híbrida infundida con sérum prebiótico y extracto de Flor de Loto para una piel radiante y rejuvenecida.",
+        stock: 40,
+        category: "makeup",
+        tag: "OFERTA",
+        rating: 4.8,
+        reviewCount: 1431
+    },
+    {
+        id: 38556,
+        name: "Omega 3 Wellosophy",
+        brand: "Wellosophy",
+        price: 24.00,
+        regularPrice: 24.00,
+        imageUrl: "https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F38556%2FES%2F38556_1.png&MediaId=16654614&Version=4&w=600&bc=%23f5f5f5&ib=%23f5f5f5&h=600&q=90&imageFormat=WebP",
+        description: "Aceite de pescado de alta calidad y sostenible, rico en ácidos grasos Omega 3 EPA y DHA.",
+        stock: 60,
+        category: "wellness",
+        tag: "OFERTA",
+        rating: 4.8,
+        reviewCount: 2197
+    },
+    {
+        id: 42255,
+        name: "Mascarilla Revitalizante Intensiva Acción Noche Novage+",
+        brand: "Novage+",
+        price: 39.00,
+        regularPrice: 39.00,
+        imageUrl: "https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F42255%2F42255_1.png&MediaId=18501023&Version=2&w=600&bc=%23f5f5f5&ib=%23f5f5f5&h=600&q=90&imageFormat=WebP",
+        description: "Mascarilla nocturna antifatiga avanzada que reduce visiblemente los signos de cansancio desde el primer uso.",
+        stock: 35,
+        category: "skincare",
+        tag: "OFERTA",
+        rating: 4.9,
+        reviewCount: 1568
+    },
+    {
+        id: 41059,
+        name: "Fluido Ultraligero Alta Protección SPF 50 Proceuticals Novage+",
+        brand: "Novage+",
+        price: 30.00,
+        regularPrice: 30.00,
+        imageUrl: "https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F41059%2F41059_1.png&MediaId=18095837&Version=2&w=600&bc=%23f5f5f5&ib=%23f5f5f5&h=600&q=90&imageFormat=WebP",
+        description: "Escudo multiprotección dermatológicamente testado con SPF 50 para una defensa completa contra el envejecimiento.",
+        stock: 45,
+        category: "skincare",
+        tag: "OFERTA",
+        rating: 4.9,
+        reviewCount: 1838
+    },
+    {
+        id: 47104,
+        name: "Peeling AHA Proceuticals Novage+",
+        brand: "Novage+",
+        price: 48.00,
+        regularPrice: 48.00,
+        imageUrl: "https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F47104%2F47104_1.png&MediaId=19184215&Version=1&w=600&bc=%23f5f5f5&ib=%23f5f5f5&h=600&q=90&imageFormat=WebP",
+        description: "Exfoliante químico profesional con 6% de AHA (Ácido Láctico y Ácido Glicólico) para renovar la textura de la piel.",
+        stock: 20,
+        category: "skincare",
+        tag: "OFERTA",
+        rating: 4.9,
+        reviewCount: 379
+    },
+    {
+        id: 47006,
+        name: "Crema de Noche Reafirmante Royal Velvet",
+        brand: "Royal Velvet",
+        price: 42.00,
+        regularPrice: 42.00,
+        imageUrl: "https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F47006%2F47006_1.png&MediaId=19191850&Version=1&w=600&bc=%23f5f5f5&ib=%23f5f5f5&h=600&q=90&imageFormat=WebP",
+        description: "Crema de noche nutritiva con Infusión de Iris Negro que reafirma la piel y reduce las arrugas.",
+        stock: 30,
+        category: "skincare",
+        tag: "OFERTA",
+        rating: 4.9,
+        reviewCount: 1790
+    },
+
     // --- DUOLOGI & CUIDADO CAPILAR (Oferta Acondicionadores) ---
     {
         id: 44961,
