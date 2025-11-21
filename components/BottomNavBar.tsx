@@ -63,7 +63,8 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({ onNavigate, currentView }) 
         const baseUrl = 'https://vellaperfumeria.com';
         const params = new URLSearchParams();
         if (vParam) params.append('v', vParam);
-        return params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
+        const queryString = params.toString();
+        return queryString ? `${baseUrl}?${queryString}` : baseUrl;
     })();
     
     const navItems: NavItem[] = [

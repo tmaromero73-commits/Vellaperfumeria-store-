@@ -110,7 +110,8 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
          const params = new URLSearchParams();
          if (vParam) params.append('v', vParam);
          if (productIdsString) params.append('add-to-cart', productIdsString);
-         return `${baseUrl}?${params.toString()}`;
+         const queryString = params.toString();
+         return queryString ? `${baseUrl}?${queryString}` : baseUrl;
     }, [productIdsString, vParam]);
 
     if (cartItems.length === 0) {

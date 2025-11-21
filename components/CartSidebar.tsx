@@ -204,7 +204,8 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
          const params = new URLSearchParams();
          if (vParam) params.append('v', vParam);
          if (productIdsString) params.append('add-to-cart', productIdsString);
-         return `${baseUrl}?${params.toString()}`;
+         const queryString = params.toString();
+         return queryString ? `${baseUrl}?${queryString}` : baseUrl;
     }, [productIdsString, vParam]);
 
     const handleWhatsAppCheckout = () => {

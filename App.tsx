@@ -153,12 +153,25 @@ const App: React.FC = () => {
         }
     };
     
+    const categories = [
+        { key: 'all', name: 'Todos los productos' },
+        { key: 'skincare', name: 'Cuidado Facial' },
+        { key: 'makeup', name: 'Maquillaje' },
+        { key: 'perfume', name: 'Fragancias' },
+        { key: 'wellness', name: 'Wellness' },
+        { key: 'hair', name: 'Cuidado del Cabello' },
+        { key: 'personal-care', name: 'Cuidado Personal' },
+        { key: 'men', name: 'Hombre' },
+        { key: 'accessories', name: 'Accesorios' },
+    ];
+
     const buildBreadcrumbs = (): BreadcrumbItem[] => {
         // Construct Home URL preserving the 'v' parameter if it exists using URLSearchParams
         const baseUrl = 'https://vellaperfumeria.com';
         const params = new URLSearchParams();
         if (vParam) params.append('v', vParam);
-        const homeUrl = params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
+        const queryString = params.toString();
+        const homeUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
         
         const homeCrumb: BreadcrumbItem = { 
             label: 'Inicio', 
@@ -210,18 +223,6 @@ const App: React.FC = () => {
 
         return crumbs;
     };
-
-    const categories = [
-        { key: 'all', name: 'Todos los productos' },
-        { key: 'skincare', name: 'Cuidado Facial' },
-        { key: 'makeup', name: 'Maquillaje' },
-        { key: 'perfume', name: 'Fragancias' },
-        { key: 'wellness', name: 'Wellness' },
-        { key: 'hair', name: 'Cuidado del Cabello' },
-        { key: 'personal-care', name: 'Cuidado Personal' },
-        { key: 'men', name: 'Hombre' },
-        { key: 'accessories', name: 'Accesorios' },
-    ];
 
     return (
         <div className="flex flex-col min-h-screen bg-purple-50/30 font-sans">
