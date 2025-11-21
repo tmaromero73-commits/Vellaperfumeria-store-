@@ -105,6 +105,12 @@ const ApplePayIcon = () => (
     </svg>
 );
 
+const BizumIcon = () => (
+    <svg className="w-8 h-5" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="38" height="24" rx="2" fill="#00D1E5"/>
+        <path d="M9 12L14 17L29 7" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+);
 
 const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, currency, onUpdateQuantity, onRemoveItem, onCheckout, onNavigate }) => {
     const sidebarRef = useRef<HTMLDivElement>(null);
@@ -382,6 +388,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                     <GooglePayIcon />
                                     <ApplePayIcon />
                                     <PayPalIcon />
+                                    <BizumIcon />
                                 </div>
 
                                 {/* WhatsApp Checkout Button */}

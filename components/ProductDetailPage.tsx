@@ -1,7 +1,7 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { ProductCard } from './ProductCard';
-import type { Product } from './types';
+import type { Product, VariantOption } from './types';
 import { type Currency, formatCurrency } from './currency';
 import { allProducts } from './products';
 import ImageLightbox from './ImageLightbox';
@@ -171,9 +171,9 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                         </div>
                         
                         {/* Thumbnail Gallery (Simulated if variants have images) */}
-                        {product.variants && Object.values(product.variants).some(opts => opts.some(o => o.imageUrl)) && (
+                        {product.variants && Object.values(product.variants).some((opts: VariantOption[]) => opts.some(o => o.imageUrl)) && (
                              <div className="flex gap-2 mt-4 overflow-x-auto pb-2 scrollbar-hide">
-                                {Object.values(product.variants).flat().filter(opt => opt.imageUrl).map((opt, idx) => (
+                                {Object.values(product.variants).flat().filter((opt: VariantOption) => opt.imageUrl).map((opt: VariantOption, idx: number) => (
                                     <button 
                                         key={idx}
                                         onClick={() => {
@@ -183,7 +183,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                         }}
                                         className={`w-16 h-16 border-2 rounded-lg overflow-hidden flex-shrink-0 ${currentImageUrl === opt.imageUrl ? 'border-purple-500' : 'border-transparent hover:border-purple-300'}`}
                                     >
-                                        <img src={opt.imageUrl} alt={opt.value} className="w-full h-full object-cover" />
+                                        <img src={opt.imageUrl!} alt={opt.value} className="w-full h-full object-cover" />
                                     </button>
                                 ))}
                              </div>

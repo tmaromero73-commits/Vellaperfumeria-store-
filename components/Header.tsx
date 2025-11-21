@@ -35,7 +35,7 @@ const MenuIcon = () => (
 );
 
 const CartIcon = () => (
-    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
     </svg>
 );
@@ -115,16 +115,15 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
             {/* Top Bar: Transparent Pink Background #f78df685, Black Text, Black Icons */}
             <div className="bg-[#f78df685] text-black py-2 text-xs md:text-sm font-medium border-b border-[#f78df6]/20">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-                    <div className="hidden md:flex items-center space-x-3">
-                        {/* Icons are black for contrast on transparent pink */}
-                        <span className="cursor-pointer hover:opacity-75 transition-opacity text-black" aria-label="Threads"><ThreadsIcon /></span>
-                        <span className="cursor-pointer hover:opacity-75 transition-opacity text-black" aria-label="Instagram"><InstagramIcon /></span>
-                        <span className="cursor-pointer hover:opacity-75 transition-opacity text-black" aria-label="Facebook"><FacebookIcon /></span>
-                        <span className="cursor-pointer hover:opacity-75 transition-opacity text-black" aria-label="WhatsApp"><WhatsAppIcon /></span>
+                    <div className="hidden md:flex items-center space-x-3 text-black">
+                        <span className="cursor-pointer hover:opacity-75 transition-opacity" aria-label="Threads"><ThreadsIcon /></span>
+                        <span className="cursor-pointer hover:opacity-75 transition-opacity" aria-label="Instagram"><InstagramIcon /></span>
+                        <span className="cursor-pointer hover:opacity-75 transition-opacity" aria-label="Facebook"><FacebookIcon /></span>
+                        <span className="cursor-pointer hover:opacity-75 transition-opacity" aria-label="WhatsApp"><WhatsAppIcon /></span>
                     </div>
                     <div className="block w-full text-center text-black">
                         <span>
-                            <span className="font-bold text-black">BLACK FRIDAY</span> | Envío GRATIS en pedidos +35€
+                            <span className="font-extrabold text-black">BLACK FRIDAY</span> | Envío GRATIS en pedidos +35€
                         </span>
                     </div>
                     <div className="hidden md:flex items-center space-x-4">
@@ -133,25 +132,31 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
             </div>
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-center py-4 relative">
-                    <div className="absolute left-0 top-1/2 transform -translate-y-1/2 md:hidden">
+                {/* Main Header Content - Reduced vertical padding to minimize space use */}
+                <div className="flex flex-col md:flex-col items-center justify-center py-1 md:py-1 relative">
+                    <div className="absolute left-0 top-1/2 transform -translate-y-1/2 md:hidden z-20">
                         <button onClick={() => setIsMobileMenuOpen(true)} className="text-black p-2">
                             <MenuIcon />
                         </button>
                     </div>
 
-                    <a href={homeUrl} target="_self" className="block cursor-pointer transition-transform hover:scale-105 duration-300">
-                        <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-16 w-auto md:h-20" />
+                    {/* Logo - Largest size requested */}
+                    <a href={homeUrl} target="_self" className="block cursor-pointer transition-transform hover:scale-105 duration-300 mb-1 md:mb-0 z-10">
+                        <img 
+                            src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
+                            alt="Vellaperfumeria Logo" 
+                            className="h-28 w-auto md:h-40 object-contain" 
+                        />
                     </a>
 
-                    <div className="absolute right-0 top-1/2 transform -translate-y-1/2 flex items-center space-x-2 md:space-x-4">
+                    <div className="absolute right-0 top-1/2 transform -translate-y-1/2 flex items-center space-x-2 md:space-x-4 z-20">
                         <button 
                             className={`relative p-2 text-black hover:text-[#f78df6] transition-colors ${cartPulse ? 'animate-pop' : ''}`}
                             onClick={onCartClick}
                         >
                             <CartIcon />
                             {cartCount > 0 && (
-                                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-[#f78df6] rounded-full">
+                                <span className="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white bg-black rounded-full border-2 border-white">
                                     {cartCount}
                                 </span>
                             )}
@@ -159,7 +164,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                     </div>
                 </div>
 
-                <nav className="hidden md:flex justify-center space-x-8 py-4 border-t border-gray-100">
+                <nav className="hidden md:flex justify-center space-x-8 py-2 border-t border-gray-100">
                     <NavLink href={homeUrl}>Inicio</NavLink>
                     <NavLink onClick={() => onNavigate('products', 'all')}>Tienda</NavLink>
                     <NavLink onClick={() => onNavigate('ofertas')}>Ideas Regalo</NavLink>
