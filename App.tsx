@@ -154,8 +154,11 @@ const App: React.FC = () => {
     };
     
     const buildBreadcrumbs = (): BreadcrumbItem[] => {
-        // Construct Home URL preserving the 'v' parameter if it exists
-        const homeUrl = `https://vellaperfumeria.com${vParam ? `?v=${vParam}` : ''}`;
+        // Construct Home URL preserving the 'v' parameter if it exists using URLSearchParams
+        const baseUrl = 'https://vellaperfumeria.com';
+        const params = new URLSearchParams();
+        if (vParam) params.append('v', vParam);
+        const homeUrl = params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
         
         const homeCrumb: BreadcrumbItem = { 
             label: 'Inicio', 

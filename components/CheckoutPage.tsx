@@ -106,7 +106,11 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
     }, [cartItems]);
 
     const checkoutUrl = useMemo(() => {
-         return `https://vellaperfumeria.com/carrito/?add-to-cart=${productIdsString}${vParam ? `&v=${vParam}` : ''}`;
+         const baseUrl = 'https://vellaperfumeria.com/carrito/';
+         const params = new URLSearchParams();
+         if (vParam) params.append('v', vParam);
+         if (productIdsString) params.append('add-to-cart', productIdsString);
+         return `${baseUrl}?${params.toString()}`;
     }, [productIdsString, vParam]);
 
     if (cartItems.length === 0) {
@@ -185,7 +189,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                             href={checkoutUrl}
                             target="_top"
                             rel="noopener noreferrer"
-                            className="w-full bg-[#E9D5FF] text-black font-bold py-4 rounded-xl text-lg shadow-lg hover:bg-[#D8B4FE] hover:shadow-xl transition-all transform hover:-translate-y-0.5 flex justify-center items-center gap-3"
+                            className="w-full bg-[#E9D5FF] text-black font-bold py-4 rounded-xl text-lg shadow-lg hover:bg-[#D8B4FE] hover:shadow-xl transition-all transform hover:-translate-y-0.5 flex justify-center items-center gap-3 cursor-pointer"
                         >
                             <span>Pagar en Vellaperfumeria.com</span>
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

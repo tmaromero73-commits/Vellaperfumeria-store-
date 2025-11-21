@@ -200,7 +200,11 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
     }, [cartItems]);
 
     const checkoutUrl = useMemo(() => {
-         return `https://vellaperfumeria.com/carrito/?add-to-cart=${productIdsString}${vParam ? `&v=${vParam}` : ''}`;
+         const baseUrl = 'https://vellaperfumeria.com/carrito/';
+         const params = new URLSearchParams();
+         if (vParam) params.append('v', vParam);
+         if (productIdsString) params.append('add-to-cart', productIdsString);
+         return `${baseUrl}?${params.toString()}`;
     }, [productIdsString, vParam]);
 
     const handleWhatsAppCheckout = () => {
@@ -332,7 +336,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                     href={checkoutUrl}
                                     target="_top"
                                     rel="noopener noreferrer"
-                                    className="w-full text-center bg-[#E9D5FF] hover:bg-[#D8B4FE] text-black font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-purple-200 transform hover:-translate-y-0.5 flex justify-center items-center"
+                                    className="w-full text-center bg-[#E9D5FF] hover:bg-[#D8B4FE] text-black font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-purple-200 transform hover:-translate-y-0.5 flex justify-center items-center cursor-pointer"
                                 >
                                      REALIZAR PEDIDO
                                 </a>

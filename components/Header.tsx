@@ -79,7 +79,12 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
         }
     }, []);
 
-    const homeUrl = `https://vellaperfumeria.com${vParam ? `?v=${vParam}` : ''}`;
+    const homeUrl = (() => {
+        const baseUrl = 'https://vellaperfumeria.com';
+        const params = new URLSearchParams();
+        if (vParam) params.append('v', vParam);
+        return params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
+    })();
 
     useEffect(() => {
         if (cartCount > 0) {

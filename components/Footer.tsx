@@ -90,7 +90,12 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         }
     }, []);
 
-    const homeUrl = `https://vellaperfumeria.com${vParam ? `?v=${vParam}` : ''}`;
+    const homeUrl = (() => {
+        const baseUrl = 'https://vellaperfumeria.com';
+        const params = new URLSearchParams();
+        if (vParam) params.append('v', vParam);
+        return params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
+    })();
 
     return (
         <footer className="bg-black border-t border-gray-800 text-white font-sans">

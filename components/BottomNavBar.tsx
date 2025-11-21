@@ -59,7 +59,12 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({ onNavigate, currentView }) 
         }
     }, []);
 
-    const homeUrl = `https://vellaperfumeria.com${vParam ? `?v=${vParam}` : ''}`;
+    const homeUrl = (() => {
+        const baseUrl = 'https://vellaperfumeria.com';
+        const params = new URLSearchParams();
+        if (vParam) params.append('v', vParam);
+        return params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
+    })();
     
     const navItems: NavItem[] = [
         { view: 'home', label: 'Inicio', icon: HomeIcon, payload: undefined, isExternal: true, href: homeUrl },
