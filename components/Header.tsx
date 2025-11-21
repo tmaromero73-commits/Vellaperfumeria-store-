@@ -132,24 +132,35 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
             </div>
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Main Header Content - Removed vertical padding (py-0) to maximize space usage */}
-                <div className="flex flex-col md:flex-col items-center justify-center py-0 relative">
+                {/* Main Header Content - Restored padding for better spacing */}
+                <div className="flex flex-col md:flex-row items-center justify-between py-4 relative">
                     <div className="absolute left-0 top-1/2 transform -translate-y-1/2 md:hidden z-20">
                         <button onClick={() => setIsMobileMenuOpen(true)} className="text-black p-2">
                             <MenuIcon />
                         </button>
                     </div>
 
-                    {/* Logo - Maximized size: h-32 on mobile, h-48 on desktop */}
-                    <a href={homeUrl} target="_self" className="block cursor-pointer transition-transform hover:scale-105 duration-300 z-10">
-                        <img 
-                            src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
-                            alt="Vellaperfumeria Logo" 
-                            className="h-32 w-auto md:h-48 object-contain" 
-                        />
-                    </a>
+                    {/* Logo - Adjusted size to be smaller and elegant */}
+                    <div className="flex-grow text-center md:text-left flex justify-center md:justify-start w-full md:w-auto">
+                        <a href={homeUrl} target="_self" className="block cursor-pointer transition-transform hover:scale-105 duration-300 z-10">
+                            <img 
+                                src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
+                                alt="Vellaperfumeria Logo" 
+                                className="h-16 md:h-24 w-auto object-contain" 
+                            />
+                        </a>
+                    </div>
 
-                    <div className="absolute right-0 top-1/2 transform -translate-y-1/2 flex items-center space-x-2 md:space-x-4 z-20">
+                    <div className="absolute right-0 top-1/2 transform -translate-y-1/2 md:static md:transform-none flex items-center space-x-2 md:space-x-4 z-20">
+                         <nav className="hidden md:flex justify-center space-x-6 mr-6">
+                            <NavLink href={homeUrl}>Inicio</NavLink>
+                            <NavLink onClick={() => onNavigate('products', 'all')}>Tienda</NavLink>
+                            <NavLink onClick={() => onNavigate('ofertas')}>Ideas Regalo</NavLink>
+                            <NavLink onClick={() => onNavigate('catalog')}>Catálogo</NavLink>
+                            <NavLink onClick={() => onNavigate('ia')}>Asistente IA</NavLink>
+                            <NavLink onClick={() => onNavigate('blog')}>Blog</NavLink>
+                        </nav>
+
                         <button 
                             className={`relative p-2 text-black hover:text-[#f78df6] transition-colors ${cartPulse ? 'animate-pop' : ''}`}
                             onClick={onCartClick}
@@ -163,15 +174,6 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                         </button>
                     </div>
                 </div>
-
-                <nav className="hidden md:flex justify-center space-x-8 py-2 border-t border-gray-100">
-                    <NavLink href={homeUrl}>Inicio</NavLink>
-                    <NavLink onClick={() => onNavigate('products', 'all')}>Tienda</NavLink>
-                    <NavLink onClick={() => onNavigate('ofertas')}>Ideas Regalo</NavLink>
-                    <NavLink onClick={() => onNavigate('catalog')}>Catálogo</NavLink>
-                    <NavLink onClick={() => onNavigate('ia')}>Asistente IA</NavLink>
-                    <NavLink onClick={() => onNavigate('blog')}>Blog</NavLink>
-                </nav>
             </div>
             
             {/* Mobile Menu Overlay */}
