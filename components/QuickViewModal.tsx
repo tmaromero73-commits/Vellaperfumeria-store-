@@ -1,4 +1,6 @@
 
+
+
 import React, { useEffect, useRef, useState } from 'react';
 import type { Product } from './types';
 import type { Currency } from './currency';
@@ -182,7 +184,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, currency, onCl
                                 onClose();
                             }}
                             disabled={isOutOfStock}
-                            className={`w-full bg-[#E5D4F5] text-black font-bold py-3 rounded-lg hover:bg-[#D8B4FE] transition-colors ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : ''}`}
+                            className={`w-full bg-[var(--color-primary)] text-black border-2 border-[var(--color-primary-solid)] font-bold py-3 rounded-lg hover:bg-white hover:text-[var(--color-primary-solid)] transition-colors ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed border-gray-300' : ''}`}
                             aria-label={`Añadir ${product.name} al carrito`}
                         >
                             {isOutOfStock ? 'Agotado' : 'Añadir al carrito'}

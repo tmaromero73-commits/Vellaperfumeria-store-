@@ -168,4 +168,89 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                                                 <div className="flex flex-wrap gap-2 mb-2">
                                                     {Object.entries(item.selectedVariant).map(([key, value]) => (
                                                         <span key={key} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                                                            {key
+                                                            {key}: {value}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="font-bold text-gray-900 text-lg">{formatCurrency(item.product.price * item.quantity, currency)}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right Column: Total */}
+                    <div className="lg:w-1/3">
+                        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 sticky top-32">
+                            <h3 className="text-lg font-bold text-gray-900 mb-6 pb-4 border-b border-gray-100">Total Estimado</h3>
+
+                            <div className="border-t border-gray-200 pt-4 mb-6">
+                                <div className="flex justify-between items-end">
+                                    <span className="text-base font-bold text-gray-900">Total a Pagar</span>
+                                    <span className="text-2xl font-extrabold text-rose-600">{formatCurrency(total, currency)}</span>
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1 text-right">Impuestos incluidos</p>
+                            </div>
+
+                             <div className="mb-6">
+                                <label className="flex items-start gap-3 cursor-pointer group">
+                                    <input 
+                                        type="checkbox" 
+                                        className="mt-1 h-4 w-4 text-rose-600 border-gray-300 rounded focus:ring-rose-500" 
+                                        checked={acceptedTerms}
+                                        onChange={(e) => setAcceptedTerms(e.target.checked)}
+                                    />
+                                    <span className="text-xs text-gray-600 group-hover:text-gray-800 transition-colors">
+                                        Acepto los <a href="#" className="underline hover:text-rose-600">Términos y Condiciones</a>.
+                                    </span>
+                                </label>
+                            </div>
+
+                            <button 
+                                onClick={handleSubmit}
+                                disabled={isProcessing || !acceptedTerms}
+                                className="w-full bg-[var(--color-primary)] text-black border-2 border-[var(--color-primary-solid)] font-bold py-3 px-6 rounded-xl hover:bg-white hover:text-[var(--color-primary-solid)] transition-all shadow-lg transform active:scale-95 flex justify-center items-center disabled:opacity-70 disabled:cursor-wait"
+                            >
+                                {isProcessing ? (
+                                    <div className="flex flex-col items-center gap-2 w-full">
+                                        <div className="flex items-center gap-2 text-sm">
+                                            <svg className="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            <span>{syncMessage}</span>
+                                        </div>
+                                        <div className="w-full bg-white/50 rounded-full h-1.5 mt-1">
+                                            <div className="bg-black h-1.5 rounded-full transition-all duration-300" style={{ width: `${syncProgress}%` }}></div>
+                                        </div>
+                                    </div>
+                                ) : 'REALIZAR PEDIDO (PAGO SEGURO)'}
+                            </button>
+                            
+                            <div className="mt-6 flex justify-center gap-3 opacity-60">
+                                <VisaIcon />
+                                <MastercardIcon />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <footer className="bg-black border-t border-gray-800 py-12 mt-auto text-white">
+                <div className="container mx-auto px-4 flex flex-col items-center justify-center space-y-6">
+                    <img 
+                        src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
+                        alt="Vellaperfumeria" 
+                        className="h-12 w-auto" 
+                    />
+                    <p className="text-sm text-gray-400">© {new Date().getFullYear()} Vellaperfumeria. Todos los derechos reservados.</p>
+                </div>
+            </footer>
+        </div>
+    );
+};
+
+export default CheckoutPage;

@@ -1,4 +1,6 @@
 
+
+
 import React, { useState, useEffect, useCallback } from 'react';
 import type { Product } from './types';
 import { allProducts } from './products';
@@ -29,7 +31,7 @@ const slides = [
         image: "https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F44961%2F44961_1.png",
         bgClass: "bg-[#F3E8FF]",
         textClass: "text-purple-900",
-        buttonClass: "bg-[#f78df685] text-black hover:bg-white hover:text-black border-2 border-[#f78df6]",
+        buttonClass: "bg-[#f78df685] text-black hover:bg-white hover:text-[#d946ef] border-2 border-[#f78df6]",
         targetId: "seleccion-oferta"
     },
     {
@@ -41,7 +43,7 @@ const slides = [
         image: "https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F47440%2F47440_1.png",
         bgClass: "bg-purple-50", 
         textClass: "text-purple-900",
-        buttonClass: "bg-[#f78df685] text-black hover:bg-white hover:text-black border-2 border-[#f78df6]",
+        buttonClass: "bg-[#f78df685] text-black hover:bg-white hover:text-[#d946ef] border-2 border-[#f78df6]",
         targetId: "seleccion-oferta" 
     },
     {
@@ -53,7 +55,7 @@ const slides = [
         image: "https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F46801%2F46801_1.png",
         bgClass: "bg-[#FAF5FF]", 
         textClass: "text-purple-900",
-        buttonClass: "bg-[#f78df685] text-black hover:bg-white hover:text-black border-2 border-[#f78df6]",
+        buttonClass: "bg-[#f78df685] text-black hover:bg-white hover:text-[#d946ef] border-2 border-[#f78df6]",
         targetId: null,
         productId: 46801
     }
