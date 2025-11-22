@@ -147,7 +147,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                             <img 
                                 src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
                                 alt="Vellaperfumeria Logo" 
-                                className="h-16 w-auto object-contain" 
+                                className="h-20 w-auto object-contain" 
                             />
                         </a>
                     </div>
@@ -175,7 +175,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                             <img 
                                 src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
                                 alt="Vellaperfumeria Logo" 
-                                className="h-28 w-auto object-contain" 
+                                className="h-32 w-auto object-contain" 
                             />
                         </a>
 

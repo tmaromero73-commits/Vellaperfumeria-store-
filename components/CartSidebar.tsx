@@ -115,14 +115,6 @@ const BizumIcon = () => (
 const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, currency, onUpdateQuantity, onRemoveItem, onCheckout, onNavigate }) => {
     const sidebarRef = useRef<HTMLDivElement>(null);
     
-    // Retrieve 'v' param from URL to maintain tracking
-    const [vParam, setVParam] = useState<string | null>(null);
-
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        setVParam(params.get('v'));
-    }, []);
-
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
@@ -194,39 +186,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
 
     // Check if gift box should be shown (Orders > 35 euros)
     const hasGift = subtotal > GIFT_THRESHOLD;
-
-    // Construct IDs string for external cart transfer
-    const productIdsString = useMemo(() => {
-        const ids: number[] = [];
-        cartItems.forEach(item => {
-            let idToAdd = item.product.id;
-            if (item.selectedVariant && item.product.variants) {
-                Object.entries(item.selectedVariant).forEach(([key, value]) => {
-                    const variantOptions = item.product.variants?.[key];
-                    if (variantOptions) {
-                        const selectedOption = variantOptions.find(opt => opt.value === value);
-                        if (selectedOption && selectedOption.variationId) {
-                            idToAdd = selectedOption.variationId;
-                        }
-                    }
-                });
-            }
-            for (let i = 0; i < item.quantity; i++) {
-                ids.push(idToAdd);
-            }
-        });
-        return ids.join(',');
-    }, [cartItems]);
-
-    // Build the external checkout URL
-    const checkoutUrl = useMemo(() => {
-         const baseUrl = 'https://vellaperfumeria.com/finalizar-compra/';
-         const params = new URLSearchParams();
-         if (vParam) params.append('v', vParam);
-         if (productIdsString) params.append('add-to-cart', productIdsString);
-         const queryString = params.toString();
-         return queryString ? `${baseUrl}?${queryString}` : baseUrl;
-    }, [productIdsString, vParam]);
 
     const handleWhatsAppCheckout = () => {
         if (cartItems.length === 0) return;
@@ -373,9 +332,9 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                             </div>
                             
                             <div className="flex flex-col gap-3 pt-2">
-                                 {/* Direct link to external checkout with add-to-cart functionality */}
+                                 {/* Updated to call onCheckout instead of direct redirect */}
                                 <button 
-                                    onClick={() => window.location.href = checkoutUrl}
+                                    onClick={onCheckout}
                                     className="w-full text-center bg-[#f78df685] hover:bg-white text-black hover:text-black border-2 border-[#f78df6] font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-purple-200 transform hover:-translate-y-0.5 flex justify-center items-center cursor-pointer no-underline"
                                 >
                                      FINALIZAR COMPRA EN WEB

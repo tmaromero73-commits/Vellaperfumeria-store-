@@ -1,5 +1,5 @@
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { type Currency, formatCurrency } from './currency';
 import type { Product } from './types';
 
@@ -34,7 +34,13 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onAddToCart, onQuickAddToCart, onProductSelect, onQuickView }) => {
     const [isWishlist, setIsWishlist] = useState(false);
+    const [imgSrc, setImgSrc] = useState(product.imageUrl);
     const addToCartBtnRef = useRef<HTMLButtonElement>(null);
+
+    // Reset image when product changes
+    useEffect(() => {
+        setImgSrc(product.imageUrl);
+    }, [product.imageUrl]);
 
     const isDiscounted = product.regularPrice && product.regularPrice > product.price;
     const discountPercentage = isDiscounted
@@ -107,8 +113,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                 onClick={() => onProductSelect(product)}
             >
                 <img
-                    src={product.imageUrl}
+                    src={imgSrc}
                     alt={product.name}
+                    onError={() => setImgSrc('https://via.placeholder.com/300x300?text=Imagen+No+Disponible')}
                     className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105"
                     loading="lazy"
                 />
