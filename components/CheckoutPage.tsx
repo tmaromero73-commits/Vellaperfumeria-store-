@@ -85,12 +85,15 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
         setIsProcessing(true);
         setSyncProgress(0);
         
+        // Esta es la función clave de la configuración del día 14.
+        // Construye la URL usando el ID base o el Variation ID según corresponda.
         const buildAddToCartUrl = (item: CartItem): string => {
-            const baseUrl = 'https://vellaperfumeria.com/carrito/';
+            const baseUrl = 'https://vellaperfumeria.com/';
             const params = new URLSearchParams();
             
             let idToAdd = item.product.id;
 
+            // Lógica exacta para detectar variaciones (tonos, etc.)
             if (item.selectedVariant && item.product.variants) {
                 for (const type in item.selectedVariant) {
                     const value = item.selectedVariant[type];
@@ -109,33 +112,38 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
         };
 
         try {
-            // Step 1: Clear the remote cart.
-            setSyncMessage('Limpiando carrito...');
-            setSyncProgress(5);
+            // Paso 1: Limpiar carrito remoto (usando el endpoint standard)
+            setSyncMessage('Preparando tu pedido...');
+            setSyncProgress(10);
             await loadUrlInIframe('https://vellaperfumeria.com/carrito/?empty-cart');
             
-            // Step 2: Add each item to the cart sequentially.
-            for (let i = 0; i < cartItems.length; i++) {
+            // Paso 2: Añadir cada producto secuencialmente
+            const totalItems = cartItems.length;
+            for (let i = 0; i < totalItems; i++) {
                 const item = cartItems[i];
-                setSyncMessage(`Añadiendo producto ${i + 1} de ${cartItems.length}...`);
+                setSyncMessage(`Añadiendo producto ${i + 1} de ${totalItems}...`);
+                
                 const addToCartUrl = buildAddToCartUrl(item);
                 await loadUrlInIframe(addToCartUrl);
-                setSyncProgress(Math.round(((i + 1) / cartItems.length) * 90) + 5);
+                
+                setSyncProgress(10 + Math.round(((i + 1) / totalItems) * 80));
             }
             
-            setSyncMessage('¡Todo listo! Redirigiendo al pago...');
+            setSyncMessage('¡Todo listo! Redirigiendo al pago seguro...');
             setSyncProgress(100);
             
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            await new Promise(resolve => setTimeout(resolve, 1000));
             
             onClearCart();
-            // Perform a top-level redirect to the main site's checkout page
+            // Redirección final al checkout oficial
             window.top.location.href = 'https://vellaperfumeria.com/checkout/';
 
         } catch (error) {
             console.error("Error during checkout process:", error);
-            setSyncMessage('Hubo un error al sincronizar. Por favor, inténtalo de nuevo o contacta con soporte.');
-            setIsProcessing(false);
+            setSyncMessage('Hubo un error al sincronizar. Redirigiendo al carrito...');
+             setTimeout(() => {
+                 window.top.location.href = 'https://vellaperfumeria.com/carrito/';
+             }, 2000);
         }
     };
 
@@ -296,4 +304,3 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
 };
 
 export default CheckoutPage;
-    
