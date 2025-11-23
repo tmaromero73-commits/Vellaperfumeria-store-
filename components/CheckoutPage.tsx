@@ -85,20 +85,20 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
         setSyncProgress(0);
         
         try {
-            // 1. Limpiar carrito remoto
+            // 1. Limpiar carrito remoto para asegurar estado limpio
             setSyncMessage('Preparando tu pedido...');
             setSyncProgress(10);
             await loadUrlInIframe('https://vellaperfumeria.com/carrito/?empty-cart');
             
-            // 2. Añadir productos
+            // 2. Sincronizar productos uno a uno
             const totalItems = cartItems.length;
             for (let i = 0; i < totalItems; i++) {
                 const item = cartItems[i];
-                setSyncMessage(`Añadiendo producto ${i + 1} de ${totalItems}...`);
+                setSyncMessage(`Sincronizando producto ${i + 1} de ${totalItems}...`);
                 
                 let idToAdd = item.product.id;
 
-                // Lógica de variantes exacta y limpia
+                // Lógica precisa para detectar ID de variación si existe
                 if (item.selectedVariant && item.product.variants) {
                     for (const type in item.selectedVariant) {
                         const value = item.selectedVariant[type];
@@ -110,24 +110,27 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                     }
                 }
 
+                // URL estándar de WooCommerce para añadir al carrito
                 const addToCartUrl = `https://vellaperfumeria.com/?add-to-cart=${idToAdd}&quantity=${item.quantity}`;
                 await loadUrlInIframe(addToCartUrl);
                 
                 setSyncProgress(10 + Math.round(((i + 1) / totalItems) * 80));
             }
             
-            setSyncMessage('¡Todo listo! Redirigiendo al carrito...');
+            setSyncMessage('¡Todo listo! Redirigiendo a tu carrito...');
             setSyncProgress(100);
             
             await new Promise(resolve => setTimeout(resolve, 1000));
             
+            // Limpiar carrito local
             onClearCart();
-            // Redirección al CARRITO (/carrito/) para ver los productos antes de pagar
+            
+            // 3. Redirección final al CARRITO (/carrito/) para ver los productos antes de pagar
             window.top.location.href = 'https://vellaperfumeria.com/carrito/';
 
         } catch (error) {
-            console.error("Error sync:", error);
-            setSyncMessage('Redirigiendo...');
+            console.error("Error durante la sincronización:", error);
+            setSyncMessage('Redirigiendo al carrito...');
              setTimeout(() => {
                  window.top.location.href = 'https://vellaperfumeria.com/carrito/';
              }, 1500);
@@ -178,7 +181,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
             <div className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="mb-8 text-center">
                     <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Resumen del Pedido</h1>
-                    <p className="text-gray-500 mt-2">Confirma tus productos para proceder al pago.</p>
+                    <p className="text-gray-500 mt-2">Revisa tus productos antes de finalizar en la web.</p>
                 </div>
                 
                 <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
@@ -262,7 +265,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                                             <div className="bg-black h-1.5 rounded-full transition-all duration-300" style={{ width: `${syncProgress}%` }}></div>
                                         </div>
                                     </div>
-                                ) : 'PROCEDER AL PAGO (VER CARRITO)'}
+                                ) : 'VER CARRITO EN VELLAPERFUMERIA'}
                             </button>
                             
                             <div className="mt-6 flex justify-center gap-3 opacity-60">
