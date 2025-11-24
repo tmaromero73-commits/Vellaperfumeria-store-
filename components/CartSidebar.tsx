@@ -37,12 +37,6 @@ const TrashIcon = () => (
     </svg>
 );
 
-const WhatsAppIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 4.315 1.919 6.066l-1.475 5.422 5.571-1.469z" />
-    </svg>
-);
-
 const GiftBoxIcon = ({ color = "black" }: { color?: string }) => (
     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M20 12V22H4V12" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -277,34 +271,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
         }
     };
 
-
-    const handleWhatsAppCheckout = () => {
-        if (cartItems.length === 0) return;
-        
-        let message = "Hola! Me gustaría hacer un pedido en Vellaperfumeria:\n\n";
-        cartItems.forEach(item => {
-            message += `- ${item.quantity}x ${item.product.name}`;
-            if (item.selectedVariant) {
-                const variants = Object.values(item.selectedVariant).join(', ');
-                message += ` (${variants})`;
-            }
-            message += ` - ${formatCurrency(item.product.price * item.quantity, currency)}\n`;
-        });
-        
-        if (hasGift) {
-            message += `- 1x Caja de Regalo Mediana (Negra) - GRATIS\n`;
-        }
-
-        message += `\nSubtotal: ${formatCurrency(subtotal, currency)}`;
-        if (discountAmount > 0) message += `\nDescuento: -${formatCurrency(discountAmount, currency)}`;
-        message += `\nEnvío: ${shippingCost === 0 ? 'Gratis' : formatCurrency(shippingCost, currency)}`;
-        message += `\n*TOTAL: ${formatCurrency(total, currency)}*`;
-        message += `\n\nQuedo a la espera para confirmar el pago y envío. ¡Gracias!`;
-
-        const encodedMessage = encodeURIComponent(message);
-        window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
-    };
-
     return (
         <div
             role="dialog"
@@ -444,7 +410,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                             </svg>
                                             {syncMessage}
                                         </>
-                                     ) : 'FINALIZAR COMPRA EN WEB'}
+                                     ) : 'PAGAR EN VELLAPERFUMERIA.COM'}
                                 </button>
                                 
                                 <div className="flex justify-center items-center gap-3 mt-1 pb-1">
@@ -455,15 +421,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                     <PayPalIcon />
                                     <BizumIcon />
                                 </div>
-
-                                {/* WhatsApp Checkout Button */}
-                                <button
-                                    onClick={handleWhatsAppCheckout}
-                                    className="w-full text-center bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-md hover:shadow-green-100 flex justify-center items-center gap-2 transform hover:-translate-y-0.5"
-                                >
-                                    <WhatsAppIcon />
-                                    <span>PEDIR POR WHATSAPP</span>
-                                </button>
                                 
                                 <button
                                     onClick={() => {

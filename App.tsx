@@ -194,10 +194,9 @@ const App: React.FC = () => {
         setCartItems(cartItems.filter(item => item.id !== cartItemId));
     };
 
-    // Checkout handling now happens purely in CartSidebar or redirects externally
+    // Checkout is now handled entirely in CartSidebar via direct redirect
     const handleCheckout = () => {
-        // This function is kept for interface compatibility but the sidebar handles logic
-        setIsCartOpen(false);
+        setIsCartOpen(true);
     };
 
     const handleSelectPost = (post: any) => {
@@ -340,9 +339,9 @@ const App: React.FC = () => {
             
             <style>{`
                 :root {
-                    --color-primary: #f78df685; /* Transparent Rose requested by user */
-                    --color-primary-solid: #d946ef; /* Solid Fuchsia/Rose for text/borders */
-                    --color-secondary: #ffffff; /* White background */
+                    --color-primary: #f78df685; /* Transparent Rose */
+                    --color-primary-solid: #d946ef; /* Solid Rose */
+                    --color-secondary: #ffffff; 
                     --color-accent: #f97316; /* orange-500 */
                 }
                 /* Global Selection Color */
@@ -353,7 +352,7 @@ const App: React.FC = () => {
                 
                 .btn-primary {
                     background-color: var(--color-primary);
-                    color: black !important; /* Black text for legibility on light transparent pink */
+                    color: black !important;
                     padding: 0.75rem 1.5rem;
                     border-radius: 0.75rem;
                     font-weight: 600;
@@ -363,7 +362,7 @@ const App: React.FC = () => {
                 }
                 .btn-primary:hover {
                     background-color: white;
-                    color: var(--color-primary-solid) !important; /* Pink text on white background */
+                    color: var(--color-primary-solid) !important;
                     border-color: var(--color-primary-solid);
                     transform: translateY(-2px);
                     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);

@@ -1,3 +1,3 @@
 
-// This file has been deprecated and removed as per user request to eliminate the internal checkout page.
+// This file is deprecated and no longer used. The checkout logic is handled directly in CartSidebar.tsx.
 export default {};
