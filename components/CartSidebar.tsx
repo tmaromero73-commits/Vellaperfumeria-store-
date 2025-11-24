@@ -172,12 +172,13 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
             }
         }
         
-        // Get 'v' param from current URL
+        // Get 'v' param from current URL to maintain session if exists
         const urlParams = new URLSearchParams(window.location.search);
         const vParam = urlParams.get('v');
             
-        // Force redirect to the official checkout page on the MAIN domain
-        let redirectUrl = `https://vellaperfumeria.com/carrito/?add-to-cart=${idToAdd}&quantity=${item.quantity}`;
+        // CHANGED: Force redirect to "finalizar-compra" (Checkout) instead of "carrito" (Cart)
+        // This ensures the user lands on the payment page directly.
+        let redirectUrl = `https://vellaperfumeria.com/finalizar-compra/?add-to-cart=${idToAdd}&quantity=${item.quantity}`;
         
         // Append 'v' parameter if it exists
         if (vParam) {
@@ -311,7 +312,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                     Ver Carrito Detallado
                                 </button>
                                 
-                                {/* Option 1: Web Checkout */}
+                                {/* Option 1: Web Checkout - REDIRECTS TO /finalizar-compra/ */}
                                 <button 
                                     onClick={handleDirectCheckout}
                                     disabled={isProcessing}
