@@ -15,6 +15,7 @@ interface CartSidebarProps {
     isCheckingOut: boolean;
     checkoutError: string | null;
     onNavigate: (view: View, payload?: any) => void;
+    onClearCart?: () => void;
 }
 
 const FREE_SHIPPING_THRESHOLD = 35;
@@ -112,8 +113,11 @@ const BizumIcon = () => (
     </svg>
 );
 
-const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, currency, onUpdateQuantity, onRemoveItem, onCheckout, onNavigate }) => {
+const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, currency, onUpdateQuantity, onRemoveItem, onNavigate, onClearCart }) => {
     const sidebarRef = useRef<HTMLDivElement>(null);
+    const iframeRef = useRef<HTMLIFrameElement>(null);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [syncMessage, setSyncMessage] = useState('');
     
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -187,6 +191,93 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
     // Check if gift box should be shown (Orders > 35 euros)
     const hasGift = subtotal > GIFT_THRESHOLD;
 
+    // --- MAGIC SYNC LOGIC ("DAY 9 STYLE") ---
+    const loadUrlInIframe = (url: string): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            const iframe = iframeRef.current;
+            if (!iframe) {
+                reject(new Error("Iframe not found"));
+                return;
+            }
+
+            const timeout = setTimeout(() => {
+                resolve();
+            }, 3500); // Slightly faster check
+
+            const cleanup = () => {
+                iframe.onload = null;
+                iframe.onerror = null;
+                clearTimeout(timeout);
+            };
+            
+            iframe.onload = () => {
+                cleanup();
+                resolve();
+            };
+            iframe.onerror = () => {
+                cleanup();
+                resolve();
+            };
+
+            iframe.src = url;
+        });
+    };
+
+    const handleDirectCheckout = async () => {
+        if (cartItems.length === 0) return;
+
+        setIsProcessing(true);
+        setSyncMessage('Iniciando transferencia...');
+
+        try {
+            // 1. Clear external cart to avoid duplicates
+            await loadUrlInIframe('https://vellaperfumeria.com/carrito/?empty-cart');
+            
+            // 2. Add items sequentially
+            for (let i = 0; i < cartItems.length; i++) {
+                const item = cartItems[i];
+                setSyncMessage(`Añadiendo ${item.product.name}...`);
+                
+                let idToAdd = item.product.id;
+
+                // Correct variant handling logic (standard WooCommerce)
+                if (item.selectedVariant && item.product.variants) {
+                    for (const type in item.selectedVariant) {
+                        const value = item.selectedVariant[type];
+                        const variantOptions = item.product.variants[type];
+                        if (variantOptions) {
+                            const option = variantOptions.find(opt => opt.value === value);
+                            if (option?.variationId) {
+                                idToAdd = option.variationId; // Use specific variation ID
+                                break; 
+                            }
+                        }
+                    }
+                }
+
+                // Standard WooCommerce add-to-cart URL
+                const addToCartUrl = `https://vellaperfumeria.com/?add-to-cart=${idToAdd}&quantity=${item.quantity}`;
+                await loadUrlInIframe(addToCartUrl);
+            }
+
+            // 3. Final Redirect to Cart Page
+            setSyncMessage('Redirigiendo al carrito...');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Clear local cart so it's empty when/if user returns
+            if(onClearCart) onClearCart();
+            
+            // Go to external cart
+            window.location.href = 'https://vellaperfumeria.com/carrito/';
+
+        } catch (error) {
+            console.error("Error syncing cart:", error);
+            // Fallback redirect
+            window.location.href = 'https://vellaperfumeria.com/carrito/';
+        }
+    };
+
+
     const handleWhatsAppCheckout = () => {
         if (cartItems.length === 0) return;
         
@@ -222,6 +313,13 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
             className={`fixed inset-0 z-50 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         >
             <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
+            
+            {/* Hidden Iframe for "Magic" Sync */}
+            <iframe
+                ref={iframeRef}
+                title="Cart Sync Helper"
+                style={{ display: 'none', width: '0', height: '0' }}
+            />
 
             <div
                 ref={sidebarRef}
@@ -332,12 +430,21 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                             </div>
                             
                             <div className="flex flex-col gap-3 pt-2">
-                                 {/* Updated to call onCheckout instead of direct redirect */}
+                                 {/* Button calls handleDirectCheckout - NO internal navigation */}
                                 <button 
-                                    onClick={onCheckout}
-                                    className="w-full text-center bg-[var(--color-primary)] text-black hover:bg-white hover:text-[var(--color-primary-solid)] border-2 border-[var(--color-primary-solid)] font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-rose-200 transform hover:-translate-y-0.5 flex justify-center items-center cursor-pointer no-underline"
+                                    onClick={handleDirectCheckout}
+                                    disabled={isProcessing}
+                                    className="w-full text-center bg-[var(--color-primary)] text-black hover:bg-white hover:text-[var(--color-primary-solid)] border-2 border-[var(--color-primary-solid)] font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-rose-200 transform hover:-translate-y-0.5 flex justify-center items-center cursor-pointer no-underline disabled:opacity-70 disabled:cursor-wait"
                                 >
-                                     FINALIZAR COMPRA EN WEB
+                                     {isProcessing ? (
+                                        <>
+                                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            {syncMessage}
+                                        </>
+                                     ) : 'FINALIZAR COMPRA EN WEB'}
                                 </button>
                                 
                                 <div className="flex justify-center items-center gap-3 mt-1 pb-1">

@@ -19,7 +19,6 @@ import CatalogPage from './components/CatalogPage';
 import BlogPage from './components/BlogPage';
 import BlogPostPage from './components/BlogPostPage';
 import QuickViewModal from './components/QuickViewModal';
-import CheckoutPage from './components/CheckoutPage';
 import Breadcrumbs, { type BreadcrumbItem } from './components/Breadcrumbs';
 import BottomNavBar from './components/BottomNavBar';
 
@@ -70,7 +69,7 @@ const App: React.FC = () => {
             }
 
             if (targetView) {
-                 if (['home', 'products', 'productDetail', 'ofertas', 'ia', 'catalog', 'about', 'contact', 'blog', 'blogPost', 'checkout'].includes(targetView)) {
+                 if (['home', 'products', 'productDetail', 'ofertas', 'ia', 'catalog', 'about', 'contact', 'blog', 'blogPost'].includes(targetView)) {
                      setView({ current: targetView as View });
                      return;
                  }
@@ -195,9 +194,10 @@ const App: React.FC = () => {
         setCartItems(cartItems.filter(item => item.id !== cartItemId));
     };
 
+    // Checkout handling now happens purely in CartSidebar or redirects externally
     const handleCheckout = () => {
+        // This function is kept for interface compatibility but the sidebar handles logic
         setIsCartOpen(false);
-        handleNavigate('checkout');
     };
 
     const handleSelectPost = (post: any) => {
@@ -222,8 +222,6 @@ const App: React.FC = () => {
                  return <BlogPage posts={blogPosts} onSelectPost={handleSelectPost} />;
             case 'blogPost':
                  return <BlogPostPage post={view.payload} allPosts={blogPosts} onSelectPost={handleSelectPost} onBack={() => handleNavigate('blog')} />;
-            case 'checkout':
-                return <CheckoutPage cartItems={cartItems} currency={currency} onClearCart={() => setCartItems([])} onNavigate={handleNavigate} />;
             default:
                 return <ProductList onNavigate={handleNavigate} onProductSelect={handleProductSelect} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} currency={currency} onQuickView={setQuickViewProduct} />;
         }
@@ -291,9 +289,6 @@ const App: React.FC = () => {
                 crumbs.push({ label: 'Blog', onClick: () => handleNavigate('blog') });
                 crumbs.push({ label: view.payload.title });
                 break;
-            case 'checkout':
-                crumbs.push({ label: 'Finalizar Compra' });
-                break;
         }
 
         return crumbs;
@@ -325,6 +320,7 @@ const App: React.FC = () => {
                 isCheckingOut={false}
                 checkoutError={null}
                 onNavigate={handleNavigate}
+                onClearCart={() => setCartItems([])} 
             />
 
             <BottomNavBar onNavigate={handleNavigate} currentView={view.current} />
