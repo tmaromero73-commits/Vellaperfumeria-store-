@@ -29,6 +29,15 @@ const CartPlusIcon = () => (
     </svg>
 );
 
+const GooglePlayMiniIcon = () => (
+    <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4.5 3.5L13.5 12L4.5 20.5V3.5Z" fill="#2196F3"/>
+        <path d="M13.5 12L18.5 17L21.5 12L18.5 7L13.5 12Z" fill="#FFC107"/>
+        <path d="M18.5 17L13.5 12L4.5 20.5L18.5 17Z" fill="#F44336"/>
+        <path d="M4.5 3.5L13.5 12L18.5 7L4.5 3.5Z" fill="#4CAF50"/>
+    </svg>
+);
+
 interface ProductCardProps {
     product: Product;
     currency: Currency;
@@ -207,26 +216,40 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                             ref={addToCartBtnRef}
                             onClick={handleActionClick}
                             disabled={product.stock === 0}
-                            className={`w-full py-2.5 px-2 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 shadow-sm hover:shadow-md flex justify-center items-center gap-2 ${
+                            className={`w-full py-2 px-2 rounded-lg font-bold text-xs transition-all duration-300 shadow-sm flex justify-center items-center gap-1 ${
                                 product.stock === 0
                                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200'
-                                    : 'bg-white text-black border-2 border-black hover:bg-gray-50'
+                                    : 'bg-white text-black border border-black hover:bg-gray-50'
                             }`}
                         >
                             <CartPlusIcon />
-                            {product.stock === 0 ? 'Agotado' : hasManyVariants ? 'Ver Opciones' : 'Añadir al carrito'}
+                            {product.stock === 0 ? 'Agotado' : hasManyVariants ? 'Opciones' : 'Añadir'}
                         </button>
-                        
-                        {/* BUY NOW BUTTON */}
-                        {product.stock > 0 && (
-                            <button
-                                ref={buyNowBtnRef}
-                                onClick={handleBuyNowClick}
-                                className="w-full py-2.5 px-2 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 shadow-sm hover:shadow-md bg-black text-white hover:bg-gray-800 border-2 border-black"
-                            >
-                                {hasManyVariants ? 'COMPRAR' : 'COMPRAR AHORA'}
-                            </button>
-                        )}
+
+                        <div className="grid grid-cols-2 gap-2">
+                            {/* BUY NOW BUTTON */}
+                            {product.stock > 0 && (
+                                <button
+                                    ref={buyNowBtnRef}
+                                    onClick={handleBuyNowClick}
+                                    className="w-full py-2 px-1 rounded-lg font-bold text-xs transition-all duration-300 shadow-sm hover:shadow-md bg-black text-white hover:bg-gray-800 border border-black"
+                                >
+                                    COMPRAR
+                                </button>
+                            )}
+
+                            {/* GOOGLE PLAY BUTTON - SPECIFICALLY REQUESTED */}
+                            {product.stock > 0 && (
+                                <button
+                                    onClick={handleBuyNowClick}
+                                    className="w-full py-2 px-1 rounded-lg font-bold text-xs transition-all duration-300 shadow-sm hover:shadow-md bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 flex items-center justify-center"
+                                    title="Pagar con Google Play"
+                                >
+                                    <GooglePlayMiniIcon />
+                                    Google Pay
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
