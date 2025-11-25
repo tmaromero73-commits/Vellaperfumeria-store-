@@ -23,6 +23,12 @@ const EyeIcon = () => (
     </svg>
 );
 
+const CartPlusIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+    </svg>
+);
+
 interface ProductCardProps {
     product: Product;
     currency: Currency;
@@ -183,7 +189,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
 
                 {/* Price Section */}
                 <div className="mt-auto pt-2">
-                     <div className="flex items-center gap-2 flex-wrap">
+                     <div className="flex items-center gap-2 flex-wrap mb-3">
                         <span className={`text-lg font-bold ${isDiscounted ? 'text-fuchsia-600' : 'text-gray-900'}`}>
                             {formatCurrency(product.price, currency)}
                         </span>
@@ -195,30 +201,30 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                     </div>
 
                     {/* Action Buttons Grid */}
-                    <div className="grid grid-cols-2 gap-2 mt-3">
+                    <div className="flex flex-col gap-2">
+                         {/* ADD TO CART BUTTON */}
                         <button
                             ref={addToCartBtnRef}
                             onClick={handleActionClick}
                             disabled={product.stock === 0}
-                            className={`py-2.5 px-2 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 shadow-sm hover:shadow-md border border-[var(--color-primary-solid)] ${
+                            className={`w-full py-2.5 px-2 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 shadow-sm hover:shadow-md flex justify-center items-center gap-2 ${
                                 product.stock === 0
-                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200 col-span-2'
-                                    : 'bg-[var(--color-primary)] text-black hover:bg-white hover:text-[var(--color-primary-solid)]'
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200'
+                                    : 'bg-white text-black border-2 border-black hover:bg-gray-50'
                             }`}
                         >
-                            {product.stock === 0 
-                                ? 'Agotado' 
-                                : hasManyVariants 
-                                    ? 'Ver Opciones' 
-                                    : 'Añadir'}
+                            <CartPlusIcon />
+                            {product.stock === 0 ? 'Agotado' : hasManyVariants ? 'Ver Opciones' : 'Añadir al carrito'}
                         </button>
+                        
+                        {/* BUY NOW BUTTON */}
                         {product.stock > 0 && (
                             <button
                                 ref={buyNowBtnRef}
                                 onClick={handleBuyNowClick}
-                                className="py-2.5 px-2 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 shadow-sm hover:shadow-md bg-black text-white hover:bg-gray-800 border border-black"
+                                className="w-full py-2.5 px-2 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 shadow-sm hover:shadow-md bg-black text-white hover:bg-gray-800 border-2 border-black"
                             >
-                                {hasManyVariants ? 'Comprar' : 'Comprar Ya'}
+                                {hasManyVariants ? 'COMPRAR' : 'COMPRAR AHORA'}
                             </button>
                         )}
                     </div>
