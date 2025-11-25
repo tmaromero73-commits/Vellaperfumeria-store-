@@ -1,5 +1,4 @@
 
-
 import React, { useMemo, useState, useEffect } from 'react';
 import type { CartItem, View } from './types';
 import type { Currency } from './currency';
@@ -26,6 +25,24 @@ const VerifiedBadge = () => (
 );
 
 // Payment Icons
+const GooglePayIcon = () => (
+    <svg className="h-6" viewBox="0 0 44 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16.964 8.203h2.64V12.9h-2.64V8.203zm1.32-4.14c.917 0 1.66.716 1.66 1.6 0 .883-.743 1.6-1.66 1.6-.917 0-1.66-.717-1.66-1.6 0-.884.743-1.6 1.66-1.6zM24.777 8.203h2.64v9.64h-1.39l-1.45-1.12c-1.13.91-2.35 1.48-3.98 1.48-3.03 0-5.18-2.36-5.18-5.7 0-3.37 2.18-5.69 5.21-5.69 1.66 0 2.91.6 4.15 1.54v-.15zm-2.43 7.51c1.94 0 3.25-1.54 3.25-3.48 0-1.94-1.31-3.51-3.25-3.51-1.97 0-3.28 1.57-3.28 3.51 0 1.94 1.31 3.48 3.28 3.48zM31.298 8.203h2.51l3.54 9.64h-2.71l-.54-1.68h-4.06l-.57 1.68h-2.66l4.49-9.64zm2.66 5.86l-1.37-4.12-1.43 4.12h2.8zM41.05 15.343l-2.88-8.91h-1.29v-1.14c1.11-.23 2.91-.57 4.17-.57 1.34 0 3.03.34 4.14.57v1.14h-1.2l-2.86 8.91h-2.86z" fill="currentColor"/>
+        <path d="M11.96 6.843c-1.6-.74-3.46-.86-4.94-.29-1.49.57-2.63 1.8-3.09 3.37-.46 1.57-.09 3.29 1 4.54 1.09 1.26 2.74 2.03 4.43 2.03 1.23 0 2.4-.4 3.34-1.09.26-.2.54-.4.77-.63l.03-.03c.51-.57.89-1.23 1.09-1.97l.63 2.37h2.4V6.263h-2.69v1.94c-1-1.06-2.09-1.46-3.03-1.46zm.4 6.17c-1.4.91-3.23.8-4.51-.29-1.29-1.09-1.6-3.03-.71-4.51.89-1.49 2.77-2 4.31-1.26 1.54.74 2.37 2.6 1.83 4.23-.17.66-.51 1.26-.91 1.83z" fill="currentColor"/>
+        <path d="M7.05 6.743C6.68 6.6 6.28 6.54 5.88 6.54c-2.4 0-4.63 1.49-5.49 3.77-1.11 3.03.4 6.37 3.43 7.49 3.03 1.11 6.37-.4 7.49-3.43.14-.37.26-.74.31-1.11l-2.46-.6c-.03.26-.09.49-.17.74-.63 1.71-2.51 2.57-4.23 1.94-1.71-.63-2.57-2.51-1.94-4.23.51-1.43 1.83-2.29 3.23-2.29.37 0 .74.06 1.11.2l-.11-2.29z" fill="currentColor"/>
+        <path d="M12.93 2.803C12.16 1.113 10.33.2 8.64.97c-1.69.77-2.43 2.77-1.66 4.46l2.37-.89c-.31-.77.06-1.63.83-1.97.77-.34 1.66.03 1.97.8l.8 1.69L15.39 3.97l-.92-1.66-.09-.17-.11-.26c-.4-.54-.89-1.09-1.34-1.09z" fill="currentColor"/>
+    </svg>
+);
+
+const ApplePayIcon = () => (
+    <svg className="h-6" viewBox="0 0 38 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.45 6.66c0-1.84 1.52-2.77 1.59-2.82-.87-1.12-2.23-1.27-2.71-1.29-1.15-.12-2.25.68-2.83.68-.59 0-1.99-.66-3.28-.64-1.69.02-3.25.99-4.11 2.51-1.76 3.03-.45 7.53 1.25 9.99.84 1.21 1.83 2.56 3.14 2.51 1.25-.05 1.73-.81 3.25-.81 1.51 0 1.94.81 3.26.78 1.35-.02 2.21-1.22 3.03-2.44.95-1.38 1.34-2.72 1.36-2.79-.03-.02-2.61-1.01-2.61-4.01-.01-2.51 2.04-3.71 2.13-3.77-.12-.27-.19-.41-1.47-2.27z" fill="currentColor"/>
+        <path d="M22.56 7.64c0 3.06 2.65 4.1 2.68 4.12-.02.09-.41 1.45-1.37 2.87-.84 1.24-1.71 2.48-3.09 2.5-1.35.03-1.79-.81-3.34-.81-1.55 0-2.04.79-3.33.84-1.33.05-2.35-1.34-3.2-2.55-1.74-2.51-3.07-7.1-.03-10.74 1.51-1.81 4.2-1.92 5.67-1.92.36 0 .73 0 1.09.04.14-1.72 1.53-3.23 3.49-3.23 1.84 0 3.18 1.51 3.18 3.32 0 .28-.03.55-.09.81 1.14.77 2.37 1.73 2.45 1.76-.14.28-4.11 1.5-4.11 2.99zM22.6 3.02c.79-.98 1.32-2.34 1.18-3.7-.49.07-2.68 1.45-3.52 3.65.91.81 1.71.69 2.34.05z" fill="currentColor"/>
+    </svg>
+);
+
+
+// Métodos de Pago Tradicionales (Visa, MC, PayPal)
 const VisaIcon = () => (
     <svg className="w-10 h-6" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
        <rect width="38" height="24" rx="2" fill="white"/>
@@ -126,18 +143,16 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
     const total = subtotal - discountAmount + shippingCost;
     const amountForFreeShipping = FREE_SHIPPING_THRESHOLD - subtotal;
 
-    const handleDirectCheckout = () => {
+    // Lógica principal de checkout (común para Google Pay, Apple Pay y Checkout Normal)
+    const proceedToCheckout = (method: 'standard' | 'google' | 'apple') => {
         if (selectedItemsList.length === 0) return;
         
         setIsProcessing(true);
 
-        // --- LÓGICA DE URL MULTI-PRODUCTO PARA WOOCOMMERCE ---
         const idsToAdd: string[] = [];
-
         selectedItemsList.forEach(item => {
             let idToAdd = item.product.id;
              
-            // Comprobamos si es una variante específica
             if (item.selectedVariant && item.product.variants) {
                 for (const type in item.selectedVariant) {
                     const value = item.selectedVariant[type];
@@ -150,7 +165,6 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                 }
             }
             
-            // Añadimos el ID tantas veces como cantidad haya
             for (let i = 0; i < item.quantity; i++) {
                 idsToAdd.push(idToAdd.toString());
             }
@@ -159,16 +173,20 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
         const urlParams = new URLSearchParams(window.location.search);
         const vParam = urlParams.get('v');
             
-        // Creamos la URL final que LLEVA A LA PÁGINA DE PAGO DE WOOCOMMERCE
         let redirectUrl = `https://vellaperfumeria.com/finalizar-compra/?add-to-cart=${idsToAdd.join(',')}`;
         
+        // Si es un método express, podríamos añadir un flag (simulado aquí)
+        if (method === 'google') console.log("Procesando con Google Pay...");
+        if (method === 'apple') console.log("Procesando con Apple Pay...");
+
         if (vParam) {
             redirectUrl += `&v=${vParam}`;
         }
         
-        // Redirigimos
-        console.log("Redirigiendo a:", redirectUrl);
-        window.location.href = redirectUrl;
+        // Simular pequeño delay para UX
+        setTimeout(() => {
+            window.location.href = redirectUrl;
+        }, 800);
     };
 
     const handleLoadSimulation = () => {
@@ -348,18 +366,33 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                             <p className="text-xs text-gray-400 text-right mt-1">Impuestos incluidos</p>
                         </div>
 
-                         {/* Métodos de Pago Visuales */}
-                         <div className="mb-6 bg-gray-50 p-3 rounded-lg border border-gray-100">
-                            <p className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide text-center">Aceptamos</p>
-                            <div className="flex justify-center gap-3 items-center">
-                                <VisaIcon />
-                                <MastercardIcon />
-                                <PayPalIcon />
-                            </div>
+                        {/* Express Checkout Section */}
+                        <div className="mb-6 space-y-3">
+                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest text-center mb-2">Pago Rápido</p>
+                            <button 
+                                onClick={() => proceedToCheckout('google')}
+                                disabled={isProcessing || selectedItemsList.length === 0}
+                                className="w-full bg-black text-white py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors shadow-sm disabled:opacity-50"
+                            >
+                                <GooglePayIcon /> 
+                            </button>
+                            <button 
+                                onClick={() => proceedToCheckout('apple')}
+                                disabled={isProcessing || selectedItemsList.length === 0}
+                                className="w-full bg-black text-white py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors shadow-sm disabled:opacity-50"
+                            >
+                                <ApplePayIcon />
+                            </button>
+                        </div>
+
+                        <div className="relative flex py-2 items-center mb-6">
+                            <div className="flex-grow border-t border-gray-200"></div>
+                            <span className="flex-shrink-0 mx-4 text-gray-400 text-xs font-medium uppercase">O paga con tarjeta</span>
+                            <div className="flex-grow border-t border-gray-200"></div>
                         </div>
 
                         <button 
-                            onClick={handleDirectCheckout}
+                            onClick={() => proceedToCheckout('standard')}
                             disabled={isProcessing || selectedItemsList.length === 0}
                             className="w-full bg-[var(--color-primary)] text-black font-bold py-4 rounded-xl shadow-lg hover:shadow-fuchsia-200 hover:bg-white hover:text-[var(--color-primary-solid)] border-2 border-[var(--color-primary-solid)] transition-all transform hover:-translate-y-1 flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:transform-none"
                         >
@@ -369,13 +402,20 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
-                                    Redirigiendo a pago seguro...
+                                    Redirigiendo...
                                 </span>
                             ) : (
                                 `PAGAR EN VELLAPERFUMERIA.COM`
                             )}
                         </button>
                         
+                         {/* Payment Icons Footer */}
+                         <div className="mt-6 pt-4 border-t border-gray-50 flex justify-center gap-2 opacity-60 grayscale">
+                            <VisaIcon />
+                            <MastercardIcon />
+                            <PayPalIcon />
+                        </div>
+
                         <div className="mt-4 text-center">
                             <p className="text-xs text-gray-400 flex items-center justify-center gap-1">
                                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>

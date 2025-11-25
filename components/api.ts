@@ -1,5 +1,4 @@
 
-
 import { CartItem, Product } from './types';
 import { allProducts } from './products';
 
