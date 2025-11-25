@@ -1,4 +1,5 @@
 
+
 import { CartItem, Product } from './types';
 import { allProducts } from './products';
 
@@ -30,7 +31,7 @@ export const fetchServerCart = async (sessionId: string): Promise<CartItem[]> =>
     // 1. REGLA DE ORO: Si es el enlace de prueba del usuario, CARGAR INMEDIATAMENTE.
     // Esto evita cualquier problema de CORS, claves o bloqueos de red en la vista previa.
     if (sessionId === '12470fe406d4') {
-        console.log("🚀 Modo Vista Previa detectado: Cargando simulación de Garnier Olia...");
+        console.log("🚀 Modo Vista Previa detectado: Cargando simulación...");
         return getMockCart();
     }
 
@@ -101,26 +102,28 @@ const mapOrderToCartItems = (orderData: any): CartItem[] => {
 };
 
 const getMockCart = (): CartItem[] => {
-    // ESTOS SON LOS PRODUCTOS QUE SE VERÁN EN TU ENLACE
-    const oliaProduct = allProducts.find(p => p.id === 90001); // Garnier Olia
-    const shampooProduct = allProducts.find(p => p.id === 44961); // Acondicionador
+    // Usamos productos estrictamente de Perfumería y Maquillaje de lujo
+    // Evitamos cualquier cosa que parezca "protector solar" o tinte.
+    
+    const perfumeProduct = allProducts.find(p => p.id === 46801); // Divine Dark Velvet (Perfume)
+    const makeupProduct = allProducts.find(p => p.id === 44917); // Perlas Giordani Gold (Maquillaje)
 
     const mockCart: CartItem[] = [];
 
-    if (oliaProduct) {
+    if (perfumeProduct) {
         mockCart.push({
-            id: `sim-olia-1`,
-            product: oliaProduct,
-            quantity: 2,
-            selectedVariant: { "Tono": "Rojo Intenso 6.60" }
-        });
-    }
-    if (shampooProduct) {
-            mockCart.push({
-            id: `sim-shampoo-2`,
-            product: shampooProduct,
+            id: `sim-perfume-1`,
+            product: perfumeProduct,
             quantity: 1,
             selectedVariant: null
+        });
+    }
+    if (makeupProduct) {
+        mockCart.push({
+            id: `sim-makeup-2`,
+            product: makeupProduct,
+            quantity: 1,
+            selectedVariant: { "Tono": "Luminous Peach" }
         });
     }
     return mockCart;

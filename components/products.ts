@@ -1,30 +1,8 @@
 
+
 import type { Product } from './types';
 
 export const allProducts: Product[] = [
-    // --- NUEVO PRODUCTO OLIA ---
-    {
-        id: 90001,
-        name: "Tinte Permanente Olia con Aceites Florales",
-        brand: "Garnier",
-        price: 9.99,
-        regularPrice: 12.50,
-        imageUrl: "https://m.media-amazon.com/images/I/81+T1A-jEIL.jpg",
-        description: "Descubre Olia de Garnier. La primera coloración permanente sin amoniaco activada por aceite. Mejora visiblemente la calidad del cabello coloración tras coloración para un acabado suave, brillante y con la máxima eficiencia del color.",
-        stock: 100,
-        category: "hair",
-        tag: "NOVEDAD",
-        rating: 4.8,
-        reviewCount: 340,
-        variants: {
-            "Tono": [
-                { value: "Negro Intenso 1.0", colorCode: "#000000" },
-                { value: "Castaño 4.0", colorCode: "#5D4037" },
-                { value: "Rubio Dorado 7.3", colorCode: "#DAA520" },
-                { value: "Rojo Intenso 6.60", colorCode: "#8B0000" }
-            ]
-        }
-    },
     // --- HTML DUMP PRODUCTS (MAQUILLAJE) ---
     {
         id: 47188,

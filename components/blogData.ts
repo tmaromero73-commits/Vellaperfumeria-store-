@@ -1,7 +1,4 @@
 
-
-
-
 import React from 'react';
 
 export interface BlogPost {
@@ -17,42 +14,6 @@ export interface BlogPost {
 }
 
 export const blogPosts: BlogPost[] = [
-    {
-        id: 8,
-        title: 'Descubre Olia de Garnier',
-        author: 'Vellaperfumeria',
-        date: '28 de Noviembre, 2024',
-        category: 'Cuidado del Cabello',
-        imageUrl: 'https://images.unsplash.com/photo-1626045653139-4457e50c422c?q=80&w=2670&auto=format&fit=crop',
-        headerImageUrl: 'https://images.unsplash.com/photo-1626045653139-4457e50c422c?q=80&w=2670&auto=format&fit=crop',
-        excerpt: 'Has teñido tu pelo, color tras color... es momento de descubrir una nueva experiencia en coloración.',
-        content: React.createElement('div', { className: "space-y-6 text-lg leading-relaxed text-gray-800" },
-            React.createElement('p', { className: "font-medium text-xl italic text-gray-600" }, '"Has teñido tu pelo, color tras color, descubre Olia."'),
-            React.createElement('hr', { className: "border-fuchsia-200" }),
-            React.createElement('p', null, 'Llega una revolución en el cuidado del color. Olia de Garnier ofrece una experiencia sensorial única con su fórmula sin amoniaco potenciada por aceites florales de origen natural.'),
-            React.createElement('h2', { className: "text-2xl font-bold pt-4" }, 'Máxima Eficiencia del Color'),
-            React.createElement('p', null, 'Entonces, llega un nuevo Garnier, con un acabado visible, suave y brillante, y máxima eficiencia de color. Olia mejora visiblemente la calidad del cabello coloración tras coloración, ofreciendo un confort óptimo del cuero cabelludo.'),
-            React.createElement('p', { className: "font-bold text-fuchsia-800 text-xl pt-4" }, 'Olia, by Garnier.')
-        ),
-    },
-    {
-        id: 7,
-        title: 'Descubre Olia de Garnier',
-        author: 'Vellaperfumeria',
-        date: '26 de Noviembre, 2024',
-        category: 'Cuidado del Cabello',
-        imageUrl: 'https://images.unsplash.com/photo-1552693673-1bf958298935?ixlib=rb-4.0.3&auto=format&fit=crop&w=1173&q=80',
-        headerImageUrl: 'https://images.unsplash.com/photo-1552693673-1bf958298935?ixlib=rb-4.0.3&auto=format&fit=crop&w=1173&q=80',
-        excerpt: 'Has teñido tu pelo, color tras color... es momento de descubrir una nueva experiencia en coloración.',
-        content: React.createElement('div', { className: "space-y-6 text-lg leading-relaxed text-gray-800" },
-            React.createElement('p', { className: "font-medium text-xl italic text-gray-600" }, '"Has teñido tu pelo, color tras color, descubre Olia."'),
-            React.createElement('hr', { className: "border-fuchsia-200" }),
-            React.createElement('p', null, 'Llega una revolución en el cuidado del color. Olia de Garnier ofrece una experiencia sensorial única con su fórmula sin amoniaco potenciada por aceites florales de origen natural.'),
-            React.createElement('h2', { className: "text-2xl font-bold pt-4" }, 'Máxima Eficiencia del Color'),
-            React.createElement('p', null, 'Entonces, llega un nuevo Garnier, con un acabado visible, suave y brillante, y máxima eficiencia de color. Olia mejora visiblemente la calidad del cabello coloración tras coloración, ofreciendo un confort óptimo del cuero cabelludo.'),
-            React.createElement('p', { className: "font-bold text-fuchsia-800 text-xl pt-4" }, 'Olia, by Garnier.')
-        ),
-    },
     {
         id: 1,
         title: '4 Trucos de Maquillaje para las Fiestas',

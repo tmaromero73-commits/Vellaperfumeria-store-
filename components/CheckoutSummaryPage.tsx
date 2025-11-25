@@ -3,7 +3,6 @@ import React, { useMemo, useState, useEffect } from 'react';
 import type { CartItem, View } from './types';
 import type { Currency } from './currency';
 import { formatCurrency } from './currency';
-import { fetchServerCart } from './api'; // Importamos para poder reintentar si es necesario
 
 interface CheckoutSummaryPageProps {
     cartItems: CartItem[];
@@ -25,6 +24,43 @@ const VerifiedBadge = () => (
     </svg>
 );
 
+// Payment Icons
+const VisaIcon = () => (
+    <svg className="w-10 h-6" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+       <rect width="38" height="24" rx="2" fill="white"/>
+       <path d="M15.5 15.5L13.5 4.5H11.5L9 10.5L7.5 6.5L7 4.5H5L8.5 15.5H11L13 9.5L14.5 4.5H15.5V15.5Z" fill="#1A1F71"/>
+       <path d="M20.5 15.5L22.5 4.5H20.5L19.5 9L18.5 4.5H16.5L18.5 15.5H20.5Z" fill="#1A1F71"/>
+       <path d="M26.5 15.5L28.5 4.5H26.5L25 8.5L23.5 4.5H21.5L23.5 15.5H26.5Z" fill="#1A1F71"/>
+       <path d="M32.5 4.5H29.5L28.5 9L27.5 4.5H25.5L28.5 15.5H30.5L34.5 4.5H32.5Z" fill="#1A1F71"/>
+       <path d="M11 15.5L13 4.5H15L13 15.5H11Z" fill="#1A1F71"/>
+       <path d="M25.7 6.8C25.2 6.6 24.6 6.5 24 6.5C22.6 6.5 21.5 7.2 21.5 8.6C21.5 9.6 22.4 10.2 23.1 10.5C23.8 10.8 24 11 24 11.3C24 11.7 23.6 11.9 23.1 11.9C22.5 11.9 22 11.8 21.6 11.6L21.3 12.8C21.8 13 22.5 13.1 23.1 13.1C24.7 13.1 25.8 12.3 25.8 10.9C25.8 9.8 25.1 9.2 24.3 8.9C23.6 8.6 23.3 8.3 23.3 8C23.3 7.7 23.7 7.5 24.1 7.5C24.6 7.5 25 7.6 25.4 7.8L25.7 6.8Z" fill="#1A1F71"/>
+       <path d="M30.6 6.5H28.9L28 11.5L28.9 6.5Z" fill="#1A1F71"/>
+       <path d="M32.9 6.5L32.5 8.6C32.3 7.9 32.1 7.2 31.8 6.5H30.2L30.6 8.6L30.2 11.5L31.1 6.5Z" fill="#1A1F71"/>
+    </svg>
+);
+
+const MastercardIcon = () => (
+    <svg className="w-10 h-6" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="38" height="24" rx="2" fill="white"/>
+        <circle cx="13" cy="12" r="7" fill="#EB001B"/>
+        <circle cx="25" cy="12" r="7" fill="#F79E1B"/>
+        <path d="M19 16.4C20.3 15.4 21.2 13.8 21.2 12C21.2 10.2 20.3 8.6 19 7.6C17.7 8.6 16.8 10.2 16.8 12C16.8 13.8 17.7 15.4 19 16.4Z" fill="#FF5F00"/>
+    </svg>
+);
+
+const PayPalIcon = () => (
+    <svg className="w-10 h-6" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="38" height="24" rx="2" fill="white"/>
+        <path d="M26.5 7.5L23.5 7.5L22.5 13.5L26.5 7.5Z" fill="#003087"/>
+        <path d="M22.5 13.5L20.5 13.5L21.5 7.5L24.5 7.5L22.5 13.5Z" fill="#003087"/>
+        <path d="M14.5 7.5C15.5 7.5 16.5 8 16.5 9.5C16.5 10.5 16 11.5 15 11.5H13.5L14.5 7.5Z" fill="#003087"/>
+        <path d="M10.5 7.5H13.5L12.5 13.5H9.5L10.5 7.5Z" fill="#003087"/>
+        <path d="M13 12.5H11.5L12 9.5L13 12.5Z" fill="#009CDE"/>
+        <path d="M16 10.5C16 11.5 15.5 12.5 14.5 12.5H13L13.5 9.5H15C15.5 9.5 16 9.8 16 10.5Z" fill="#009CDE"/>
+        <path d="M20 7.5L18 13.5H16.5L18.5 7.5H20Z" fill="#009CDE"/>
+    </svg>
+);
+
 const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({ 
     cartItems, 
     currency, 
@@ -34,11 +70,9 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
 }) => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [selectedItemIds, setSelectedItemIds] = useState<Set<string>>(new Set());
-    const [isLoading, setIsLoading] = useState(false);
 
     // Initialize selection when cart items load - Mark ALL by default
     useEffect(() => {
-        // Seleccionamos TODOS los items por defecto, tanto locales como del servidor
         const allIds = new Set(cartItems.map(item => item.id));
         setSelectedItemIds(allIds);
     }, [cartItems]);
@@ -124,7 +158,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
         const urlParams = new URLSearchParams(window.location.search);
         const vParam = urlParams.get('v');
             
-        // Creamos la URL final
+        // Creamos la URL final que LLEVA A LA PÁGINA DE PAGO DE WOOCOMMERCE
         let redirectUrl = `https://vellaperfumeria.com/finalizar-compra/?add-to-cart=${idsToAdd.join(',')}`;
         
         if (vParam) {
@@ -137,7 +171,6 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
     };
 
     const handleLoadSimulation = () => {
-        // Force reload to simulation
         window.location.href = window.location.pathname + '?v=12470fe406d4';
     };
 
@@ -149,7 +182,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                     <h2 className="text-3xl font-extrabold text-gray-900 mb-4">Tu carrito está vacío</h2>
-                    <p className="text-gray-600 mb-8 text-lg">Parece que aún no has añadido nada a tu cesta o no se ha podido cargar tu pedido.</p>
+                    <p className="text-gray-600 mb-8 text-lg">Parece que aún no has añadido nada a tu cesta.</p>
                     
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <button 
@@ -163,7 +196,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                             onClick={handleLoadSimulation}
                             className="bg-fuchsia-100 text-fuchsia-800 font-bold py-3 px-8 rounded-full hover:bg-fuchsia-200 transition-colors border border-fuchsia-200"
                         >
-                            Ver Ejemplo (Simulación)
+                            Ver Ejemplo de Carrito
                         </button>
                     </div>
                 </div>
@@ -173,7 +206,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-8 text-center md:text-left">Resumen de Pedido ({cartItems.length})</h1>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-8 text-center md:text-left">Finalizar Compra</h1>
             
             <div className="flex flex-col lg:flex-row gap-8">
                 {/* Cart Items List */}
@@ -304,19 +337,24 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                                     <span className="font-semibold text-gray-900">{formatCurrency(shippingCost, currency)}</span>
                                 )}
                             </div>
-                            {amountForFreeShipping > 0 && selectedItemsList.length > 0 && (
-                                <div className="text-xs text-center text-gray-500 mt-1">
-                                    Faltan <span className="font-bold">{formatCurrency(amountForFreeShipping, currency)}</span> para envío gratis
-                                </div>
-                            )}
                         </div>
 
                         <div className="border-t border-gray-100 pt-4 mb-6">
                             <div className="flex justify-between items-end">
-                                <span className="text-lg font-bold text-gray-900">Total</span>
+                                <span className="text-lg font-bold text-gray-900">Total a Pagar</span>
                                 <span className="text-3xl font-extrabold text-[var(--color-primary-solid)]">{formatCurrency(total, currency)}</span>
                             </div>
                             <p className="text-xs text-gray-400 text-right mt-1">Impuestos incluidos</p>
+                        </div>
+
+                         {/* Métodos de Pago Visuales */}
+                         <div className="mb-6 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                            <p className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide text-center">Aceptamos</p>
+                            <div className="flex justify-center gap-3 items-center">
+                                <VisaIcon />
+                                <MastercardIcon />
+                                <PayPalIcon />
+                            </div>
                         </div>
 
                         <button 
@@ -330,20 +368,18 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
-                                    Redirigiendo...
+                                    Procesando pago...
                                 </span>
                             ) : (
-                                `PAGAR (${selectedItemsList.length} PRODUCTOS)`
+                                `PAGAR AHORA`
                             )}
                         </button>
                         
-                        <div className="mt-6">
-                            <p className="text-xs text-center text-gray-400 mb-3 uppercase tracking-wider">Pago Seguro Garantizado</p>
-                            <div className="flex justify-center gap-3 opacity-70">
-                                <div className="h-6 w-10 bg-gray-200 rounded border border-gray-300"></div>
-                                <div className="h-6 w-10 bg-gray-200 rounded border border-gray-300"></div>
-                                <div className="h-6 w-10 bg-gray-200 rounded border border-gray-300"></div>
-                            </div>
+                        <div className="mt-4 text-center">
+                            <p className="text-xs text-gray-400 flex items-center justify-center gap-1">
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                                Checkout Seguro SSL 256-bit
+                            </p>
                         </div>
                     </div>
                 </div>
