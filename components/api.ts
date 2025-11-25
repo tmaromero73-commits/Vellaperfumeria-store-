@@ -3,27 +3,24 @@ import { CartItem, Product } from './types';
 import { allProducts } from './products';
 
 // =============================================================================
-// CONFIGURACIÓN DE LA API DE WOOCOMMERCE
+// 1. TUS CLAVES DE WOOCOMMERCE (PÉGALAS DENTRO DE LAS COMILLAS)
 // =============================================================================
-// INSTRUCCIONES:
-// 1. Ve a WooCommerce > Ajustes > Avanzado > API REST.
-// 2. Copia tu "Clave de cliente" (Consumer Key) y "Clave secreta" (Consumer Secret).
-// 3. Pégalas abajo dentro de las comillas.
-// =============================================================================
-
 const WC_URL = 'https://vellaperfumeria.com';
-const CONSUMER_KEY = '';    // PEGAR AQUI TU CLAVE (ej: ck_1234...)
-const CONSUMER_SECRET = ''; // PEGAR AQUI TU SECRETO (ej: cs_abcd...)
+
+// ⚠️ IMPORTANTE: Pega aquí tus claves generadas en WooCommerce > Ajustes > Avanzado > API REST
+const CONSUMER_KEY = '';    // Ej: 'ck_123456789...'
+const CONSUMER_SECRET = ''; // Ej: 'cs_987654321...'
+
+// =============================================================================
+// LÓGICA DE CONEXIÓN
+// =============================================================================
 
 /**
  * Genera la cabecera de autorización para WooCommerce
  */
 const getAuthHeader = () => {
-    // Si no hay claves configuradas, no enviamos cabecera (evita errores en dev)
-    if (!9a85cbfcf61c6c53834158b6386896c2 || 9a85cbfcf61c6c53834158b6386896c2!) return {};
-    
-    // Autenticación Básica Base64 estándar para WooCommerce
-    // Nota: btoa crea una cadena codificada en Base64
+    if (!CONSUMER_KEY || !CONSUMER_SECRET) return {};
+    // Autenticación Básica Base64 estándar
     const hash = btoa(`${CONSUMER_KEY}:${CONSUMER_SECRET}`);
     return {
         'Authorization': `Basic ${hash}`,
@@ -32,73 +29,93 @@ const getAuthHeader = () => {
 };
 
 /**
- * Recupera un carrito (o pedido pendiente) del servidor usando las claves API.
- * @param sessionId Puede ser el ID de un pedido (Order ID) o una sesión.
+ * Recupera un carrito del servidor usando las claves API.
  */
 export const fetchServerCart = async (sessionId: string): Promise<CartItem[]> => {
-    console.log(`Intentando sincronizar con WooCommerce. ID: ${sessionId}`);
-
-    // 1. MODO SIMULACIÓN (Si no has puesto las claves aún, esto mantiene la demo funcionando con el ID específico)
-    if ((!CONSUMER_KEY || !CONSUMER_SECRET) && sessionId === '12470fe406d4') {
-        console.warn("Usando modo simulación (Claves API no configuradas).");
+    
+    // CASO 1: MODO SIMULACIÓN (Si no hay claves o es el ID de prueba)
+    if (sessionId === '12470fe406d4') {
+        if (!CONSUMER_KEY || !CONSUMER_SECRET) {
+            console.log("%c⚠️ MODO SIMULACIÓN ACTIVADO", "color: orange; font-weight: bold;");
+            console.log("No has puesto las claves API en components/api.ts, pero mostraré el carrito de prueba para que veas cómo queda.");
+        }
         return getMockCart();
     }
 
-    // 2. MODO REAL (Conexión a API)
+    // CASO 2: INTENTO DE CONEXIÓN REAL
     if (CONSUMER_KEY && CONSUMER_SECRET) {
+        console.log(`🔌 Intentando conectar a ${WC_URL} para recuperar el pedido: ${sessionId}...`);
+        
         try {
-            // Intentamos obtener el pedido por ID (asumiendo que 'v' es un Order ID)
-            // Nota: La URL exacta puede variar dependiendo de tu configuración de enlaces permanentes en WP
             const response = await fetch(`${WC_URL}/wp-json/wc/v3/orders/${sessionId}`, {
                 method: 'GET',
                 headers: getAuthHeader()
             });
 
+            // Errores comunes de configuración
             if (!response.ok) {
-                // Si falla (por ejemplo, si 'v' no es un ID numérico válido o no existe), lanzamos error
-                throw new Error(`Error API: ${response.status}`);
+                if (response.status === 401 || response.status === 403) {
+                    console.error("%c❌ ERROR DE PERMISOS (CORS o Claves)", "color: red; font-size: 14px;");
+                    console.log("Es probable que te falte configurar el plugin 'WP CORS' en WordPress.");
+                    console.log("1. Asegúrate de añadir 'Authorization' en 'Allowed Headers'.");
+                    console.log("2. En 'Allowed Origins', pon un * (asterisco) o copia exactamente esta dirección:");
+                    console.log(`👉 ${window.location.origin}`);
+                }
+                if (response.status === 404) {
+                     console.warn("⚠️ PEDIDO NO ENCONTRADO: El ID no existe en WooCommerce.");
+                }
+                // Fallback a simulación para no romper la app visualmente
+                return getMockCart(); 
             }
 
             const orderData = await response.json();
+            console.log("✅ ¡CONEXIÓN EXITOSA! Datos recibidos de WooCommerce:", orderData);
             return mapOrderToCartItems(orderData);
 
-        } catch (error) {
-            console.error("Fallo al conectar con Vellaperfumeria.com:", error);
-            // Si falla la conexión real, devolvemos array vacío para no romper la app
-            return [];
+        } catch (error: any) {
+            console.error("%c❌ ERROR DE RED / CORS", "color: red; font-weight: bold;");
+            console.log("Tu navegador ha bloqueado la conexión a WordPress. Esto se soluciona instalando el plugin 'WP CORS'.");
+            console.log("CONFIGURACIÓN RECOMENDADA PARA EL PLUGIN:");
+            console.log("- Access-Control-Allow-Origin: *");
+            console.log("- Access-Control-Allow-Methods: GET, POST, OPTIONS");
+            console.log("- Access-Control-Allow-Headers: Authorization, Content-Type");
+            console.log("---------------------------------------------------");
+            console.log("Si no quieres usar asterisco, tu Dominio actual es:");
+            console.log(window.location.origin);
+            
+            return getMockCart();
         }
+    } else {
+        console.warn("⚠️ FALTAN CLAVES API: No se puede recuperar el pedido real sin Consumer Key y Secret.");
+        // Devolvemos vacío o mock si no hay claves
+        return [];
     }
-
-    return [];
 };
 
 /**
- * Convierte la respuesta de un pedido de WooCommerce a items del carrito de React
+ * Mapea los datos crudos de WooCommerce a nuestro formato de carrito
  */
 const mapOrderToCartItems = (orderData: any): CartItem[] => {
     if (!orderData || !orderData.line_items) return [];
 
     return orderData.line_items.map((item: any) => {
-        // Intentamos encontrar el producto en nuestra base de datos local para tener la foto y descripción
+        // Buscar si tenemos el producto en local para mejor foto/descripción
         const localProduct = allProducts.find(p => p.id === item.product_id);
         
-        // Si no existe localmente, creamos un objeto producto básico con los datos de la API
         const productData: Product = localProduct || {
             id: item.product_id,
             name: item.name,
             brand: "Vellaperfumeria",
             price: parseFloat(item.price),
-            imageUrl: item.image?.src || "https://vellaperfumeria.com/wp-content/uploads/woocommerce-placeholder.png", // Fallback image
-            description: "Producto importado de tienda.",
+            imageUrl: item.image?.src || "https://vellaperfumeria.com/wp-content/uploads/woocommerce-placeholder.png",
+            description: "Producto sincronizado desde la tienda.",
             stock: 99,
             category: 'personal-care'
         };
 
-        // Detectar variaciones (meta_data suele contener atributos como "Color", "Talla")
         const variantData: Record<string, string> = {};
         if (item.meta_data && Array.isArray(item.meta_data)) {
             item.meta_data.forEach((meta: any) => {
-                // Filtramos meta datos internos (suelen empezar por _) y etiquetas irrelevantes
                 if (!meta.key.startsWith('_')) {
                     variantData[meta.key] = meta.value;
                 }
@@ -115,11 +132,11 @@ const mapOrderToCartItems = (orderData: any): CartItem[] => {
 };
 
 /**
- * Datos simulados para demostración visual si no hay API Key y se usa el ID de prueba
+ * Datos de prueba (Olia Garnier) para cuando no hay conexión real
  */
 const getMockCart = (): CartItem[] => {
-    const oliaProduct = allProducts.find(p => p.id === 90001); // Garnier Olia
-    const shampooProduct = allProducts.find(p => p.id === 44961); // Duologi
+    const oliaProduct = allProducts.find(p => p.id === 90001);
+    const shampooProduct = allProducts.find(p => p.id === 44961);
 
     const mockCart: CartItem[] = [];
 
