@@ -1,6 +1,6 @@
-import React from 'react';
+ React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import Aimportpp from './App';
 
 const rootElement = document.getElementById('root');
 
