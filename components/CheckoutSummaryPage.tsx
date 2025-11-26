@@ -24,12 +24,6 @@ const VerifiedBadgeIcon = () => (
     </svg>
 );
 
-const LockIcon = () => (
-    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-        <path fillRule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clipRule="evenodd" />
-    </svg>
-);
-
 const CreditCardIcon = () => (
     <svg className="w-8 h-8 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
@@ -247,42 +241,13 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
         );
     }
 
-    // --- CHECKOUT FORM VIEW (Native App Style) ---
+    // --- CHECKOUT FORM VIEW ---
     return (
         <div className="bg-gray-50 min-h-screen pb-12">
-            {/* NATIVE APP HEADER - DARK MODE */}
-            <div className="bg-[#202124] text-white py-4 sticky top-0 z-30 shadow-md">
-                <div className="container mx-auto px-4 flex items-center justify-between">
-                    {/* Left: Cancel / Back */}
-                    <button 
-                        onClick={() => onNavigate('products')}
-                        className="text-white/80 hover:text-white font-medium text-sm flex items-center gap-1"
-                    >
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                        <span className="hidden sm:inline">Cancelar</span>
-                    </button>
-
-                    {/* Center: Brand / Secure */}
-                    <div className="flex flex-col items-center">
-                        <div className="flex items-center gap-2 font-bold tracking-tight">
-                             <LockIcon /> 
-                             <span>Pago Seguro</span>
-                        </div>
-                        <span className="text-[10px] text-gray-400 tracking-wider uppercase">Google Pay | Vellaperfumeria</span>
-                    </div>
-
-                    {/* Right: Spacer or small logo */}
-                    <div className="w-12 flex justify-end">
-                        {/* Google G Logo simplified */}
-                        <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-                            <span className="text-black font-bold text-xs">G</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div className="container mx-auto px-4 max-w-4xl mt-6">
                 
+                <h1 className="text-3xl font-extrabold text-black mb-8 text-center">Finalizar Compra</h1>
+
                 <form onSubmit={handleFinalizeOrder} className="flex flex-col gap-6">
                     
                     {/* ORDER TOTAL CARD */}
@@ -419,7 +384,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                         )}
                     </div>
 
-                    {/* PAY BUTTON - FIXED BOTTOM MOBILE or INLINE DESKTOP */}
+                    {/* PAY BUTTON */}
                     <div className="mt-4 mb-8">
                         <button 
                             type="submit"

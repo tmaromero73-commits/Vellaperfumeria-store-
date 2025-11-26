@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect } from 'react';
 import type { View } from './types';
 
@@ -50,7 +49,7 @@ interface NavItem {
 
 const BottomNavBar: React.FC<BottomNavBarProps> = ({ onNavigate, currentView }) => {
     const navItems: NavItem[] = [
-        { view: 'home', label: 'Inicio', icon: HomeIcon, payload: undefined }, // Changed: No longer external
+        { view: 'home', label: 'Inicio', icon: HomeIcon, payload: undefined },
         { view: 'products', label: 'Tienda', icon: ShopIcon, payload: 'all' },
         { view: 'catalog', label: 'Catálogo', icon: CatalogIcon, payload: undefined },
         { view: 'ofertas', label: 'Ofertas', icon: GiftIcon, payload: undefined },
@@ -76,7 +75,8 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({ onNavigate, currentView }) 
                             <a
                                 key={item.label}
                                 href={item.href}
-                                target="_self"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className={commonClasses}
                                 aria-label={item.label}
                             >

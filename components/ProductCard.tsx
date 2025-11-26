@@ -179,30 +179,30 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
 
                     {/* Action Buttons Grid */}
                     <div className="space-y-2">
-                         {/* 1. Add to Cart (Standard) */}
-                        <button
-                            ref={addToCartBtnRef}
-                            onClick={handleActionClick}
-                            disabled={product.stock === 0}
-                            className={`w-full py-2.5 rounded-lg font-bold text-xs uppercase tracking-wide transition-all border ${
-                                product.stock === 0
-                                    ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
-                                    : 'bg-white text-black border-black hover:bg-black hover:text-white'
-                            }`}
-                        >
-                            {product.stock === 0 ? 'Agotado' : 'Añadir al carrito'}
-                        </button>
-
-                        {/* 2. GOOGLE PAY BUTTON - EXPLICIT & GREEN */}
+                        {/* 1. GOOGLE PAY BUTTON - EXPLICIT & GREEN (Primary) */}
                         {product.stock > 0 && (
                             <button
                                 onClick={handleBuyNowClick}
-                                className="w-full py-2.5 rounded-lg font-bold text-xs transition-all shadow-md hover:shadow-lg bg-black hover:bg-gray-800 border border-transparent flex items-center justify-center relative overflow-hidden"
+                                className="w-full py-3 rounded-lg font-bold text-xs transition-all shadow-md hover:shadow-lg bg-black hover:bg-gray-900 border border-transparent flex items-center justify-center relative overflow-hidden text-white"
                                 title="Pagar ahora con Google Play"
                             >
                                 <GooglePlayLogoFull />
                             </button>
                         )}
+
+                         {/* 2. Add to Cart (Secondary) */}
+                        <button
+                            ref={addToCartBtnRef}
+                            onClick={handleActionClick}
+                            disabled={product.stock === 0}
+                            className={`w-full py-2 rounded-lg font-bold text-xs uppercase tracking-wide transition-all border ${
+                                product.stock === 0
+                                    ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                                    : 'bg-white text-gray-800 border-gray-300 hover:border-black hover:text-black'
+                            }`}
+                        >
+                            {product.stock === 0 ? 'Agotado' : 'Añadir al carrito'}
+                        </button>
                     </div>
                 </div>
             </div>

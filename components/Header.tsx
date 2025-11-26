@@ -1,5 +1,4 @@
 
-
 import React, { useState, useRef, useEffect } from 'react';
 import type { View } from './types';
 import type { Currency } from './currency';
@@ -44,7 +43,7 @@ const CartIcon = () => (
 const NavLink: React.FC<{ onClick?: () => void, href?: string, children: React.ReactNode, className?: string }> = ({ onClick, href, children, className }) => {
     if (href) {
         return (
-            <a href={href} target="_self" className={`text-base font-medium text-black hover:text-[var(--color-primary-solid)] transition-colors duration-200 ${className}`}>
+            <a href={href} target="_blank" rel="noopener noreferrer" className={`text-base font-medium text-black hover:text-[var(--color-primary-solid)] transition-colors duration-200 ${className}`}>
                 <span className="hover-underline-effect">{children}</span>
             </a>
         );

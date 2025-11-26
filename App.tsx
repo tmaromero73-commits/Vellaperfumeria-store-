@@ -315,13 +315,6 @@ const App: React.FC = () => {
     ];
 
     const buildBreadcrumbs = (): BreadcrumbItem[] => {
-        const baseUrl = 'https://vellaperfumeria.com/tienda'; // Changed from root to /tienda
-        const params = new URLSearchParams();
-        if (vParam) params.append('v', vParam);
-        const queryString = params.toString();
-        const homeUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
-        
-        // Use internal navigation instead of href for Home to maintain state
         const homeCrumb: BreadcrumbItem = { 
             label: 'Inicio', 
             onClick: () => handleNavigate('home')
@@ -372,10 +365,6 @@ const App: React.FC = () => {
         return crumbs;
     };
 
-    // Detect if we are in Checkout Mode to hide standard navigation
-    // When in Checkout Mode, remove distracting UI elements
-    const isCheckoutMode = view.current === 'checkoutSummary';
-
     return (
         <div className="flex flex-col min-h-screen bg-white font-sans text-gray-800 relative">
 
@@ -393,30 +382,26 @@ const App: React.FC = () => {
                 </div>
             )}
 
-            {/* Floating WhatsApp Button - Hidden in Checkout */}
-            {!isCheckoutMode && (
-                <a 
-                    href="https://api.whatsapp.com/send?phone=34661202616&text=Hola,%20tengo%20una%20consulta%20sobre%20mi%20pedido%20en%20Vellaperfumeria."
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="fixed bottom-24 md:bottom-8 right-6 z-[60] bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl transition-transform hover:scale-110 flex items-center justify-center gap-2 group border-2 border-white"
-                    aria-label="Chat de WhatsApp"
-                >
-                    <WhatsAppFloatIcon />
-                    <span className="hidden group-hover:inline-block font-bold whitespace-nowrap transition-all">Ayuda 661-202-616</span>
-                </a>
-            )}
+            {/* Floating WhatsApp Button */}
+            <a 
+                href="https://api.whatsapp.com/send?phone=34661202616&text=Hola,%20tengo%20una%20consulta%20sobre%20mi%20pedido%20en%20Vellaperfumeria."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="fixed bottom-24 md:bottom-8 right-6 z-[60] bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl transition-transform hover:scale-110 flex items-center justify-center gap-2 group border-2 border-white"
+                aria-label="Chat de WhatsApp"
+            >
+                <WhatsAppFloatIcon />
+                <span className="hidden group-hover:inline-block font-bold whitespace-nowrap transition-all">Ayuda 661-202-616</span>
+            </a>
             
-             {/* Tech Info Button - Hidden in Checkout */}
-             {!isCheckoutMode && (
-                 <button
-                    onClick={() => setShowTechInfo(!showTechInfo)}
-                    className="fixed bottom-4 left-4 z-50 text-[10px] bg-gray-200 hover:bg-gray-300 text-gray-600 px-2 py-1 rounded opacity-50 hover:opacity-100"
-                >
-                    {showTechInfo ? 'Ocultar Info Técnica' : 'Info Técnica'}
-                </button>
-             )}
-            {showTechInfo && !isCheckoutMode && (
+             {/* Tech Info Button */}
+             <button
+                onClick={() => setShowTechInfo(!showTechInfo)}
+                className="fixed bottom-4 left-4 z-50 text-[10px] bg-gray-200 hover:bg-gray-300 text-gray-600 px-2 py-1 rounded opacity-50 hover:opacity-100"
+            >
+                {showTechInfo ? 'Ocultar Info Técnica' : 'Info Técnica'}
+            </button>
+            {showTechInfo && (
                 <div className="fixed bottom-12 left-4 z-50 bg-white p-4 rounded shadow-lg border text-xs max-w-sm">
                     <p><strong>Origen (CORS):</strong> {window.location.origin}</p>
                     <p><strong>API Configurada:</strong> {process.env.API_KEY ? 'Sí' : 'No'}</p>
@@ -424,26 +409,23 @@ const App: React.FC = () => {
                 </div>
             )}
 
-            {/* Header - Hidden in Checkout */}
-            {!isCheckoutMode && (
-                <Header
-                    onNavigate={handleNavigate}
-                    currency={currency}
-                    onCurrencyChange={setCurrency}
-                    cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
-                    onCartClick={() => setIsCartOpen(true)}
-                />
-            )}
+            {/* Header - ALWAYS VISIBLE NOW to prevent confusion */}
+            <Header
+                onNavigate={handleNavigate}
+                currency={currency}
+                onCurrencyChange={setCurrency}
+                cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+                onCartClick={() => setIsCartOpen(true)}
+            />
 
-             <main className={`flex-grow ${!isCheckoutMode ? 'py-8 mb-20 md:mb-0' : 'h-full bg-gray-50'}`}>
-                {!isCheckoutMode && <Breadcrumbs items={buildBreadcrumbs()} />}
+             <main className="flex-grow py-8 mb-20 md:mb-0">
+                <Breadcrumbs items={buildBreadcrumbs()} />
                 {renderContent()}
             </main>
 
-            {/* Footer - Hidden in Checkout */}
-            {!isCheckoutMode && <Footer onNavigate={handleNavigate} />}
+            {/* Footer - ALWAYS VISIBLE NOW */}
+            <Footer onNavigate={handleNavigate} />
 
-            {/* Cart Sidebar - Available to edit cart, but logic might be limited in Checkout */}
             <CartSidebar
                 isOpen={isCartOpen}
                 onClose={() => setIsCartOpen(false)}
@@ -458,8 +440,8 @@ const App: React.FC = () => {
                 onClearCart={() => setCartItems([])} 
             />
 
-            {/* Bottom Nav - Hidden in Checkout */}
-            {!isCheckoutMode && <BottomNavBar onNavigate={handleNavigate} currentView={view.current} />}
+            {/* Bottom Nav - ALWAYS VISIBLE NOW */}
+            <BottomNavBar onNavigate={handleNavigate} currentView={view.current} />
 
             {quickViewProduct && (
                 <QuickViewModal
@@ -481,7 +463,6 @@ const App: React.FC = () => {
                     --color-secondary: #ffffff; 
                     --color-accent: #c026d3; /* fuchsia-600 */
                 }
-                /* Global Selection Color */
                 ::selection {
                     background-color: var(--color-primary-solid);
                     color: white;
@@ -507,12 +488,9 @@ const App: React.FC = () => {
                 
                  .bg-brand-primary { background-color: var(--color-primary); }
                  .text-brand-primary { color: var(--color-primary-solid); }
-                 
                  .bg-brand-secondary { background-color: var(--color-secondary); }
                  .text-brand-accent { color: var(--color-accent); }
-                 
                  .border-brand-primary { border-color: var(--color-primary-solid); }
-                 
                  .ring-brand-primary { --tw-ring-color: var(--color-primary-solid); }
 
                  .hover-underline-effect {
