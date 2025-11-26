@@ -5,8 +5,6 @@ import App from './App';
 const rootElement = document.getElementById('root');
 
 if (rootElement) {
-    // Clear any previous content from the root element
-    rootElement.innerHTML = ''; 
     const root = ReactDOM.createRoot(rootElement);
     root.render(
       <React.StrictMode>

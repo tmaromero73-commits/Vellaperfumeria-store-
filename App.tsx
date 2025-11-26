@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom/client';
 // Types
@@ -25,6 +26,46 @@ import Breadcrumbs, { type BreadcrumbItem } from './components/Breadcrumbs';
 import BottomNavBar from './components/BottomNavBar';
 import CheckoutSummaryPage from './components/CheckoutSummaryPage';
 
+interface ErrorBoundaryProps {
+    children: React.ReactNode;
+}
+
+interface ErrorBoundaryState {
+    hasError: boolean;
+}
+
+// Error Boundary Component to catch crashes
+class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  state: ErrorBoundaryState = { hasError: false };
+
+  static getDerivedStateFromError(error: any): ErrorBoundaryState {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: any, errorInfo: any) {
+    console.error("Uncaught error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-6 text-center">
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">¡Vaya! Algo ha salido mal.</h1>
+            <p className="text-gray-600 mb-6">No te preocupes, es un pequeño error técnico.</p>
+            <button 
+                onClick={() => window.location.reload()}
+                className="bg-black text-white px-6 py-3 rounded-full font-bold hover:bg-gray-800 transition-colors"
+            >
+                Recargar página
+            </button>
+        </div>
+      );
+    }
+
+    return (this as any).props.children;
+  }
+}
+
 type AppView = {
     current: View;
     payload?: any;
@@ -37,7 +78,7 @@ const WhatsAppFloatIcon = () => (
     </svg>
 );
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
     const [view, setView] = useState<AppView>({ current: 'home' });
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [currency, setCurrency] = useState<Currency>('EUR');
@@ -191,6 +232,9 @@ const App: React.FC = () => {
     }, [view]);
 
     const handleNavigate = useCallback((newView: View, payload?: any) => {
+        // Close modals/drawers when navigating
+        setIsCartOpen(false);
+        setQuickViewProduct(null);
         setView({ current: newView, payload });
     }, []);
 
@@ -485,6 +529,14 @@ const App: React.FC = () => {
                  }
             `}</style>
         </div>
+    );
+};
+
+const App = () => {
+    return (
+        <ErrorBoundary>
+            <AppContent />
+        </ErrorBoundary>
     );
 };
 
