@@ -75,6 +75,11 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
     const [googleAccountName, setGoogleAccountName] = useState('');
     const [googleAccountEmail, setGoogleAccountEmail] = useState('');
 
+    // Ensure page starts at top
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     // --- CALCULATIONS ---
     const subtotal = useMemo(() => {
         return cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
@@ -230,7 +235,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
     // --- EMPTY CART VIEW ---
     if (cartItems.length === 0) {
         return (
-            <div className="container mx-auto px-4 py-16 text-center">
+            <div className="container mx-auto px-4 py-16 text-center bg-white min-h-screen">
                 <div className="bg-white rounded-3xl p-12 shadow-sm border border-gray-100 max-w-xl mx-auto">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Tu carrito está vacio</h2>
                     <button 
@@ -246,7 +251,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
 
     // --- CHECKOUT FORM VIEW ---
     return (
-        <div className="bg-gray-50 min-h-screen pb-12">
+        <div className="bg-white min-h-screen pb-12">
             <div className="container mx-auto px-4 max-w-4xl mt-6">
                 
                 <h1 className="text-3xl font-extrabold text-black mb-8 text-center">Finalizar Compra</h1>

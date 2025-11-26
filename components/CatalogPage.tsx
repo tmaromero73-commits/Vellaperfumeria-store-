@@ -91,7 +91,7 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, onQuickAddToCart
     const catalogProducts = allProducts.slice(0, 8); 
 
     return (
-        <div className="w-full px-2 sm:px-4 py-6 bg-gray-50">
+        <div className="w-full px-2 sm:px-4 py-6 bg-gray-50 min-h-screen">
             <div className="flex flex-col md:flex-row gap-6 h-full">
                 
                 {/* Catalog Viewer */}
@@ -103,9 +103,9 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, onQuickAddToCart
                             className="h-20 w-auto object-contain" 
                         />
                         <div className="text-center md:text-left">
-                            <h1 className="text-3xl md:text-4xl font-extrabold text-black tracking-tight font-serif">Catálogo Actual (C16)</h1>
+                            <h1 className="text-3xl md:text-4xl font-extrabold text-black tracking-tight font-serif">Catálogo Actual</h1>
                             <p className="text-sm text-gray-600 mt-1">
-                                Explora el Catálogo 16 y descubre las mejores ofertas de temporada.
+                                Explora el catálogo y descubre las mejores ofertas de temporada.
                             </p>
                         </div>
                     </div>
@@ -123,10 +123,22 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, onQuickAddToCart
                             allowFullScreen
                             loading="lazy"
                         />
+                        {/* Fallback overlay if iframe is blocked */}
+                        <div className="absolute bottom-0 left-0 w-full p-4 bg-white/90 backdrop-blur-sm border-t text-center md:hidden">
+                             <p className="text-sm text-gray-600 mb-2">¿No ves el catálogo correctamente?</p>
+                             <a 
+                                href={FALLBACK_CATALOG_URL} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="inline-block bg-black text-white px-4 py-2 rounded-full text-sm font-bold"
+                            >
+                                Abrir en Pantalla Completa
+                            </a>
+                        </div>
                     </div>
-                    <div className="text-center mt-4">
+                    <div className="text-center mt-4 hidden md:block">
                         <a href={FALLBACK_CATALOG_URL} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 hover:text-fuchsia-700 hover:underline font-medium">
-                            ¿No puedes ver el catálogo? Abrir en ventana externa
+                            ¿Problemas de visualización? Abrir catálogo en ventana externa
                         </a>
                     </div>
                 </div>
@@ -213,18 +225,6 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, onQuickAddToCart
                     ))}
                 </div>
             </div>
-
-            <div className="js-logout-data" data-url-eshoplogout="https://es-eshop.oriflame.com/iframe/internal/Services.aspx"></div>
-
-            <style>{`
-                @keyframes fade-in {
-                    from { opacity: 0; transform: translateY(-5px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-                .animate-fade-in {
-                    animation: fade-in 0.3s ease-out forwards;
-                }
-            `}</style>
         </div>
     );
 };
