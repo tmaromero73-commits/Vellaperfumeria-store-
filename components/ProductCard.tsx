@@ -16,29 +16,16 @@ const StarIcon: React.FC<{ className?: string; style?: React.CSSProperties }> = 
     </svg>
 );
 
-const EyeIcon = () => (
-    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-    </svg>
-);
-
-const CartPlusIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-    </svg>
-);
-
 // FULL GOOGLE PLAY LOGO
 const GooglePlayLogoFull = () => (
-    <div className="flex items-center justify-center gap-1">
+    <div className="flex items-center justify-center gap-2">
         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4.5 3.5L13.5 12L4.5 20.5V3.5Z" fill="#2196F3"/>
-            <path d="M13.5 12L18.5 17L21.5 12L18.5 7L13.5 12Z" fill="#FFC107"/>
-            <path d="M18.5 17L13.5 12L4.5 20.5L18.5 17Z" fill="#F44336"/>
-            <path d="M4.5 3.5L13.5 12L18.5 7L4.5 3.5Z" fill="#4CAF50"/>
+            <path d="M4.5 3.5L13.5 12L4.5 20.5V3.5Z" fill="white"/>
+            <path d="M13.5 12L18.5 17L21.5 12L18.5 7L13.5 12Z" fill="white" fillOpacity="0.8"/>
+            <path d="M18.5 17L13.5 12L4.5 20.5L18.5 17Z" fill="white" fillOpacity="0.6"/>
+            <path d="M4.5 3.5L13.5 12L18.5 7L4.5 3.5Z" fill="white" fillOpacity="0.6"/>
         </svg>
-        <span className="font-sans font-medium text-gray-600">Pay</span>
+        <span className="font-sans font-bold text-white text-xs">PAGAR CON GOOGLE PLAY</span>
     </div>
 );
 
@@ -206,14 +193,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                             {product.stock === 0 ? 'Agotado' : 'Añadir al carrito'}
                         </button>
 
-                        {/* 2. GOOGLE PAY BUTTON - EXPLICIT & DIRECT */}
+                        {/* 2. GOOGLE PAY BUTTON - EXPLICIT & GREEN */}
                         {product.stock > 0 && (
                             <button
                                 onClick={handleBuyNowClick}
-                                className="w-full py-2.5 rounded-lg font-bold text-xs transition-all shadow-sm hover:shadow-md bg-white border border-gray-300 hover:bg-gray-50 flex items-center justify-center relative overflow-hidden"
+                                className="w-full py-2.5 rounded-lg font-bold text-xs transition-all shadow-md hover:shadow-lg bg-black hover:bg-gray-800 border border-transparent flex items-center justify-center relative overflow-hidden"
                                 title="Pagar ahora con Google Play"
                             >
-                                <span className="absolute inset-0 w-full h-full bg-black opacity-0 hover:opacity-5 transition-opacity"></span>
                                 <GooglePlayLogoFull />
                             </button>
                         )}

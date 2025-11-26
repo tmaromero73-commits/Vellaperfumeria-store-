@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect } from 'react';
 import type { View } from './types';
 
@@ -171,6 +170,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <div className="bg-black border-t border-gray-800 py-6 text-center text-sm text-gray-500">
                 <div className="container mx-auto px-4">
                     <p>&copy; {new Date().getFullYear()} Vellaperfumeria. Todos los derechos reservados.</p>
+                    <p className="mt-2 text-xs font-mono text-gray-600">Versión Actualizada v2.0 (Live)</p>
                 </div>
             </div>
         </footer>
