@@ -271,7 +271,7 @@ const App: React.FC = () => {
             case 'productDetail':
                 return <ProductDetailPage product={view.payload} currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onBuyNow={handleBuyNow} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
             case 'ofertas':
-                return <OfertasPage currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onBuyNow={handleBuyNow} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
+                return <OfertasPage currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onBuyNow={handleBuyNow} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onNavigate={handleNavigate} />;
             case 'ia':
                 return <AsistenteIAPage cartItems={cartItems} />;
             case 'catalog':
@@ -300,15 +300,9 @@ const App: React.FC = () => {
     ];
 
     const buildBreadcrumbs = (): BreadcrumbItem[] => {
-        const baseUrl = 'https://vellaperfumeria.com/tienda';
-        const params = new URLSearchParams();
-        if (vParam) params.append('v', vParam);
-        const queryString = params.toString();
-        const homeUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
-        
         const homeCrumb: BreadcrumbItem = { 
             label: 'Inicio', 
-            onClick: () => handleNavigate('home'), // Use internal nav for robustness
+            onClick: () => handleNavigate('home'), 
             target: '_self'
         };
         const crumbs = [homeCrumb];
