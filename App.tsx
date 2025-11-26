@@ -24,15 +24,16 @@ import Breadcrumbs, { type BreadcrumbItem } from './components/Breadcrumbs';
 import BottomNavBar from './components/BottomNavBar';
 import CheckoutSummaryPage from './components/CheckoutSummaryPage';
 
+// Tipos para el Error Boundary
 interface ErrorBoundaryProps {
-    children: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 interface ErrorBoundaryState {
     hasError: boolean;
 }
 
-// Error Boundary Component to catch crashes
+// Error Boundary Component (Escudo contra fallos)
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state: ErrorBoundaryState = { hasError: false };
 
@@ -60,7 +61,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
       );
     }
 
-    return (this as any).props.children;
+    return this.props.children;
   }
 }
 
@@ -69,7 +70,7 @@ type AppView = {
     payload?: any;
 };
 
-// Global Floating WhatsApp Icon
+// Icono flotante de WhatsApp
 const WhatsAppFloatIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 md:w-10 md:h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
         <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 4.315 1.919 6.066l-1.475 5.422 5.571-1.469z" />
@@ -82,16 +83,13 @@ const AppContent: React.FC = () => {
     const [currency, setCurrency] = useState<Currency>('EUR');
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
-    const [vParam, setVParam] = useState<string | null>(null);
     const [isLoadingCart, setIsLoadingCart] = useState(false);
 
-    // Function to parse URL parameters and determine view
+    // Gestión de URL y Parámetros
     const parseUrlParams = useCallback(() => {
         try {
             const urlParams = new URLSearchParams(window.location.search);
-            const v = urlParams.get('v');
-            if (v) setVParam(v);
-
+            
             const productId = urlParams.get('product_id');
             const category = urlParams.get('category');
             const targetView = urlParams.get('view');
@@ -126,15 +124,14 @@ const AppContent: React.FC = () => {
             }
             
         } catch (e) {
-            console.error("Error processing URL params", e);
+            console.error("Error parsing URL", e);
         }
     }, []);
 
-    // Initial Load & API Cart Fetch
+    // Carga Inicial
     useEffect(() => {
         parseUrlParams();
         
-        // Logic to fetch cart from server if 'v' param exists
         const initCart = async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const v = urlParams.get('v');
@@ -142,17 +139,16 @@ const AppContent: React.FC = () => {
             if (v) {
                 setIsLoadingCart(true);
                 try {
-                    // Fetch from API
                     const serverCart = await fetchServerCart(v);
                     if (serverCart && serverCart.length > 0) {
                         setCartItems(serverCart);
-                        // If fetching a specific cart ID, showing summary makes sense
+                        // Si venimos de un enlace de carrito recuperado, mostramos el resumen
                         setView({ current: 'checkoutSummary' });
                     } else {
                         loadLocalCart();
                     }
                 } catch (error) {
-                    console.error("Failed to sync with server cart", error);
+                    console.error("Error fetching server cart", error);
                     loadLocalCart();
                 } finally {
                     setIsLoadingCart(false);
@@ -169,7 +165,7 @@ const AppContent: React.FC = () => {
                     setCartItems(JSON.parse(storedCart));
                 }
             } catch (error) {
-                console.error("Failed to load cart from localStorage", error);
+                console.error("Error loading local cart", error);
             }
         };
 
@@ -177,7 +173,7 @@ const AppContent: React.FC = () => {
 
     }, [parseUrlParams]);
 
-    // Handle Browser Back/Forward Buttons
+    // Manejo de historial del navegador (Atrás/Adelante)
     useEffect(() => {
         const handlePopState = () => {
             parseUrlParams();
@@ -186,7 +182,7 @@ const AppContent: React.FC = () => {
         return () => window.removeEventListener('popstate', handlePopState);
     }, [parseUrlParams]);
 
-    // Update URL when View Changes
+    // Actualizar URL cuando cambia la vista
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const currentV = params.get('v');
@@ -213,24 +209,23 @@ const AppContent: React.FC = () => {
         }
     }, [view]);
 
-    // Save cart to local storage whenever it changes
+    // Guardar carrito en localStorage
     useEffect(() => {
         if (!isLoadingCart) {
             try {
                 localStorage.setItem('vellaperfumeria_cart', JSON.stringify(cartItems));
             } catch (error) {
-                console.error("Failed to save cart to localStorage", error);
+                console.error("Failed to save cart", error);
             }
         }
     }, [cartItems, isLoadingCart]);
     
-    // Scroll to top on view change
+    // Scroll top
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [view]);
 
     const handleNavigate = useCallback((newView: View, payload?: any) => {
-        // Close modals/drawers when navigating
         setIsCartOpen(false);
         setQuickViewProduct(null);
         setView({ current: newView, payload });
