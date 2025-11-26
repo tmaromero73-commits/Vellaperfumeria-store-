@@ -25,7 +25,7 @@ const GooglePlayLogoFull = () => (
             <path d="M18.5 17L13.5 12L4.5 20.5L18.5 17Z" fill="white" fillOpacity="0.6"/>
             <path d="M4.5 3.5L13.5 12L18.5 7L4.5 3.5Z" fill="white" fillOpacity="0.6"/>
         </svg>
-        <span className="font-sans font-bold text-white text-xs">PAGAR CON GOOGLE PLAY</span>
+        <span className="font-sans font-bold text-white text-xs tracking-wide">PAGAR CON GOOGLE PLAY</span>
     </div>
 );
 
@@ -183,7 +183,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                         {product.stock > 0 && (
                             <button
                                 onClick={handleBuyNowClick}
-                                className="w-full py-3 rounded-lg font-bold text-xs transition-all shadow-md hover:shadow-lg bg-black hover:bg-gray-900 border border-transparent flex items-center justify-center relative overflow-hidden text-white"
+                                className="w-full py-3 rounded-lg font-bold text-xs transition-all shadow-md hover:shadow-lg bg-black hover:bg-gray-900 border border-transparent flex items-center justify-center relative overflow-hidden text-white transform hover:-translate-y-0.5"
                                 title="Pagar ahora con Google Play"
                             >
                                 <GooglePlayLogoFull />

@@ -45,7 +45,6 @@ const App: React.FC = () => {
     const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
     const [vParam, setVParam] = useState<string | null>(null);
     const [isLoadingCart, setIsLoadingCart] = useState(false);
-    const [showTechInfo, setShowTechInfo] = useState(false);
 
     // Function to parse URL parameters and determine view
     const parseUrlParams = useCallback(() => {
@@ -108,19 +107,10 @@ const App: React.FC = () => {
                     const serverCart = await fetchServerCart(v);
                     if (serverCart && serverCart.length > 0) {
                         setCartItems(serverCart);
-                        // DIRECTLY SHOW THE CART SUMMARY PAGE
+                        // If fetching a specific cart ID, showing summary makes sense
                         setView({ current: 'checkoutSummary' });
                     } else {
-                        // Fallback to local storage if server has nothing
                         loadLocalCart();
-                        // DEMO MODE: If cart is empty on initial load in demo, fill it and go to checkout
-                        if (window.location.hostname.includes('googleusercontent')) {
-                             const mockProduct = allProducts.find(p => p.id === 46801); // Divine
-                             if(mockProduct) {
-                                 setCartItems([{ id: 'demo-1', product: mockProduct, quantity: 1, selectedVariant: null }]);
-                                 setView({ current: 'checkoutSummary' });
-                             }
-                        }
                     }
                 } catch (error) {
                     console.error("Failed to sync with server cart", error);
@@ -160,7 +150,6 @@ const App: React.FC = () => {
     // Update URL when View Changes
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
-        // Preserve 'v' param
         const currentV = params.get('v');
         
         const newParams = new URLSearchParams();
@@ -180,7 +169,6 @@ const App: React.FC = () => {
         const newSearch = newParams.toString();
         const newUrl = `${window.location.pathname}${newSearch ? '?' + newSearch : ''}`;
         
-        // Only push state if the URL actually changed to avoid duplicate history entries
         if (newUrl !== window.location.pathname + window.location.search) {
              window.history.pushState({}, '', newUrl);
         }
@@ -233,7 +221,6 @@ const App: React.FC = () => {
         if (!isCartOpen) setIsCartOpen(true);
     };
 
-    // New: Buy Now Logic (Add & Navigate directly to Checkout)
     const handleBuyNow = (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => {
         const cartItemId = selectedVariant 
             ? `${product.id}-${Object.values(selectedVariant).join('-')}`
@@ -249,7 +236,6 @@ const App: React.FC = () => {
             setCartItems([...cartItems, { id: cartItemId, product, quantity: 1, selectedVariant }]);
         }
         
-        // Skip sidebar, go straight to checkout summary
         handleNavigate('checkoutSummary');
     };
 
@@ -267,7 +253,6 @@ const App: React.FC = () => {
         setCartItems(cartItems.filter(item => item.id !== cartItemId));
     };
 
-    // Checkout is now handled entirely in CartSidebar via direct redirect
     const handleCheckout = () => {
         handleNavigate('checkoutSummary');
         setIsCartOpen(false);
@@ -286,7 +271,7 @@ const App: React.FC = () => {
             case 'productDetail':
                 return <ProductDetailPage product={view.payload} currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onBuyNow={handleBuyNow} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
             case 'ofertas':
-                return <OfertasPage currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onBuyNow={handleBuyNow} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onNavigate={handleNavigate} />;
+                return <OfertasPage currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onBuyNow={handleBuyNow} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
             case 'ia':
                 return <AsistenteIAPage cartItems={cartItems} />;
             case 'catalog':
@@ -315,9 +300,16 @@ const App: React.FC = () => {
     ];
 
     const buildBreadcrumbs = (): BreadcrumbItem[] => {
+        const baseUrl = 'https://vellaperfumeria.com/tienda';
+        const params = new URLSearchParams();
+        if (vParam) params.append('v', vParam);
+        const queryString = params.toString();
+        const homeUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
+        
         const homeCrumb: BreadcrumbItem = { 
             label: 'Inicio', 
-            onClick: () => handleNavigate('home')
+            onClick: () => handleNavigate('home'), // Use internal nav for robustness
+            target: '_self'
         };
         const crumbs = [homeCrumb];
 
@@ -368,7 +360,6 @@ const App: React.FC = () => {
     return (
         <div className="flex flex-col min-h-screen bg-white font-sans text-gray-800 relative">
 
-            {/* Global Loader if connecting to "Server" */}
             {isLoadingCart && (
                 <div className="fixed top-0 left-0 w-full h-1 bg-fuchsia-100 z-50">
                     <div className="h-full bg-fuchsia-600 animate-[loading_1s_ease-in-out_infinite]"></div>
@@ -382,7 +373,6 @@ const App: React.FC = () => {
                 </div>
             )}
 
-            {/* Floating WhatsApp Button */}
             <a 
                 href="https://api.whatsapp.com/send?phone=34661202616&text=Hola,%20tengo%20una%20consulta%20sobre%20mi%20pedido%20en%20Vellaperfumeria."
                 target="_blank"
@@ -394,22 +384,6 @@ const App: React.FC = () => {
                 <span className="hidden group-hover:inline-block font-bold whitespace-nowrap transition-all">Ayuda 661-202-616</span>
             </a>
             
-             {/* Tech Info Button */}
-             <button
-                onClick={() => setShowTechInfo(!showTechInfo)}
-                className="fixed bottom-4 left-4 z-50 text-[10px] bg-gray-200 hover:bg-gray-300 text-gray-600 px-2 py-1 rounded opacity-50 hover:opacity-100"
-            >
-                {showTechInfo ? 'Ocultar Info Técnica' : 'Info Técnica'}
-            </button>
-            {showTechInfo && (
-                <div className="fixed bottom-12 left-4 z-50 bg-white p-4 rounded shadow-lg border text-xs max-w-sm">
-                    <p><strong>Origen (CORS):</strong> {window.location.origin}</p>
-                    <p><strong>API Configurada:</strong> {process.env.API_KEY ? 'Sí' : 'No'}</p>
-                    <p className="mt-2 text-gray-500">Copia el Origen y añádelo a tu plugin WP CORS.</p>
-                </div>
-            )}
-
-            {/* Header - ALWAYS VISIBLE NOW to prevent confusion */}
             <Header
                 onNavigate={handleNavigate}
                 currency={currency}
@@ -417,13 +391,10 @@ const App: React.FC = () => {
                 cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
                 onCartClick={() => setIsCartOpen(true)}
             />
-
              <main className="flex-grow py-8 mb-20 md:mb-0">
                 <Breadcrumbs items={buildBreadcrumbs()} />
                 {renderContent()}
             </main>
-
-            {/* Footer - ALWAYS VISIBLE NOW */}
             <Footer onNavigate={handleNavigate} />
 
             <CartSidebar
@@ -440,7 +411,6 @@ const App: React.FC = () => {
                 onClearCart={() => setCartItems([])} 
             />
 
-            {/* Bottom Nav - ALWAYS VISIBLE NOW */}
             <BottomNavBar onNavigate={handleNavigate} currentView={view.current} />
 
             {quickViewProduct && (
@@ -458,16 +428,15 @@ const App: React.FC = () => {
             
             <style>{`
                 :root {
-                    --color-primary: #f78df685; /* Transparent Rose */
-                    --color-primary-solid: #d946ef; /* Solid Rose */
+                    --color-primary: #f78df685;
+                    --color-primary-solid: #d946ef;
                     --color-secondary: #ffffff; 
-                    --color-accent: #c026d3; /* fuchsia-600 */
+                    --color-accent: #c026d3;
                 }
                 ::selection {
                     background-color: var(--color-primary-solid);
                     color: white;
                 }
-                
                 .btn-primary {
                     background-color: var(--color-primary);
                     color: black !important;
@@ -485,14 +454,12 @@ const App: React.FC = () => {
                     transform: translateY(-2px);
                     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
                 }
-                
                  .bg-brand-primary { background-color: var(--color-primary); }
                  .text-brand-primary { color: var(--color-primary-solid); }
                  .bg-brand-secondary { background-color: var(--color-secondary); }
                  .text-brand-accent { color: var(--color-accent); }
                  .border-brand-primary { border-color: var(--color-primary-solid); }
                  .ring-brand-primary { --tw-ring-color: var(--color-primary-solid); }
-
                  .hover-underline-effect {
                     display: inline-block;
                     position: relative;

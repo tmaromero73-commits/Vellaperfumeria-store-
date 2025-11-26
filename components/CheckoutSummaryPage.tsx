@@ -171,13 +171,16 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                     </div>
                     
                     <div>
-                        <h1 className="text-4xl font-extrabold text-black mb-2 uppercase tracking-tight">Pedido Enviado</h1>
+                        <h1 className="text-4xl font-extrabold text-black mb-2 uppercase tracking-tight">Pedido Recibido</h1>
                         <p className="text-xl text-gray-600">Gracias por tu compra en Vellaperfumeria.</p>
                     </div>
 
-                    <div className="bg-gray-50 border border-gray-200 rounded-xl p-8 text-left space-y-4 shadow-sm">
-                        <div className="flex justify-between items-center border-b border-gray-200 pb-4">
-                            <span className="text-gray-500 uppercase text-xs font-bold tracking-wider">Referencia</span>
+                    <div className="bg-white border border-gray-300 rounded-xl p-8 text-left space-y-4 shadow-xl relative overflow-hidden">
+                        {/* Decorative top border looking like a receipt */}
+                        <div className="absolute top-0 left-0 w-full h-2 bg-[var(--color-primary-solid)]"></div>
+
+                        <div className="flex justify-between items-center border-b border-dashed border-gray-300 pb-4">
+                            <span className="text-gray-500 uppercase text-xs font-bold tracking-wider">ID PEDIDO</span>
                             <span className="text-2xl font-mono font-bold text-black">#{orderNumber}</span>
                         </div>
                         
@@ -186,7 +189,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                                 <p className="text-gray-500 text-xs uppercase font-bold">Estado</p>
                                 <p className="font-bold text-green-600 flex items-center gap-1">
                                     <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                                    Verificado
+                                    Pagado
                                 </p>
                             </div>
                             <div>
@@ -194,16 +197,16 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                                 <p className="font-medium text-gray-900">{new Date().toLocaleDateString()}</p>
                             </div>
                             <div>
-                                <p className="text-gray-500 text-xs uppercase font-bold">Total</p>
-                                <p className="font-bold text-black">{formatCurrency(total, currency)}</p>
-                            </div>
-                            <div>
                                 <p className="text-gray-500 text-xs uppercase font-bold">Método</p>
                                 <p className="font-medium text-gray-900">{paymentMethod === 'google_play' ? 'Google Play' : 'Tarjeta'}</p>
                             </div>
+                            <div>
+                                <p className="text-gray-500 text-xs uppercase font-bold">Total</p>
+                                <p className="font-bold text-xl text-black">{formatCurrency(total, currency)}</p>
+                            </div>
                         </div>
 
-                        <div className="pt-4 border-t border-gray-200">
+                        <div className="pt-4 border-t border-dashed border-gray-300">
                              <p className="text-gray-500 text-xs uppercase font-bold mb-1">Enviado a</p>
                              <p className="font-bold text-gray-900">{shipping.firstName} {shipping.lastName}</p>
                              <p className="text-gray-600 text-sm">{shipping.address}, {shipping.zip} {shipping.city}</p>
@@ -214,7 +217,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                         <p className="text-sm text-gray-500">Hemos enviado un email de confirmación a <span className="font-bold text-black">{email}</span></p>
                         <button 
                             onClick={() => onNavigate('home')}
-                            className="w-full bg-black text-white font-bold py-4 rounded-xl hover:bg-gray-900 transition-all shadow-lg"
+                            className="w-full bg-black text-white font-bold py-4 rounded-xl hover:bg-gray-900 transition-all shadow-lg transform hover:scale-105"
                         >
                             Volver a la Tienda
                         </button>
@@ -229,7 +232,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
         return (
             <div className="container mx-auto px-4 py-16 text-center">
                 <div className="bg-white rounded-3xl p-12 shadow-sm border border-gray-100 max-w-xl mx-auto">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Tu carrito está vacío</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Tu carrito está vacio</h2>
                     <button 
                         onClick={() => onNavigate('products')}
                         className="bg-black text-white font-bold py-3 px-8 rounded-full shadow-lg"
@@ -311,12 +314,13 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                                 onClick={() => setPaymentMethod('google_play')}
                                 className={`relative p-4 rounded-xl border-2 flex flex-col items-center justify-center gap-2 transition-all cursor-pointer ${
                                     paymentMethod === 'google_play' 
-                                    ? 'border-black bg-blue-50/30 ring-1 ring-black' 
+                                    ? 'border-black bg-blue-50/30 ring-1 ring-black shadow-md' 
                                     : 'border-gray-100 bg-gray-50 hover:bg-white'
                                 }`}
                             >
                                 <GooglePlayLogo />
                                 <span className={`font-bold text-xs ${paymentMethod === 'google_play' ? 'text-black' : 'text-gray-500'}`}>Google Pay</span>
+                                {paymentMethod === 'google_play' && <div className="absolute top-2 right-2 text-green-600"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg></div>}
                             </button>
 
                             <button
@@ -324,7 +328,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                                 onClick={() => setPaymentMethod('card')}
                                 className={`relative p-4 rounded-xl border-2 flex flex-col items-center justify-center gap-2 transition-all cursor-pointer ${
                                     paymentMethod === 'card' 
-                                    ? 'border-black bg-gray-50 ring-1 ring-black' 
+                                    ? 'border-black bg-gray-50 ring-1 ring-black shadow-md' 
                                     : 'border-gray-100 bg-gray-50 hover:bg-white'
                                 }`}
                             >
@@ -335,21 +339,22 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
 
                         {/* Google Play Form */}
                         {paymentMethod === 'google_play' && (
-                            <div className="space-y-4 animate-fade-in">
-                                <div className="p-4 bg-blue-50 rounded-lg border border-blue-100 text-sm text-blue-800 mb-4">
-                                    <p>Estás pagando de forma segura con <strong>Google Pay</strong>.</p>
+                            <div className="space-y-4 animate-fade-in bg-blue-50/20 p-4 rounded-xl border border-blue-100">
+                                <div className="flex items-center gap-2 text-sm text-blue-800 font-bold mb-2">
+                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                                    Pago Seguro Google Pay
                                 </div>
                                 <div>
                                     <label className="block text-xs font-bold text-gray-700 mb-1">Email de cuenta Google</label>
-                                    <input required type="email" placeholder="ejemplo@gmail.com" value={googleAccountEmail} onChange={(e) => setGoogleAccountEmail(e.target.value)} className="w-full border border-gray-300 rounded-lg p-3 bg-white focus:ring-2 focus:ring-blue-500 outline-none" />
+                                    <input required type="email" placeholder="ejemplo@gmail.com" value={googleAccountEmail} onChange={(e) => setGoogleAccountEmail(e.target.value)} className="w-full border border-gray-300 rounded-lg p-3 bg-white focus:ring-2 focus:ring-blue-500 outline-none shadow-sm" />
                                 </div>
                                 <div>
                                     <label className="block text-xs font-bold text-gray-700 mb-1">Nombre del Titular</label>
-                                    <input required type="text" placeholder="Nombre completo" value={googleAccountName} onChange={(e) => setGoogleAccountName(e.target.value)} className="w-full border border-gray-300 rounded-lg p-3 bg-white focus:ring-2 focus:ring-blue-500 outline-none" />
+                                    <input required type="text" placeholder="Nombre completo" value={googleAccountName} onChange={(e) => setGoogleAccountName(e.target.value)} className="w-full border border-gray-300 rounded-lg p-3 bg-white focus:ring-2 focus:ring-blue-500 outline-none shadow-sm" />
                                 </div>
                                 <div>
-                                     <label className="block text-xs font-bold text-gray-700 mb-1">Código Promocional / Tarjeta (Opcional)</label>
-                                     <input type="text" placeholder="XXXX-XXXX-XXXX" value={googlePlayCode} onChange={(e) => setGooglePlayCode(e.target.value)} className="w-full border border-gray-300 rounded-lg p-3 bg-white focus:ring-2 focus:ring-blue-500 outline-none font-mono uppercase" />
+                                     <label className="block text-xs font-bold text-gray-700 mb-1">Código Tarjeta Regalo (Opcional)</label>
+                                     <input type="text" placeholder="XXXX-XXXX-XXXX" value={googlePlayCode} onChange={(e) => setGooglePlayCode(e.target.value)} className="w-full border border-gray-300 rounded-lg p-3 bg-white focus:ring-2 focus:ring-blue-500 outline-none font-mono uppercase shadow-sm" />
                                 </div>
                             </div>
                         )}
@@ -405,7 +410,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                         </button>
                         
                         <p className="text-center text-xs text-gray-400 mt-4">
-                            Pagos procesados de forma segura. Al continuar aceptas nuestros términos y condiciones.
+                            Pagos procesados de forma segura por Google Pay.
                         </p>
                     </div>
                 </form>

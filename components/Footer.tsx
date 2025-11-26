@@ -79,21 +79,6 @@ const FooterLink: React.FC<{ onClick: () => void; children: React.ReactNode }> =
 );
 
 const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
-    const [currentUrl, setCurrentUrl] = useState('');
-
-    useEffect(() => {
-        try {
-            setCurrentUrl(window.location.href);
-        } catch (e) {
-            console.error("Error extracting params", e);
-        }
-    }, []);
-
-    const handleCopyLink = () => {
-        navigator.clipboard.writeText(currentUrl);
-        alert("Enlace copiado al portapapeles");
-    };
-
     return (
         <footer className="bg-black border-t border-gray-800 text-white font-sans">
             <div className="container mx-auto px-6 py-16">
@@ -157,25 +142,6 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <div className="bg-black border-t border-gray-800 py-6 text-center text-sm text-gray-500">
                 <div className="container mx-auto px-4">
                     <p>&copy; {new Date().getFullYear()} Vellaperfumeria. Todos los derechos reservados.</p>
-                    <p className="mt-2 text-xs font-mono text-gray-600">Versión Actualizada v2.0 (Live)</p>
-                </div>
-            </div>
-            
-            {/* Current Link Helper */}
-            <div className="bg-gray-900 py-4 border-t border-gray-800">
-                <div className="container mx-auto px-4 text-center">
-                    <p className="text-gray-500 text-xs mb-2 font-bold uppercase">Enlace actual de esta vista:</p>
-                    <div className="flex justify-center items-center gap-2 max-w-md mx-auto">
-                        <div className="bg-black text-green-400 px-3 py-2 rounded text-xs font-mono truncate w-full border border-gray-800">
-                            {currentUrl}
-                        </div>
-                        <button 
-                            onClick={handleCopyLink} 
-                            className="text-white text-xs font-bold bg-gray-800 hover:bg-gray-700 border border-gray-700 px-4 py-2 rounded transition-colors shrink-0"
-                        >
-                            COPIAR
-                        </button>
-                    </div>
                 </div>
             </div>
         </footer>
